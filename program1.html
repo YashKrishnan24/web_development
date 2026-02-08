@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Magic of Web Development</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        /* Particle Canvas Background */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f7dc6f);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            text-align: center;
+            z-index: 2;
+            text-shadow: 0 0 40px rgba(78, 205, 196, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease 0.5s both;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+        }
+
+        /* Morphing Shape */
+        .morphing-shape {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: morph 8s ease-in-out infinite, float 6s ease-in-out infinite;
+            opacity: 0.3;
+            filter: blur(40px);
+        }
+
+        @keyframes morph {
+            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            25% { border-radius: 58% 42% 75% 25% / 76% 46% 54% 24%; }
+            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
+            75% { border-radius: 33% 67% 58% 42% / 63% 68% 32% 37%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(50px, -50px) rotate(120deg); }
+            66% { transform: translate(-50px, 50px) rotate(240deg); }
+        }
+
+        /* Interactive Cards Section */
+        .section {
+            min-height: 100vh;
+            padding: 80px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 60px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            perspective: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1024px) {
+            .cards-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 20px 60px rgba(78, 205, 196, 0.4);
+        }
+
+        .card:hover::before {
+            opacity: 0.1;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card p {
+            opacity: 0.8;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Interactive Galaxy */
+        .galaxy-section {
+            position: relative;
+            background: radial-gradient(circle at center, #1a1a2e, #0a0a0a);
+        }
+
+        #galaxy-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+
+        #galaxy-canvas:active {
+            cursor: grabbing;
+        }
+
+        .galaxy-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        /* Color Wave Section */
+        .wave-section {
+            position: relative;
+            background: #0a0a0a;
+            overflow: hidden;
+        }
+
+        .color-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #f7dc6f, #ff6b6b);
+            background-size: 200% 100%;
+            animation: waveMove 3s linear infinite;
+            clip-path: polygon(
+                0% 80%,
+                10% 75%,
+                20% 80%,
+                30% 70%,
+                40% 75%,
+                50% 65%,
+                60% 70%,
+                70% 75%,
+                80% 70%,
+                90% 75%,
+                100% 80%,
+                100% 100%,
+                0% 100%
+            );
+        }
+
+        @keyframes waveMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Interactive Button */
+        .magic-button {
+            padding: 20px 50px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+            margin-top: 30px;
+        }
+
+        .magic-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .magic-button:hover {
+            transform: scale(1.05);
+        }
+
+        .magic-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .magic-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Text Animation */
+        .animated-text {
+            font-size: 2rem;
+            margin: 40px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .animated-text span {
+            display: inline-block;
+            animation: bounce 1s ease infinite;
+        }
+
+        .animated-text span:nth-child(1) { animation-delay: 0s; }
+        .animated-text span:nth-child(2) { animation-delay: 0.1s; }
+        .animated-text span:nth-child(3) { animation-delay: 0.2s; }
+        .animated-text span:nth-child(4) { animation-delay: 0.3s; }
+        .animated-text span:nth-child(5) { animation-delay: 0.4s; }
+        .animated-text span:nth-child(6) { animation-delay: 0.5s; }
+        .animated-text span:nth-child(7) { animation-delay: 0.6s; }
+        .animated-text span:nth-child(8) { animation-delay: 0.7s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scrollBounce 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator::after {
+            content: '↓';
+            font-size: 2rem;
+            opacity: 0.6;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .section h2 { font-size: 2rem; }
+            .animated-text { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <canvas id="particles"></canvas>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="morphing-shape"></div>
+        <h1>Welcome to the Magic</h1>
+        <p>Experience the Power of Web Development</p>
+        <div class="scroll-indicator"></div>
+    </section>
+
+    <!-- Interactive Cards Section -->
+    <section class="section">
+        <h2>Hover & Explore</h2>
+        <div class="cards-container">
+            <div class="card">
+                <div class="card-icon">✨</div>
+                <h3>Animations</h3>
+                <p>Smooth transitions and movements that bring websites to life</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🎨</div>
+                <h3>Beautiful Design</h3>
+                <p>Gradients, shadows, and effects that captivate the eye</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Interactivity</h3>
+                <p>Responsive elements that react to your every move</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🌊</div>
+                <h3>Fluid Motion</h3>
+                <p>Seamless scrolling and dynamic transformations</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galaxy Section -->
+    <section class="section galaxy-section">
+        <canvas id="galaxy-canvas"></canvas>
+        <div class="galaxy-content">
+            <h2>Interactive Galaxy</h2>
+            <div class="animated-text">
+                <span>D</span><span>r</span><span>a</span><span>g</span>
+                <span> </span>
+                <span>M</span><span>e</span><span>!</span>
+            </div>
+            <button class="magic-button" onclick="explodeGalaxy()">Make Magic</button>
+        </div>
+    </section>
+
+    <!-- Wave Section -->
+    <section class="section wave-section">
+        <div class="color-wave"></div>
+        <h2>This is Just the Beginning</h2>
+        <p style="font-size: 1.3rem; max-width: 600px; text-align: center; position: relative; z-index: 2;">
+            Web development can create experiences that are interactive, beautiful, and memorable.
+            From simple websites to complex applications, the possibilities are endless!
+        </p>
+    </section>
+
+    <script>
+        // Particle System
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(78, 205, 196, ${Math.random() * 0.5 + 0.2})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Draw connections
+            particles.forEach((p1, i) => {
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p1.x - p2.x;
+                    const dy = p1.y - p2.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(78, 205, 196, ${0.2 * (1 - distance / 100)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
+
+        // Galaxy Canvas
+        const galaxyCanvas = document.getElementById('galaxy-canvas');
+        const galaxyCtx = galaxyCanvas.getContext('2d');
+        galaxyCanvas.width = window.innerWidth;
+        galaxyCanvas.height = window.innerHeight;
+
+        const stars = [];
+        const starCount = 200;
+
+        class Star {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * galaxyCanvas.height;
+            }
+
+            reset() {
+                this.x = Math.random() * galaxyCanvas.width;
+                this.y = Math.random() * galaxyCanvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.radius = Math.random() * 1.5 + 0.5;
+                this.color = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f7dc6f'][Math.floor(Math.random() * 4)];
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > galaxyCanvas.width || 
+                    this.y < 0 || this.y > galaxyCanvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                galaxyCtx.beginPath();
+                galaxyCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                galaxyCtx.fillStyle = this.color;
+                galaxyCtx.shadowBlur = 10;
+                galaxyCtx.shadowColor = this.color;
+                galaxyCtx.fill();
+            }
+        }
+
+        for (let i = 0; i < starCount; i++) {
+            stars.push(new Star());
+        }
+
+        function animateGalaxy() {
+            galaxyCtx.clearRect(0, 0, galaxyCanvas.width, galaxyCanvas.height);
+            
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            requestAnimationFrame(animateGalaxy);
+        }
+
+        animateGalaxy();
+
+        // Galaxy drag interaction
+        let isDragging = false;
+        let lastX, lastY;
+
+        galaxyCanvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
+
+        galaxyCanvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastX;
+                const dy = e.clientY - lastY;
+                
+                stars.forEach(star => {
+                    star.vx += dx * 0.01;
+                    star.vy += dy * 0.01;
+                });
+
+                lastX = e.clientX;
+                lastY = e.clientY;
+            }
+        });
+
+        galaxyCanvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Explode galaxy function
+        function explodeGalaxy() {
+            stars.forEach(star => {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 10 + 5;
+                star.vx = Math.cos(angle) * speed;
+                star.vy = Math.sin(angle) * speed;
+            });
+
+            setTimeout(() => {
+                stars.forEach(star => {
+                    star.vx *= 0.1;
+                    star.vy *= 0.1;
+                });
+            }, 1000);
+        }
+
+        // 3D card tilt effect
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            galaxyCanvas.width = window.innerWidth;
+            galaxyCanvas.height = window.innerHeight;
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
