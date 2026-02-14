@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Maratha Empire | A Chronology of Valor</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #e67e22; /* Maratha Saffron */
+            --primary-dim: #fceadc;
+            --text-dark: #1a1a1a;
+            --text-light: #666;
+            --bg-color: #fdfbf7; /* Warm Paper Tone */
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --spacing-unit: 2rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s ease;
+        }
+
+        /* --- HERO SECTION --- */
+        header {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(circle at center, #fff 0%, var(--bg-color) 100%);
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-flag {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            animation: rise 2s ease-out;
+        }
+
+        header h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+            letter-spacing: -1px;
+        }
+
+        header p.subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            animation: bounce 2s infinite;
+        }
+
+        /* --- LAYOUT GRID --- */
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* --- SIDEBAR NAVIGATION --- */
+        aside {
+            padding: 4rem 2rem;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 4rem;
+        }
+
+        .sticky-nav ul {
+            list-style: none;
+            position: relative;
+        }
+
+        /* The vertical line for timeline */
+        .sticky-nav ul::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .sticky-nav li {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .sticky-nav li::before {
+            content: '';
+            position: absolute;
+            left: -5px; /* Centers on the line */
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            background: var(--bg-color);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .sticky-nav li.active::before {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .sticky-nav a {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            display: block;
+        }
+
+        .sticky-nav li.active a {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        main {
+            padding: 4rem;
+        }
+
+        .intro-text {
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .extent-box {
+            background: var(--primary-dim);
+            padding: 2rem;
+            border-radius: 4px;
+            margin: 2rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .extent-box h3 {
+            color: #bd5600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- RULER CARDS --- */
+        .ruler-section {
+            margin-bottom: 6rem;
+            scroll-margin-top: 4rem; /* Offset for smooth scroll */
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .ruler-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ruler-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .ruler-name {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+        }
+
+        .ruler-reign {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .ruler-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Image Styling */
+        .ruler-img-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            background-color: #eee;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .ruler-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: transform 0.5s ease;
+        }
+
+        .ruler-img-container:hover img {
+            transform: scale(1.03);
+        }
+
+        .ruler-info p {
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            color: #444;
+        }
+
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background-color: transparent;
+            border: 1px solid var(--text-dark);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .doc-link:hover {
+            background-color: var(--text-dark);
+            color: #fff;
+        }
+
+        .doc-link span {
+            margin-left: 0.5rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--text-dark);
+            color: #fff;
+            padding: 3rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            aside {
+                display: none; /* Hide sidebar on mobile */
+            }
+            main {
+                padding: 2rem;
+            }
+            header h1 {
+                font-size: 2.5rem;
+            }
+            .ruler-content {
+                grid-template-columns: 1fr;
+            }
+            .ruler-img-container {
+                height: 300px;
+            }
+        }
+
+        /* Animation Keyframes */
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="hero-flag">🚩</div>
+        <h1>The Maratha Empire</h1>
+        <p class="subtitle">Hindavi Swarajya • 1674 – 1818</p>
+        <p style="max-width: 700px; font-size: 1.1rem; line-height: 1.8;">
+            Rising from the rugged Deccan plateau to dominate the Indian subcontinent, the Maratha Empire represents a saga of military genius, guerrilla warfare, and the resurrection of indigenous rule.
+        </p>
+        <div class="scroll-indicator">Scroll to Explore History</div>
+    </header>
+
+    <div class="container">
+        <aside>
+            <div class="sticky-nav">
+                <h3>Chronology</h3>
+                <ul>
+                    <li class="active"><a href="#shivaji">Chhatrapati Shivaji</a></li>
+                    <li><a href="#sambhaji">Chhatrapati Sambhaji</a></li>
+                    <li><a href="#rajaram">Chhatrapati Rajaram</a></li>
+                    <li><a href="#tarabai">Regent Tarabai</a></li>
+                    <li><a href="#shahu">Chhatrapati Shahu</a></li>
+                    <li><a href="#peshwa1">Peshwa Baji Rao I</a></li>
+                    <li><a href="#peshwa2">Peshwa Balaji Baji Rao</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main>
+            <section class="intro-text">
+                <p>
+                    Founded by the visionary **Chhatrapati Shivaji Maharaj** in 1674, the Maratha Empire challenged the Mughal hegemony and re-established self-rule (*Swarajya*). Known for their speed, intelligence networks, and the "Ganimi Kava" (guerrilla tactics), they transformed from a regional force into the primary power of 18th-century India.
+                </p>
+                <div class="extent-box">
+                    <h3>Territorial Extent</h3>
+                    <p>
+                        At its zenith (1758), the empire's saffron flag fluttered from <strong>Peshawar</strong> (modern-day Pakistan) in the north to <strong>Thanjavur</strong> in the south, and from <strong>Attock</strong> in the west to <strong>Cuttack</strong> (Odisha) in the east. It covered approximately 2.5 million square kilometers.
+                    </p>
+                </div>
+            </section>
+
+            <section id="shivaji" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Shivaji Maharaj</h2>
+                    <span class="ruler-reign">1674 – 1680</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Shivaji_British_Museum.jpg" alt="Chhatrapati Shivaji Maharaj">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>The Founder.</strong> A brilliant military strategist and administrator who carved out an independent kingdom from the declining Adil Shahi sultanate of Bijapur. He was crowned <em>Chhatrapati</em> in a grand ceremony at Raigad.</p>
+                        <p>He established a competent civil rule with the help of a disciplined military and well-structured administrative organizations. He pioneered guerrilla warfare methods, which leveraged strategic factors like geography, speed, and surprise.</p>
+                        <a href="https://en.wikipedia.org/wiki/Shivaji" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="sambhaji" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Sambhaji Maharaj</h2>
+                    <span class="ruler-reign">1681 – 1689</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Sambhaji.jpg" alt="Chhatrapati Sambhaji Maharaj">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>The Defender.</strong> The eldest son of Shivaji, Sambhaji faced the full might of the Mughal Empire led by Aurangzeb. In his short reign of 9 years, he fought over 120 battles and is reputed to have never lost a single one.</p>
+                        <p>He was eventually captured and executed by Aurangzeb, an event that galvanized the Maratha resistance rather than crushing it.</p>
+                        <a href="https://en.wikipedia.org/wiki/Sambhaji" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="rajaram" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Rajaram Maharaj</h2>
+                    <span class="ruler-reign">1689 – 1700</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/86/Chhatrapati_Rajaram_Maharaj_1.jpg" alt="Rajaram Maharaj">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>The Strategist.</strong> After the death of Sambhaji, Rajaram carried the fight to Jinji (in modern Tamil Nadu), stretching the Mughal supply lines. His reign was marked by a decentralized war where Maratha commanders were given autonomy to capture and tax lands.</p>
+                        <a href="https://en.wikipedia.org/wiki/Rajaram_I" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tarabai" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Maharani Tarabai</h2>
+                    <span class="ruler-reign">1700 – 1708 (Regent)</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Tarabai.jpg" alt="Maharani Tarabai">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>The Warrior Queen.</strong> Following Rajaram's death, his widow Tarabai took charge of the resistance against Aurangzeb. She was a skilled cavalry warrior and strategist who personally led forces.</p>
+                        <p>Her refusal to surrender is often cited as the reason the Mughal conquest of the Deccan ultimately failed.</p>
+                        <a href="https://en.wikipedia.org/wiki/Tarabai" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="shahu" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Shahu Maharaj</h2>
+                    <span class="ruler-reign">1708 – 1749</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Shahu1.jpg" alt="Shahu Maharaj">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>The Expansionist.</strong> Son of Sambhaji, Shahu was released by the Mughals and reclaimed the throne. His reign saw the rise of the <strong>Peshwas</strong> (Prime Ministers), effectively transferring executive power to them while he remained the ceremonial head.</p>
+                        <p>Under his authority, the Maratha Empire transitioned from a kingdom defending itself to an empire expanding across India.</p>
+                        <a href="https://en.wikipedia.org/wiki/Shahu_I" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="peshwa1" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Peshwa Baji Rao I</h2>
+                    <span class="ruler-reign">1720 – 1740</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/Bajirao_I_and_Chimaji_Appa.jpg" alt="Peshwa Baji Rao I">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>The Unconquered.</strong> Perhaps the most famous Peshwa, Baji Rao I is credited with expanding the Maratha Empire to the North (Delhi, Malwa, Gujarat). He fought 41 major battles and never lost one.</p>
+                        <p>He is known for his rapid cavalry movements and for realizing the dream of "Hindu Pad Padshahi" (Hindu Empire).</p>
+                        <a href="https://en.wikipedia.org/wiki/Baji_Rao_I" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+             <section id="peshwa2" class="ruler-section">
+                <div class="ruler-header">
+                    <h2 class="ruler-name">Peshwa Balaji Baji Rao</h2>
+                    <span class="ruler-reign">1740 – 1761</span>
+                </div>
+                <div class="ruler-content">
+                    <div class="ruler-img-container">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Nanasaheb_Peshwa.jpg" alt="Balaji Baji Rao">
+                    </div>
+                    <div class="ruler-info">
+                        <p><strong>Nana Saheb.</strong> Under his leadership, the Maratha Empire reached its absolute territorial peak. The Maratha horses quenched their thirst in the waters of the Indus river in the north.</p>
+                        <p>However, his reign ended tragically with the Third Battle of Panipat (1761), a catastrophic loss that checked Maratha expansion.</p>
+                        <a href="https://en.wikipedia.org/wiki/Balaji_Baji_Rao" target="_blank" class="doc-link">
+                            Read Documentation <span>↗</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer>
+        <p>Designed with respect for history. Images sourced from Wikimedia Commons.</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Update Sidebar Active State
+                    const id = entry.target.getAttribute('id');
+                    if(id) {
+                        document.querySelectorAll('.sticky-nav li').forEach(li => {
+                            li.classList.remove('active');
+                            if(li.querySelector('a').getAttribute('href') === `#${id}`) {
+                                li.classList.add('active');
+                            }
+                        });
+                    }
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.ruler-section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
