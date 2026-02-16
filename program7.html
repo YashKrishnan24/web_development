@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WindPower Explained | Simple & Fun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #E0F2F1);
+            scroll-behavior: smooth;
+        }
+
+        /* Animated Windmill */
+        .windmill-container {
+            position: relative;
+            width: 200px;
+            height: 300px;
+        }
+        .tower {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 180px;
+            background: #fff;
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+        }
+        .blades {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            transform-origin: center;
+            animation: spin 4s linear infinite;
+        }
+        .blade {
+            position: absolute;
+            background: #f8fafc;
+            width: 10px;
+            height: 90px;
+            left: -5px;
+            top: -90px;
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+        }
+        .blade:nth-child(2) { transform: rotate(120deg); }
+        .blade:nth-child(3) { transform: rotate(240deg); }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .step-card:hover .icon-bounce {
+            animation: bounce 0.6s infinite alternate;
+        }
+        @keyframes bounce {
+            to { transform: translateY(-10px); }
+        }
+
+        .energy-flow {
+            stroke-dasharray: 10;
+            animation: flow 1s linear infinite;
+        }
+        @keyframes flow {
+            to { stroke-dashoffset: -20; }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <section class="min-h-screen flex flex-col items-center justify-center px-6 text-center">
+        <div class="windmill-container mb-8">
+            <div class="tower"></div>
+            <div class="blades">
+                <div class="blade"></div>
+                <div class="blade"></div>
+                <div class="blade"></div>
+            </div>
+            <div class="absolute top-[92px] left-[50%] -translate-x-1/2 w-4 h-4 bg-gray-300 rounded-full z-10"></div>
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-bold text-white drop-shadow-md mb-4">
+            How Do <span class="text-yellow-300">Windmills</span> Work?
+        </h1>
+        <p class="text-xl text-blue-900 font-medium max-w-2xl">
+            It's like a giant fan, but in reverse! Instead of using electricity to make wind, it uses wind to make electricity.
+        </p>
+        
+        <a href="#how" class="mt-10 bg-white text-blue-500 font-bold px-8 py-4 rounded-full shadow-lg hover:bg-yellow-300 hover:text-white transition-all transform hover:scale-110">
+            Show Me How! ↓
+        </a>
+    </section>
+
+    <section id="how" class="py-20 bg-white rounded-t-[50px] shadow-2xl px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold text-center text-gray-800 mb-16">The 3 Simple Steps</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                
+                <div class="step-card bg-blue-50 p-8 rounded-3xl border-b-8 border-blue-400 text-center transition-all hover:-translate-y-2">
+                    <div class="text-5xl mb-4 icon-bounce">🌬️</div>
+                    <h3 class="text-2xl font-bold text-blue-600 mb-3">1. Catch the Breeze</h3>
+                    <p class="text-gray-600">When the wind blows, it pushes the curved blades, making them spin around the center hub.</p>
+                </div>
+
+                <div class="step-card bg-yellow-50 p-8 rounded-3xl border-b-8 border-yellow-400 text-center transition-all hover:-translate-y-2">
+                    <div class="text-5xl mb-4 icon-bounce">⚙️</div>
+                    <h3 class="text-2xl font-bold text-yellow-600 mb-3">2. Turn the Gears</h3>
+                    <p class="text-gray-600">Inside the box (nacelle), the spinning blades turn a shaft connected to a generator full of magnets.</p>
+                </div>
+
+                <div class="step-card bg-green-50 p-8 rounded-3xl border-b-8 border-green-400 text-center transition-all hover:-translate-y-2">
+                    <div class="text-5xl mb-4 icon-bounce">💡</div>
+                    <h3 class="text-2xl font-bold text-green-600 mb-3">3. Make Magic</h3>
+                    <p class="text-gray-600">Those spinning magnets create an electric current that travels down cables to power your home!</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 max-w-5xl mx-auto">
+        <div class="bg-blue-600 rounded-[40px] p-8 md:p-12 text-white flex flex-col md:flex-row items-center gap-10 shadow-2xl">
+            <div class="flex-1">
+                <h2 class="text-3xl font-bold mb-6">Fun Fact! 🌍</h2>
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-3">
+                        <span class="bg-white/20 p-2 rounded-lg">✅</span>
+                        One windmill can power up to 1,500 homes.
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="bg-white/20 p-2 rounded-lg">✅</span>
+                        They are taller than the Statue of Liberty!
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="bg-white/20 p-2 rounded-lg">✅</span>
+                        Wind energy never runs out.
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="bg-white/10 p-6 rounded-2xl border border-white/20">
+                <svg width="200" height="150" viewBox="0 0 200 150">
+                    <path d="M10 75 Q 100 10, 190 75" fill="none" stroke="#fbbf24" stroke-width="4" class="energy-flow"/>
+                    <text x="50%" y="90%" fill="white" font-size="12" text-anchor="middle">Energy Flowing to Grid</text>
+                    <circle cx="10" cy="75" r="8" fill="#fff" />
+                    <circle cx="190" cy="75" r="8" fill="#fff" />
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center text-blue-800/60 font-medium">
+        Built for curious minds &bull; 2026 Eco-Learning
+    </footer>
+
+</body>
+</html>
