@@ -2,7 +2,7 @@
  Web Development
 
 
- About This Repository
+ About This Repository:
 
 This repository contains basic web development programs built using HTML, CSS, and JavaScript. It is designed for beginners who want to understand the core building blocks of the web and practice fundamental concepts through simple, hands-on examples.
 
