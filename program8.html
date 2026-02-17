@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Armed Forces | Digital Archive</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --army-green: #4B5320;
+            --navy-blue: #002147;
+            --iaf-blue: #5D8AA8;
+            --saffron: #FF9933;
+            --white: #FFFFFF;
+            --green: #138808;
+            --sidebar-width: 260px;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+
+        body { display: flex; background: #f0f2f5; min-height: 100vh; color: #333; }
+
+        /* SIDEBAR NAVIGATION */
+        nav {
+            width: var(--sidebar-width);
+            background: var(--navy-blue);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-header {
+            text-align: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-header i { font-size: 3rem; color: var(--saffron); margin-bottom: 10px; }
+
+        nav button {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            padding: 15px 25px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        nav button i { width: 20px; }
+
+        nav button:hover, nav button.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--saffron);
+            border-left: 5px solid var(--saffron);
+        }
+
+        /* MAIN CONTENT AREA */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px;
+        }
+
+        .header-strip {
+            height: 8px;
+            background: linear-gradient(to right, var(--saffron), var(--white), var(--green));
+            position: fixed;
+            top: 0;
+            left: var(--sidebar-width);
+            right: 0;
+            z-index: 100;
+        }
+
+        .section { display: none; animation: fadeIn 0.4s ease; }
+        .section.active { display: block; }
+
+        .title-block { margin-bottom: 30px; }
+        .title-block h1 { font-size: 2.5rem; color: var(--navy-blue); text-transform: uppercase; }
+
+        /* CONTENT CARDS */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 20px; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--army-green);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            padding: 20px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-content { padding: 20px; }
+        .card-content h3 { margin-bottom: 10px; color: var(--navy-blue); display: flex; align-items: center; gap: 10px; }
+        .war-cry { display: block; margin-top: 15px; color: #d35400; font-weight: bold; font-style: italic; }
+
+        /* TIMELINE ALIGNMENT */
+        .timeline { border-left: 3px solid var(--green); margin-left: 20px; padding-left: 30px; }
+        .timeline-item { position: relative; margin-bottom: 30px; }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 5px;
+            width: 14px;
+            height: 14px;
+            background: var(--white);
+            border: 3px solid var(--saffron);
+            border-radius: 50%;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 900px) {
+            nav { width: 70px; }
+            nav span { display: none; }
+            main { margin-left: 70px; }
+            .header-strip { left: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-header">
+            <i class="fas fa-dharmachakra"></i>
+            <h2 style="font-size: 1rem; letter-spacing: 1px;">ARCHIVE</h2>
+        </div>
+        <button class="active" onclick="tab(event, 'history')"><i class="fas fa-history"></i> <span>History</span></button>
+        <button onclick="tab(event, 'army')"><i class="fas fa-shield-halved"></i> <span>Indian Army</span></button>
+        <button onclick="tab(event, 'navy')"><i class="fas fa-ship"></i> <span>Indian Navy</span></button>
+        <button onclick="tab(event, 'iaf')"><i class="fas fa-plane"></i> <span>Indian Air Force</span></button>
+        <button onclick="tab(event, 'honors')"><i class="fas fa-medal"></i> <span>Achievements</span></button>
+    </nav>
+
+    <div class="header-strip"></div>
+
+    <main>
+        <div id="history" class="section active">
+            <div class="title-block">
+                <h1><i class="fas fa-monument"></i> Legacy of Valor</h1>
+                <p>A timeline of significant military milestones since 1947.</p>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3 style="color: var(--saffron);">1947-48 | The First Trial</h3>
+                    <p>Immediate action post-independence to defend the borders of Jammu & Kashmir.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3 style="color: var(--saffron);">1971 | Operation Trident & Victory</h3>
+                    <p>The creation of Bangladesh and the largest military surrender since WWII.</p>
+                </div>
+                <div class="timeline-item">
+                    <h3 style="color: var(--saffron);">1999 | The Heights of Kargil</h3>
+                    <p>High-altitude warfare at 18,000 feet to reclaim sovereign territory.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="army" class="section">
+            <div class="title-block">
+                <h1><i class="fas fa-person-rifle"></i> Indian Army</h1>
+                <p>The second largest standing army in the world.</p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1590133323290-f5a6370d3221?auto=format&fit=crop&w=500&q=80')"></div>
+                    <div class="card-content">
+                        <h3>Parachute (SF)</h3>
+                        <p>Special operations units specializing in airborne and unconventional warfare.</p>
+                        <span class="war-cry">"Balidan Param Dharma"</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1615412704911-55d589229864?auto=format&fit=crop&w=500&q=80')"></div>
+                    <div class="card-content">
+                        <h3>The Gorkha Rifles</h3>
+                        <p>Famous for their Khukri knives and unparalleled bravery in the mountains.</p>
+                        <span class="war-cry">"Jai Mahakali, Ayo Gorkhali!"</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="navy" class="section">
+            <div class="title-block">
+                <h1><i class="fas fa-anchor"></i> Indian Navy</h1>
+                <p>Securing the Blue Frontiers.</p>
+            </div>
+            <div class="grid">
+                <div class="card" style="border-top-color: var(--navy-blue);">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1516466723877-e4ec1d736c8a?auto=format&fit=crop&w=500&q=80')"></div>
+                    <div class="card-content">
+                        <h3>INS Vikrant</h3>
+                        <p>India's first indigenous aircraft carrier, symbolizing self-reliance (Atmanirbharta).</p>
+                    </div>
+                </div>
+                <div class="card" style="border-top-color: var(--navy-blue);">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1563299796-17596ed6b017?auto=format&fit=crop&w=500&q=80')"></div>
+                    <div class="card-content">
+                        <h3>MARCOS</h3>
+                        <p>The Marine Commandos, India's elite naval special forces.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="iaf" class="section">
+            <div class="title-block">
+                <h1><i class="fas fa-jet-fighter"></i> Indian Air Force</h1>
+                <p>Nabhah Sprsham Diptam (Touch the Sky with Glory).</p>
+            </div>
+            <div class="grid">
+                <div class="card" style="border-top-color: var(--iaf-blue);">
+                    <div class="card-img" style="background-image: url('https://images.unsplash.com/photo-1526315622002-d61595133663?auto=format&fit=crop&w=500&q=80')"></div>
+                    <div class="card-content">
+                        <h3>Fighter Fleet</h3>
+                        <p>Featuring Rafale, Sukhoi Su-30MKI, and the indigenous LCA Tejas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="honors" class="section">
+            <div class="title-block">
+                <h1><i class="fas fa-award"></i> Honors & Achievements</h1>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-content">
+                        <h3>Param Vir Chakra</h3>
+                        <p>The highest gallantry award. 21 brave souls have received this for exceptional bravery during war.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content">
+                        <h3>UN Peacekeeping</h3>
+                        <p>One of the largest troop contributors to global peace missions worldwide.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function tab(evt, sectionId) {
+            const sections = document.querySelectorAll('.section');
+            const buttons = document.querySelectorAll('nav button');
+            
+            sections.forEach(s => s.classList.remove('active'));
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
