@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON HORIZON | Future of Tech</title>
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-blue: #00ffff;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020205;
+            color: #fff;
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow: hidden; /* Keeps the focus on the portal */
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- BACKGROUND PORTAL SYSTEM --- */
+        .background-visuals {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1;
+            perspective: 1200px;
+        }
+
+        .ring {
+            position: absolute;
+            width: 500px; height: 500px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 30px var(--neon-blue);
+            animation: moveZ 5s infinite linear;
+            opacity: 0;
+        }
+
+        .ring:nth-child(2) { animation-delay: 1.25s; border-color: var(--neon-pink); box-shadow: 0 0 30px var(--neon-pink); }
+        .ring:nth-child(3) { animation-delay: 2.5s; }
+        .ring:nth-child(4) { animation-delay: 3.75s; border-color: var(--neon-pink); box-shadow: 0 0 30px var(--neon-pink); }
+
+        @keyframes moveZ {
+            0% { transform: translateZ(-1200px) scale(0.1); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateZ(400px) scale(2.5); opacity: 0; }
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: relative;
+            z-index: 10;
+            padding: 30px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .nav-links { list-style: none; display: flex; gap: 40px; }
+        .nav-links a { 
+            text-decoration: none; color: #aaa; 
+            text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px;
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--neon-blue); text-shadow: 0 0 8px var(--neon-blue); }
+
+        /* --- HERO SECTION --- */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            padding: 20px;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            padding: 60px;
+            border-radius: 40px;
+            text-align: center;
+            max-width: 700px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #fff, #666);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: #888;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+        }
+
+        /* --- INTERACTIVE BUTTON --- */
+        .cta-btn {
+            position: relative;
+            padding: 18px 45px;
+            background: transparent;
+            color: white;
+            border: 1px solid var(--neon-blue);
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: 0.5s;
+        }
+
+        .cta-btn:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 40px var(--neon-blue);
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .cta-btn:hover::before { left: 100%; }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">HORIZON</div>
+        <ul class="nav-links">
+            <li><a href="#">Mission</a></li>
+            <li><a href="#">Tech</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="background-visuals">
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+        <div class="ring"></div>
+    </div>
+
+    <main>
+        <div class="glass-card">
+            <h1>STEP INTO THE FUTURE</h1>
+            <p>Experience the convergence of pure CSS artistry and next-gen performance. No images. No scripts. Just raw code.</p>
+            <button class="cta-btn">Initialize Warp</button>
+        </div>
+    </main>
+
+</body>
+</html>
