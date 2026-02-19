@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Devil's Triangle | Mysteries Unveiled</title>
+    <style>
+        :root {
+            --deep-ocean: #0a192f;
+            --electric-blue: #00d4ff;
+            --ghostly-white: #e6f1ff;
+            --hazard-orange: #ff4d4d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--deep-ocean);
+            color: var(--ghostly-white);
+            margin: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        header {
+            height: 60vh;
+            background: linear-gradient(rgba(10, 25, 47, 0.7), rgba(10, 25, 47, 1)), 
+                        url('https://images.unsplash.com/photo-1518156677180-95a2893f3e9f?auto=format&fit=crop&w=1500&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-bottom: 3px solid var(--electric-blue);
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 10px;
+            text-shadow: 0 0 20px var(--electric-blue);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--electric-blue);
+            font-weight: bold;
+        }
+
+        /* Content Sections */
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 60px;
+            font-style: italic;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--electric-blue);
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .card h3 {
+            color: var(--electric-blue);
+            margin-top: 0;
+        }
+
+        .conspiracy-tag {
+            color: var(--hazard-orange);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .science-tag {
+            color: #4ade80;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px;
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        /* Radar Animation */
+        .radar {
+            width: 100px;
+            height: 100px;
+            border: 2px solid var(--electric-blue);
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto;
+        }
+        .radar::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 2px;
+            background: var(--electric-blue);
+            top: 50%;
+            left: 50%;
+            transform-origin: left;
+            animation: rotate 2s linear infinite;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="radar"></div>
+        <h1>Bermuda Triangle</h1>
+        <p class="subtitle">700,000 SQUARE KILOMETERS OF UNEXPLAINED DEVIATION</p>
+    </header>
+
+    <div class="container">
+        <section class="intro">
+            <p>"The sea is dangerous and its storms are terrible, but these obstacles have never been sufficient reason to remain ashore." — Ferdinand Magellan</p>
+        </section>
+
+        <div class="grid">
+            <div class="card">
+                <span class="science-tag">Scientific Theory</span>
+                <h3>Methane Hydrates</h3>
+                <p>Enormous pockets of natural gas trapped beneath the seafloor can erupt. These bubbles reduce water density, causing ships to sink like stones, and can even stall aircraft engines if they rise into the sky.</p>
+            </div>
+
+            <div class="card">
+                <span class="conspiracy-tag">Conspiracy</span>
+                <h3>The Lost City of Atlantis</h3>
+                <p>Some believe the ruins of Atlantis lie beneath the Bimini Road. Proponents suggest that "energy crystals" used by the Atlanteans are still active, interfering with ship electronics and navigation.</p>
+            </div>
+
+            <div class="card">
+                <span class="science-tag">Scientific Theory</span>
+                <h3>Magnetic Anomalies</h3>
+                <p>The Triangle is one of the places on Earth where "True North" and "Magnetic North" align. This "agonic line" can cause compasses to give confusing readings to inexperienced navigators.</p>
+            </div>
+
+            <div class="card">
+                <span class="conspiracy-tag">Conspiracy</span>
+                <h3>Extraterrestrial Portals</h3>
+                <p>UFO enthusiasts suggest the area is a "Vile Vortex"—an interdimensional doorway where aliens harvest humans and vessels for study. This gained popularity after the disappearance of Flight 19.</p>
+            </div>
+
+            <div class="card">
+                <span class="science-tag">Scientific Theory</span>
+                <h3>Rogue Waves</h3>
+                <p>Satellite data confirms that waves up to 100 feet tall (30 meters) can occur here. These "walls of water" are sudden, unpredictable, and powerful enough to snap a cargo ship in half.</p>
+            </div>
+
+            <div class="card">
+                <span class="science-tag">Statistical Reality</span>
+                <h3>The "No Mystery" Theory</h3>
+                <p>The World Wildlife Fund found that the Triangle isn't even in the top 10 most dangerous shipping lanes. Given the massive traffic, the number of accidents is statistically average.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Mysteries of the Deep | Keep your eyes on the horizon.</p>
+    </footer>
+
+</body>
+</html>
