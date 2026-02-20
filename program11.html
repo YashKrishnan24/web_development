@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusVoice | Student Feedback Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --light-text: #64748b;
+            --white: #ffffff;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 10%;
+            background: var(--white);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; cursor: pointer; }
+        .logo span { color: var(--primary); }
+
+        .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .btn-nav {
+            background: var(--primary);
+            color: white !important;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 6rem 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            color: white;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        .hero h1 { font-size: 3.2rem; margin-bottom: 1rem; font-weight: 800; }
+        .hero p { font-size: 1.2rem; opacity: 0.9; max-width: 600px; margin: 0 auto 2rem; }
+
+        /* Main Container */
+        .container {
+            max-width: 1100px;
+            margin: -4rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        /* Society Table Card */
+        .card-container {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            padding: 0.6rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            width: 250px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            padding: 1rem;
+            color: var(--light-text);
+            font-weight: 600;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        td { padding: 1.2rem 1rem; border-bottom: 1px solid #f1f5f9; }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .active { background: #dcfce7; color: #15803d; }
+        .event { background: #fef9c3; color: #a16207; }
+
+        .btn-review {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-review:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 8% auto;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 25px;
+            top: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--light-text);
+        }
+
+        #targetSociety { color: var(--primary); font-weight: 700; margin-bottom: 1.5rem; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        
+        input[type="number"], textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        .anon-row { display: flex; align-items: center; gap: 10px; margin: 1rem 0; }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover { background: var(--primary-hover); }
+
+        footer { text-align: center; padding: 3rem; color: var(--light-text); font-size: 0.9rem; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">Campus<span>Voice</span></div>
+        <ul class="nav-links">
+            <li><a href="#">Societies</a></li>
+            <li><a href="#">Leaderboard</a></li>
+            <li><a href="#" class="btn-nav">My Account</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <h1>Your Voice, Your Campus</h1>
+        <p>Real feedback from real students. Help us make our college societies the best they can be.</p>
+    </header>
+
+    <main class="container">
+        <div class="card-container">
+            <div class="section-header">
+                <h2>Active Societies</h2>
+                <input type="text" class="search-box" placeholder="Search society..." id="search">
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table id="societyTable">
+                    <thead>
+                        <tr>
+                            <th>Society Name</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tech Innovators</strong></td>
+                            <td>Engineering</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td><button class="btn-review">Rate Now</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>The Daily Muse</strong></td>
+                            <td>Arts & Media</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td><button class="btn-review">Rate Now</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Debate Club</strong></td>
+                            <td>Public Speaking</td>
+                            <td><span class="status-badge event">Upcoming Event</span></td>
+                            <td><button class="btn-review">Rate Now</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Green Campus</strong></td>
+                            <td>Social Cause</td>
+                            <td><span class="status-badge active">Active</span></td>
+                            <td><button class="btn-review">Rate Now</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Student Union Council • Built for Students</p>
+    </footer>
+
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2 style="margin-bottom: 5px;">Submit Review</h2>
+            <p id="targetSociety">Reviewing Society</p>
+            
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label>Overall Experience (1-5 Stars)</label>
+                    <input type="number" id="rating" min="1" max="5" value="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Your Detailed Feedback</label>
+                    <textarea id="comments" rows="4" placeholder="How was the organization? Was it inclusive?" required></textarea>
+                </div>
+                
+                <div class="anon-row">
+                    <input type="checkbox" id="anon">
+                    <label for="anon" style="margin:0;">Post as Anonymous Student</label>
+                </div>
+                
+                <button type="submit" class="btn-submit">Submit My Review</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById("feedbackModal");
+        const closeBtn = document.querySelector(".close-btn");
+        const societyTable = document.getElementById("societyTable");
+        const targetText = document.getElementById("targetSociety");
+        const searchInput = document.getElementById("search");
+
+        // Event Delegation for "Rate Now" buttons
+        societyTable.addEventListener('click', function(e) {
+            if(e.target && e.target.classList.contains('btn-review')) {
+                const row = e.target.closest('tr');
+                const societyName = row.cells[0].innerText;
+                targetText.innerText = "Reviewing: " + societyName;
+                modal.style.display = "block";
+            }
+        });
+
+        // Close Modal
+        closeBtn.onclick = () => modal.style.display = "none";
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+
+        // Form Submission
+        document.getElementById("reviewForm").onsubmit = function(e) {
+            e.preventDefault();
+            
+            // Collect Data
+            const data = {
+                rating: document.getElementById("rating").value,
+                comment: document.getElementById("comments").value,
+                isAnon: document.getElementById("anon").checked
+            };
+
+            console.log("Feedback Submitted:", data);
+            
+            // Success Feedback
+            alert("Success! Thank you for making our campus better.");
+            modal.style.display = "none";
+            this.reset();
+        }
+
+        // Simple Search Filter
+        searchInput.onkeyup = function() {
+            let filter = searchInput.value.toUpperCase();
+            let tr = societyTable.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    let txtValue = td.textContent || td.innerText;
+                    tr[i].style.display = (txtValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
