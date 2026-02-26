@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Source — Build Together</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0e0f;
+    --surface: #141618;
+    --border: #2a2d31;
+    --text: #e8e6e0;
+    --muted: #7a7870;
+    --accent: #f0c040;
+    --accent2: #4af0a0;
+    --accent3: #f04060;
+    --mono: 'DM Mono', monospace;
+    --serif: 'Lora', serif;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: left 0.15s ease, top 0.15s ease, transform 0.2s;
+    opacity: 0.5;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    padding: 1.5rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(13,14,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.8rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 2.5rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(240,192,64,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-text { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 2rem; height: 1px;
+    background: var(--accent);
+  }
+  .hero-title {
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 44ch;
+    margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-ctas {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .btn-primary {
+    padding: 0.85rem 2rem;
+    background: var(--accent);
+    color: #000;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border: none; cursor: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--accent2);
+  }
+  .btn-ghost {
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    cursor: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--text); }
+
+  /* Terminal visual */
+  .hero-visual {
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; animation: fadeIn 1.2s 0.6s forwards;
+  }
+  .terminal {
+    width: 100%; max-width: 480px;
+    background: #0a0b0c;
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  }
+  .terminal-bar {
+    background: var(--surface);
+    padding: 0.7rem 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: var(--accent3); }
+  .dot-y { background: var(--accent); }
+  .dot-g { background: var(--accent2); }
+  .terminal-title {
+    margin-left: 0.5rem;
+    color: var(--muted); font-size: 0.72rem; letter-spacing: 0.05em;
+  }
+  .terminal-body { padding: 1.25rem 1.5rem; line-height: 2; }
+  .t-muted { color: var(--muted); }
+  .t-accent { color: var(--accent); }
+  .t-green { color: var(--accent2); }
+  .t-red { color: var(--accent3); }
+  .t-white { color: var(--text); }
+  .t-prompt::before { content: '$ '; color: var(--accent2); }
+  .cursor-blink {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--text);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  /* WHAT IS */
+  section { padding: 6rem 2.5rem; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: var(--border);
+  }
+  .section-title {
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+  .section-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .what-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem 5rem;
+    margin-top: 3.5rem;
+    align-items: start;
+  }
+  .what-desc {
+    color: var(--muted); line-height: 1.8; font-size: 1rem;
+  }
+  .what-desc + .what-desc { margin-top: 1.5rem; }
+  .what-desc strong { color: var(--text); }
+
+  .pillars { display: flex; flex-direction: column; gap: 1.25rem; }
+  .pillar {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border);
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--surface);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .pillar:hover { border-color: var(--accent); transform: translateX(4px); }
+  .pillar-icon {
+    font-size: 1.4rem; line-height: 1;
+    flex-shrink: 0; margin-top: 0.15rem;
+  }
+  .pillar-text h3 {
+    font-size: 0.92rem; font-weight: 700; margin-bottom: 0.3rem;
+  }
+  .pillar-text p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* HOW IT WORKS */
+  .how-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .steps-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    margin-top: 3.5rem;
+    position: relative;
+  }
+  .steps-row::before {
+    content: '';
+    position: absolute;
+    top: 2rem; left: 2rem; right: 2rem;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent));
+    opacity: 0.3;
+  }
+  .step {
+    padding: 0 1rem;
+    position: relative;
+    text-align: center;
+  }
+  .step-num {
+    width: 4rem; height: 4rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.8rem; color: var(--accent);
+    margin: 0 auto 1.25rem;
+    position: relative; z-index: 1;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .step:hover .step-num { background: var(--accent); color: #000; border-color: var(--accent); }
+  .step h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .step p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+  /* CONCEPTS */
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    margin-top: 3.5rem;
+  }
+  .concept-card {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .concept-card:hover { background: var(--surface); }
+  .concept-tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  .concept-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+  .concept-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+  .concept-code {
+    margin-top: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* FIRST CONTRIBUTION */
+  .first-section { position: relative; overflow: hidden; }
+  .first-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 70% at 10% 50%, rgba(74,240,160,0.05) 0%, transparent 60%);
+  }
+  .first-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 5rem;
+    align-items: center;
+    margin-top: 3.5rem;
+  }
+  .checklist { display: flex; flex-direction: column; gap: 1rem; }
+  .check-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 1rem 1.25rem;
+    border-left: 2px solid var(--border);
+    transition: border-color 0.2s;
+  }
+  .check-item:hover { border-color: var(--accent2); }
+  .check-mark {
+    width: 1.5rem; height: 1.5rem; flex-shrink: 0;
+    border: 1.5px solid var(--accent2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: var(--accent2);
+  }
+  .check-text h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .check-text p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* Issue card */
+  .issue-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    overflow: hidden;
+  }
+  .issue-header {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.75rem;
+    background: var(--bg);
+  }
+  .issue-icon { color: var(--accent2); font-size: 1rem; }
+  .issue-number { color: var(--muted); }
+  .issue-title-text { color: var(--text); font-weight: 500; }
+  .issue-body { padding: 1.25rem; color: var(--muted); line-height: 1.9; }
+  .issue-labels {
+    padding: 0 1.25rem 1.25rem;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .label {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.68rem;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+  }
+  .label-good { background: rgba(74,240,160,0.15); color: var(--accent2); border: 1px solid rgba(74,240,160,0.3); }
+  .label-bug { background: rgba(240,64,96,0.15); color: var(--accent3); border: 1px solid rgba(240,64,96,0.3); }
+  .label-docs { background: rgba(240,192,64,0.15); color: var(--accent); border: 1px solid rgba(240,192,64,0.3); }
+
+  /* STATS TICKER */
+  .stats-bar {
+    background: var(--accent);
+    padding: 0.9rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .ticker-track {
+    display: flex; gap: 4rem;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+    width: max-content;
+  }
+  .ticker-item {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #000;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .ticker-sep { opacity: 0.4; }
+
+  /* RESOURCES */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .resource-card {
+    padding: 1.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    text-decoration: none;
+    color: var(--text);
+    display: flex; flex-direction: column; gap: 0.75rem;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .resource-card::after {
+    content: '→';
+    position: absolute; bottom: 1.5rem; right: 1.5rem;
+    font-size: 1.2rem; color: var(--accent);
+    transform: translate(4px, 0); opacity: 0;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .resource-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 3px 3px 0 var(--accent);
+    border-color: var(--accent);
+  }
+  .resource-card:hover::after { transform: translate(0,0); opacity: 1; }
+  .resource-icon { font-size: 1.75rem; }
+  .resource-card h3 { font-size: 1rem; font-weight: 700; }
+  .resource-card p { font-size: 0.83rem; color: var(--muted); line-height: 1.6; flex: 1; }
+  .resource-tag {
+    font-family: var(--mono); font-size: 0.68rem;
+    color: var(--accent); letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* CTA FINAL */
+  .cta-section {
+    text-align: center;
+    padding: 8rem 2.5rem;
+    position: relative; overflow: hidden;
+    border-top: 1px solid var(--border);
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 40% 50% at 30% 60%, rgba(240,192,64,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 70% 40%, rgba(74,240,160,0.05) 0%, transparent 60%);
+  }
+  .cta-section .section-title { margin-bottom: 1.25rem; position: relative; z-index: 1; }
+  .cta-sub {
+    color: var(--muted); font-size: 1rem; margin-bottom: 3rem;
+    max-width: 50ch; margin-left: auto; margin-right: auto;
+    position: relative; z-index: 1;
+  }
+  .cta-btns { display: flex; gap: 1rem; justify-content: center; position: relative; z-index: 1; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 0.72rem; color: var(--muted);
+  }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+
+  /* BG grid */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: -1;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual { display: none; }
+    .what-grid, .first-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+    .steps-row { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+    .steps-row::before { display: none; }
+    .concepts-grid, .resources-grid { grid-template-columns: 1fr 1fr; }
+    .issue-card { display: none; }
+  }
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.25rem; }
+    .hero { padding: 6rem 1.25rem 3rem; }
+    .concepts-grid, .resources-grid, .steps-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="bg-grid"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">// open_source</div>
+  <div class="nav-links">
+    <a href="#what">What Is It</a>
+    <a href="#how">How It Works</a>
+    <a href="#concepts">Key Concepts</a>
+    <a href="#first">First Contribution</a>
+    <a href="#resources">Resources</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-text">
+    <div class="hero-eyebrow">Welcome to open source</div>
+    <h1 class="hero-title">Build the web<br><em>together.</em></h1>
+    <p class="hero-sub">
+      Open source is how the world's most important software gets built — collaboratively, transparently, by people like you. No invitation required.
+    </p>
+    <div class="hero-ctas">
+      <a href="#how" class="btn-primary">How it works →</a>
+      <a href="#first" class="btn-ghost">Make your first PR</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="terminal">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span class="terminal-title">bash — contributions</span>
+      </div>
+      <div class="terminal-body">
+        <div><span class="t-prompt t-muted">git</span> <span class="t-white">clone https://github.com/project/repo</span></div>
+        <div class="t-green">✓ Cloning into 'repo'...</div>
+        <br>
+        <div><span class="t-prompt t-muted">git</span> <span class="t-white">checkout -b fix/improve-docs</span></div>
+        <div class="t-green">✓ Switched to a new branch</div>
+        <br>
+        <div class="t-muted"># Make your changes...</div>
+        <br>
+        <div><span class="t-prompt t-muted">git</span> <span class="t-white">commit -m "docs: clarify setup steps"</span></div>
+        <div><span class="t-prompt t-muted">git</span> <span class="t-white">push origin fix/improve-docs</span></div>
+        <br>
+        <div class="t-accent">★ Pull request opened — awaiting review</div>
+        <div><span class="t-green">✓ Merged</span> <span class="t-muted">by maintainer — 2m ago</span></div>
+        <br>
+        <div class="t-muted"># You are now a contributor. 🎉</div>
+        <div><span class="t-prompt"></span><span class="cursor-blink"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS TICKER -->
+<div class="stats-bar">
+  <div class="ticker-track" id="ticker">
+    <span class="ticker-item">420M+ repositories on GitHub <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">100M+ developers worldwide <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">Linux powers 96% of cloud servers <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">Open source since 1983 <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">Python, React, VS Code — all open source <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">First PR can take less than 10 minutes <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">420M+ repositories on GitHub <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">100M+ developers worldwide <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">Linux powers 96% of cloud servers <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">Open source since 1983 <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">Python, React, VS Code — all open source <span class="ticker-sep">///</span></span>
+    <span class="ticker-item">First PR can take less than 10 minutes <span class="ticker-sep">///</span></span>
+  </div>
+</div>
+
+<!-- WHAT IS IT -->
+<section id="what">
+  <div class="section-label">01 — What is open source</div>
+  <h2 class="section-title reveal">Software you can <em>read,<br>modify & share.</em></h2>
+
+  <div class="what-grid reveal">
+    <div>
+      <p class="what-desc">
+        <strong>Open source software</strong> is code that anyone can view, use, change, and distribute. When a project is open source, it means the source code — the actual instructions that make the software work — is freely available for inspection and collaboration.
+      </p>
+      <p class="what-desc">
+        This is the opposite of <strong>proprietary software</strong>, where the code is kept secret and users can only interact with a finished product. Open source flips that model: the community is invited in.
+      </p>
+      <p class="what-desc">
+        When you contribute to open source, you're joining a tradition that built the internet. <strong>Git, Linux, Firefox, Python, TensorFlow, React</strong> — all open source, all shaped by thousands of contributors who never needed anyone's permission to get started.
+      </p>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <div class="pillar-icon">👁</div>
+        <div class="pillar-text">
+          <h3>Transparency</h3>
+          <p>Anyone can read the code and understand exactly how it works — no black boxes.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">✏️</div>
+        <div class="pillar-text">
+          <h3>Modification</h3>
+          <p>You can fork a project, fix it, improve it, and adapt it to your own needs.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🔁</div>
+        <div class="pillar-text">
+          <h3>Distribution</h3>
+          <p>Share your changes, publish your fork, let others build on what you built.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <div class="pillar-icon">🤝</div>
+        <div class="pillar-text">
+          <h3>Community</h3>
+          <p>Collaborate with people across the world around shared code and shared goals.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-label">02 — How it works</div>
+  <h2 class="section-title reveal">The lifecycle of<br>a <em>contribution</em></h2>
+
+  <div class="steps-row reveal">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Find a Project</h3>
+      <p>Browse GitHub, GitLab, or find an issue in software you already use. Look for "good first issue" labels.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Fork the Repo</h3>
+      <p>Create your own copy of the repository under your account — your sandbox to experiment freely.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Make Changes</h3>
+      <p>Clone it locally, create a new branch, write your fix or feature. Commit early and often.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Open a PR</h3>
+      <p>A Pull Request proposes your changes to the original project. Explain what you did and why.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <h3>Get Reviewed</h3>
+      <p>Maintainers and community members review, discuss, and help improve your work before merging.</p>
+    </div>
+  </div>
+</section>
+
+<!-- KEY CONCEPTS -->
+<section id="concepts">
+  <div class="section-label">03 — Key concepts</div>
+  <h2 class="section-title reveal">The vocabulary you<br>need to <em>get started</em></h2>
+
+  <div class="concepts-grid reveal">
+    <div class="concept-card">
+      <div class="concept-tag">Version Control</div>
+      <h3>Repository (Repo)</h3>
+      <p>A folder that contains all the code, history, and metadata for a project. The source of truth for a codebase.</p>
+      <div class="concept-code">github.com/org/project-name</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-tag">Branching</div>
+      <h3>Branch</h3>
+      <p>A parallel version of the code where you can make changes safely, without affecting the main codebase until you're ready.</p>
+      <div class="concept-code">git checkout -b feature/my-change</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-tag">Collaboration</div>
+      <h3>Fork</h3>
+      <p>Your personal copy of someone else's repository. You can freely experiment and then propose merging back.</p>
+      <div class="concept-code">gh repo fork org/project</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-tag">Proposing Changes</div>
+      <h3>Pull Request (PR)</h3>
+      <p>A formal request to merge your changes into the main project. The centerpiece of open source collaboration.</p>
+      <div class="concept-code">gh pr create --title "fix: ..."</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-tag">Review Process</div>
+      <h3>Code Review</h3>
+      <p>Maintainers and contributors review changes, leave comments, and request adjustments before code is accepted.</p>
+      <div class="concept-code">gh pr review --comment</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-tag">Licensing</div>
+      <h3>Open Source License</h3>
+      <p>Legal terms defining how you can use, modify, and distribute the code. MIT, Apache, GPL are common examples.</p>
+      <div class="concept-code">cat LICENSE</div>
+    </div>
+  </div>
+</section>
+
+<!-- FIRST CONTRIBUTION -->
+<section class="first-section" id="first">
+  <div class="section-label">04 — First contribution</div>
+  <h2 class="section-title reveal">Your first PR,<br><em>step by step</em></h2>
+
+  <div class="first-layout reveal">
+    <div class="checklist">
+      <div class="check-item">
+        <div class="check-mark">✓</div>
+        <div class="check-text">
+          <h4>Set up Git & GitHub</h4>
+          <p>Install Git, create a GitHub account, and configure your name and email locally.</p>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-mark">✓</div>
+        <div class="check-text">
+          <h4>Find a "good first issue"</h4>
+          <p>Search GitHub for <code style="font-family:var(--mono);font-size:0.78rem;background:var(--surface);padding:0.1em 0.4em;">label:good-first-issue</code> in any language you know.</p>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-mark">✓</div>
+        <div class="check-text">
+          <h4>Fork, clone, and branch</h4>
+          <p>Fork the repo to your account, clone it locally, create a branch named after your change.</p>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-mark">✓</div>
+        <div class="check-text">
+          <h4>Read CONTRIBUTING.md</h4>
+          <p>Most projects have a guide explaining coding style, commit format, and how to run tests.</p>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-mark">✓</div>
+        <div class="check-text">
+          <h4>Make your change & commit</h4>
+          <p>Small focused changes are best. One fix per PR. Write a clear commit message.</p>
+        </div>
+      </div>
+      <div class="check-item">
+        <div class="check-mark">✓</div>
+        <div class="check-text">
+          <h4>Open a PR with context</h4>
+          <p>Describe what you changed, why, and reference the issue number. Be kind — you're a guest.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="issue-card">
+        <div class="issue-header">
+          <div class="issue-icon">◎</div>
+          <span class="issue-number">#482</span>
+          <span class="issue-title-text">Typo in README installation steps</span>
+        </div>
+        <div class="issue-body">
+          <div class="t-muted">opened 3 days ago by <span style="color:var(--text)">@devnewbie</span></div>
+          <br>
+          The command on line 42 of README.md shows `npm instal` (missing an 'l').
+          New contributors will get a confusing error and may not realize it's a typo.<br>
+          <br>
+          This would be a great first contribution for someone!
+        </div>
+        <div class="issue-labels">
+          <span class="label label-good">good first issue</span>
+          <span class="label label-docs">documentation</span>
+          <span class="label label-bug">bug</span>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;padding:1.25rem;border:1px solid var(--border);background:var(--surface);font-size:0.82rem;color:var(--muted);line-height:1.8;font-family:var(--mono);">
+        <span style="color:var(--accent2)">★ maintainer</span> commented 1 day ago<br><br>
+        <span style="color:var(--text)">Thanks for filing this! Assigning to <span style="color:var(--accent)">@you</span> if you'd like to take a crack at it. Just fix the typo and open a PR — no tests needed for this one.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section id="resources" style="background:var(--surface);border-top:1px solid var(--border);">
+  <div class="section-label">05 — Resources</div>
+  <h2 class="section-title reveal">Where to go from <em>here</em></h2>
+
+  <div class="resources-grid reveal">
+    <a href="https://github.com/explore" target="_blank" class="resource-card">
+      <div class="resource-icon">⬡</div>
+      <div class="resource-tag">Platform</div>
+      <h3>GitHub Explore</h3>
+      <p>Discover trending repositories, topics, and projects where beginners are explicitly welcome.</p>
+    </a>
+    <a href="https://firstcontributions.github.io/" target="_blank" class="resource-card">
+      <div class="resource-icon">🚀</div>
+      <div class="resource-tag">Tutorial</div>
+      <h3>First Contributions</h3>
+      <p>A guided hands-on tutorial that walks you through making your very first pull request in minutes.</p>
+    </a>
+    <a href="https://goodfirstissue.dev/" target="_blank" class="resource-card">
+      <div class="resource-icon">🔍</div>
+      <div class="resource-tag">Discovery</div>
+      <h3>Good First Issue</h3>
+      <p>Curated list of beginner-friendly issues across languages and projects waiting for contributors.</p>
+    </a>
+    <a href="https://opensource.guide/" target="_blank" class="resource-card">
+      <div class="resource-icon">📖</div>
+      <div class="resource-tag">Guide</div>
+      <h3>Open Source Guides</h3>
+      <p>GitHub's comprehensive guides on how to contribute, maintain, and build open source communities.</p>
+    </a>
+    <a href="https://up-for-grabs.net/" target="_blank" class="resource-card">
+      <div class="resource-icon">🎯</div>
+      <div class="resource-tag">Discovery</div>
+      <h3>Up For Grabs</h3>
+      <p>Aggregates issues specifically tagged for new contributors across hundreds of repositories.</p>
+    </a>
+    <a href="https://hacktoberfest.com/" target="_blank" class="resource-card">
+      <div class="resource-icon">🎃</div>
+      <div class="resource-tag">Event</div>
+      <h3>Hacktoberfest</h3>
+      <p>Annual October event that rewards contributors who make pull requests to open source projects.</p>
+    </a>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-label" style="justify-content:center; margin-bottom:2rem;">Ready to begin</div>
+  <h2 class="section-title">The only bad PR<br>is the one<br><em>never opened.</em></h2>
+  <p class="cta-sub">Every expert contributor was once a beginner with a typo fix and a nervous finger over the submit button.</p>
+  <div class="cta-btns">
+    <a href="https://github.com/explore" target="_blank" class="btn-primary">Browse projects →</a>
+    <a href="https://firstcontributions.github.io/" target="_blank" class="btn-ghost">Make my first PR</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>// built for curious beginners</span>
+  <span>open_source — <em style="font-style:normal;color:var(--accent)">for everyone</em></span>
+  <span>CC0 — no rights reserved</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    ring.style.left = mx + 'px';
+    ring.style.top = my + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.style.transform = 'translate(-50%,-50%) scale(2)');
+    el.addEventListener('mouseleave', () => cursor.style.transform = 'translate(-50%,-50%) scale(1)');
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
