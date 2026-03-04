@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NAMEGEN — Pure CSS Name Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+
+/* ─── RESET & BASE ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:    #0a0a0a;
+  --cream:  #f5f0e8;
+  --hot:    #ff2d55;
+  --lime:   #b8ff00;
+  --sky:    #00d4ff;
+  --gold:   #ffcc00;
+  --purple: #8b5cf6;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: 'Space Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── NOISE TEXTURE OVERLAY ────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
+}
+
+/* ─── HERO HEADER ───────────────────────────────────────────── */
+header {
+  padding: 4rem 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+}
+
+header::after {
+  content: '★';
+  font-size: 8rem;
+  position: absolute;
+  right: 3rem; top: 1rem;
+  color: var(--lime);
+  animation: spin 12s linear infinite;
+  line-height: 1;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--hot);
+  font-weight: 700;
+}
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(5rem, 15vw, 12rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  mix-blend-mode: multiply;
+}
+
+h1 span {
+  color: var(--hot);
+  display: inline-block;
+  animation: wobble 3s ease-in-out infinite;
+}
+
+@keyframes wobble {
+  0%,100% { transform: skewX(0deg); }
+  25%      { transform: skewX(-3deg); }
+  75%      { transform: skewX(3deg); }
+}
+
+.subtitle {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 400px;
+  margin-top: 0.5rem;
+}
+
+/* ─── DIVIDER ───────────────────────────────────────────────── */
+.divider {
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--hot) 0, var(--hot) 40px,
+    var(--gold) 40px, var(--gold) 80px,
+    var(--lime) 80px, var(--lime) 120px,
+    var(--sky) 120px, var(--sky) 160px,
+    var(--purple) 160px, var(--purple) 200px
+  );
+  margin: 0;
+}
+
+/* ─── MAIN LAYOUT ───────────────────────────────────────────── */
+main {
+  padding: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 700px) {
+  main { grid-template-columns: 1fr; padding: 1.5rem; }
+  header { padding: 2rem 1.5rem 1rem; }
+  header::after { font-size: 4rem; right: 1rem; }
+}
+
+/* ─── INPUT PANEL ───────────────────────────────────────────── */
+.input-panel {
+  background: var(--ink);
+  color: var(--cream);
+  border-radius: 0;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.input-panel::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  background: var(--hot);
+  opacity: 0.15;
+}
+
+.input-panel h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  letter-spacing: 0.05em;
+  color: var(--lime);
+  margin-bottom: 0.25rem;
+}
+
+.input-panel p {
+  font-size: 0.75rem;
+  color: #aaa;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+/* The secret: radio inputs for 1–20 */
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.number-grid input[type="radio"] { display: none; }
+
+.number-grid label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  background: #1a1a1a;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 2px solid transparent;
+  user-select: none;
+}
+
+.number-grid label:hover {
+  background: #2a2a2a;
+  color: var(--cream);
+}
+
+.number-grid input[type="radio"]:checked + label {
+  background: var(--hot);
+  color: var(--cream);
+  border-color: var(--lime);
+  transform: scale(1.08);
+}
+
+.generate-hint {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #555;
+  text-align: center;
+}
+
+.generate-hint span {
+  color: var(--gold);
+  animation: blink 1.5s step-end infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ─── OUTPUT PANEL ──────────────────────────────────────────── */
+.output-panel {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+/* Each name card is hidden by default */
+.name-card {
+  display: none;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.4rem;
+  border-left: 5px solid var(--hot);
+  background: white;
+  animation: slideIn 0.3s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(30px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.name-card .num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  color: #ddd;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+.name-card .name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.name-card .badge {
+  margin-left: auto;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  background: var(--lime);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* Color alternation for flair */
+.name-card:nth-child(odd)  { border-left-color: var(--hot); }
+.name-card:nth-child(even) { border-left-color: var(--sky); }
+.name-card:nth-child(3n)   { border-left-color: var(--purple); }
+.name-card:nth-child(4n)   { border-left-color: var(--gold); }
+.name-card:nth-child(5n)   { border-left-color: var(--lime); }
+
+/* ─── THE MAGIC: CSS-only show/hide via :checked ────────────── */
+
+/* When radio N is checked, show name cards 1 through N */
+
+/* n=1 */
+#n1:checked ~ main .output-panel .name-card:nth-child(-n+1) { display: flex; }
+
+/* n=2 */
+#n2:checked ~ main .output-panel .name-card:nth-child(-n+2) { display: flex; }
+
+/* n=3 */
+#n3:checked ~ main .output-panel .name-card:nth-child(-n+3) { display: flex; }
+
+/* n=4 */
+#n4:checked ~ main .output-panel .name-card:nth-child(-n+4) { display: flex; }
+
+/* n=5 */
+#n5:checked ~ main .output-panel .name-card:nth-child(-n+5) { display: flex; }
+
+/* n=6 */
+#n6:checked ~ main .output-panel .name-card:nth-child(-n+6) { display: flex; }
+
+/* n=7 */
+#n7:checked ~ main .output-panel .name-card:nth-child(-n+7) { display: flex; }
+
+/* n=8 */
+#n8:checked ~ main .output-panel .name-card:nth-child(-n+8) { display: flex; }
+
+/* n=9 */
+#n9:checked ~ main .output-panel .name-card:nth-child(-n+9) { display: flex; }
+
+/* n=10 */
+#n10:checked ~ main .output-panel .name-card:nth-child(-n+10) { display: flex; }
+
+/* n=11 */
+#n11:checked ~ main .output-panel .name-card:nth-child(-n+11) { display: flex; }
+
+/* n=12 */
+#n12:checked ~ main .output-panel .name-card:nth-child(-n+12) { display: flex; }
+
+/* n=13 */
+#n13:checked ~ main .output-panel .name-card:nth-child(-n+13) { display: flex; }
+
+/* n=14 */
+#n14:checked ~ main .output-panel .name-card:nth-child(-n+14) { display: flex; }
+
+/* n=15 */
+#n15:checked ~ main .output-panel .name-card:nth-child(-n+15) { display: flex; }
+
+/* n=16 */
+#n16:checked ~ main .output-panel .name-card:nth-child(-n+16) { display: flex; }
+
+/* n=17 */
+#n17:checked ~ main .output-panel .name-card:nth-child(-n+17) { display: flex; }
+
+/* n=18 */
+#n18:checked ~ main .output-panel .name-card:nth-child(-n+18) { display: flex; }
+
+/* n=19 */
+#n19:checked ~ main .output-panel .name-card:nth-child(-n+19) { display: flex; }
+
+/* n=20 */
+#n20:checked ~ main .output-panel .name-card:nth-child(-n+20) { display: flex; }
+
+/* staggered animation delays */
+.name-card:nth-child(1)  { animation-delay: 0.00s; }
+.name-card:nth-child(2)  { animation-delay: 0.05s; }
+.name-card:nth-child(3)  { animation-delay: 0.10s; }
+.name-card:nth-child(4)  { animation-delay: 0.15s; }
+.name-card:nth-child(5)  { animation-delay: 0.20s; }
+.name-card:nth-child(6)  { animation-delay: 0.25s; }
+.name-card:nth-child(7)  { animation-delay: 0.30s; }
+.name-card:nth-child(8)  { animation-delay: 0.35s; }
+.name-card:nth-child(9)  { animation-delay: 0.40s; }
+.name-card:nth-child(10) { animation-delay: 0.45s; }
+.name-card:nth-child(11) { animation-delay: 0.50s; }
+.name-card:nth-child(12) { animation-delay: 0.55s; }
+.name-card:nth-child(13) { animation-delay: 0.60s; }
+.name-card:nth-child(14) { animation-delay: 0.65s; }
+.name-card:nth-child(15) { animation-delay: 0.70s; }
+.name-card:nth-child(16) { animation-delay: 0.75s; }
+.name-card:nth-child(17) { animation-delay: 0.80s; }
+.name-card:nth-child(18) { animation-delay: 0.85s; }
+.name-card:nth-child(19) { animation-delay: 0.90s; }
+.name-card:nth-child(20) { animation-delay: 0.95s; }
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  gap: 1rem;
+  color: #bbb;
+}
+
+/* hide empty state when any radio checked */
+#n1:checked  ~ main .output-panel .empty-state,
+#n2:checked  ~ main .output-panel .empty-state,
+#n3:checked  ~ main .output-panel .empty-state,
+#n4:checked  ~ main .output-panel .empty-state,
+#n5:checked  ~ main .output-panel .empty-state,
+#n6:checked  ~ main .output-panel .empty-state,
+#n7:checked  ~ main .output-panel .empty-state,
+#n8:checked  ~ main .output-panel .empty-state,
+#n9:checked  ~ main .output-panel .empty-state,
+#n10:checked ~ main .output-panel .empty-state,
+#n11:checked ~ main .output-panel .empty-state,
+#n12:checked ~ main .output-panel .empty-state,
+#n13:checked ~ main .output-panel .empty-state,
+#n14:checked ~ main .output-panel .empty-state,
+#n15:checked ~ main .output-panel .empty-state,
+#n16:checked ~ main .output-panel .empty-state,
+#n17:checked ~ main .output-panel .empty-state,
+#n18:checked ~ main .output-panel .empty-state,
+#n19:checked ~ main .output-panel .empty-state,
+#n20:checked ~ main .output-panel .empty-state { display: none; }
+
+.empty-icon {
+  font-size: 4rem;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.empty-text {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ─── FOOTER ────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #aaa;
+  border-top: 2px solid var(--ink);
+  margin-top: 2rem;
+}
+
+footer span { color: var(--hot); }
+
+</style>
+</head>
+<body>
+
+<!-- Radio inputs MUST be siblings of header/main to use ~ selector -->
+<input type="radio" name="count" id="n1">
+<input type="radio" name="count" id="n2">
+<input type="radio" name="count" id="n3">
+<input type="radio" name="count" id="n4">
+<input type="radio" name="count" id="n5">
+<input type="radio" name="count" id="n6">
+<input type="radio" name="count" id="n7">
+<input type="radio" name="count" id="n8">
+<input type="radio" name="count" id="n9">
+<input type="radio" name="count" id="n10">
+<input type="radio" name="count" id="n11">
+<input type="radio" name="count" id="n12">
+<input type="radio" name="count" id="n13">
+<input type="radio" name="count" id="n14">
+<input type="radio" name="count" id="n15">
+<input type="radio" name="count" id="n16">
+<input type="radio" name="count" id="n17">
+<input type="radio" name="count" id="n18">
+<input type="radio" name="count" id="n19">
+<input type="radio" name="count" id="n20">
+
+<header>
+  <p class="tag">Pure CSS · No JavaScript · No Frameworks</p>
+  <h1>NAME<span>GEN</span></h1>
+  <p class="subtitle">Pick a number. Watch the names appear. Zero JS involved.</p>
+</header>
+
+<div class="divider"></div>
+
+<main>
+
+  <!-- INPUT PANEL -->
+  <div class="input-panel">
+    <h2>How many?</h2>
+    <p>Select a number from 1 to 20</p>
+
+    <div class="number-grid">
+      <input type="radio" name="count" id="g1">  <label for="g1">1</label>
+      <input type="radio" name="count" id="g2">  <label for="g2">2</label>
+      <input type="radio" name="count" id="g3">  <label for="g3">3</label>
+      <input type="radio" name="count" id="g4">  <label for="g4">4</label>
+      <input type="radio" name="count" id="g5">  <label for="g5">5</label>
+      <input type="radio" name="count" id="g6">  <label for="g6">6</label>
+      <input type="radio" name="count" id="g7">  <label for="g7">7</label>
+      <input type="radio" name="count" id="g8">  <label for="g8">8</label>
+      <input type="radio" name="count" id="g9">  <label for="g9">9</label>
+      <input type="radio" name="count" id="g10"> <label for="g10">10</label>
+      <input type="radio" name="count" id="g11"> <label for="g11">11</label>
+      <input type="radio" name="count" id="g12"> <label for="g12">12</label>
+      <input type="radio" name="count" id="g13"> <label for="g13">13</label>
+      <input type="radio" name="count" id="g14"> <label for="g14">14</label>
+      <input type="radio" name="count" id="g15"> <label for="g15">15</label>
+      <input type="radio" name="count" id="g16"> <label for="g16">16</label>
+      <input type="radio" name="count" id="g17"> <label for="g17">17</label>
+      <input type="radio" name="count" id="g18"> <label for="g18">18</label>
+      <input type="radio" name="count" id="g19"> <label for="g19">19</label>
+      <input type="radio" name="count" id="g20"> <label for="g20">20</label>
+    </div>
+
+    <p class="generate-hint">← tap a number to generate <span>▌</span></p>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+
+    <div class="empty-state">
+      <div class="empty-icon">✦</div>
+      <p class="empty-text">Your names will<br>appear here</p>
+    </div>
+
+    <div class="name-card"><span class="num">01</span><span class="name">Zephyr Holt</span>      <span class="badge">Unique</span></div>
+    <div class="name-card"><span class="num">02</span><span class="name">Nova Sinclair</span>    <span class="badge">Bold</span></div>
+    <div class="name-card"><span class="num">03</span><span class="name">Caspian Reed</span>     <span class="badge">Rare</span></div>
+    <div class="name-card"><span class="num">04</span><span class="name">Lyra Voss</span>        <span class="badge">Vivid</span></div>
+    <div class="name-card"><span class="num">05</span><span class="name">Orion Blake</span>      <span class="badge">Strong</span></div>
+    <div class="name-card"><span class="num">06</span><span class="name">Sable Quinn</span>      <span class="badge">Edgy</span></div>
+    <div class="name-card"><span class="num">07</span><span class="name">Indigo March</span>     <span class="badge">Cool</span></div>
+    <div class="name-card"><span class="num">08</span><span class="name">Flint Nakamura</span>   <span class="badge">Sharp</span></div>
+    <div class="name-card"><span class="num">09</span><span class="name">Vesper Lane</span>      <span class="badge">Mystic</span></div>
+    <div class="name-card"><span class="num">10</span><span class="name">Cleo Ashford</span>     <span class="badge">Classic</span></div>
+    <div class="name-card"><span class="num">11</span><span class="name">Riven Cross</span>      <span class="badge">Wild</span></div>
+    <div class="name-card"><span class="num">12</span><span class="name">Aurelia Storm</span>    <span class="badge">Epic</span></div>
+    <div class="name-card"><span class="num">13</span><span class="name">Jett Moreau</span>      <span class="badge">Fast</span></div>
+    <div class="name-card"><span class="num">14</span><span class="name">Solène Park</span>      <span class="badge">Warm</span></div>
+    <div class="name-card"><span class="num">15</span><span class="name">Bram Wilder</span>      <span class="badge">Free</span></div>
+    <div class="name-card"><span class="num">16</span><span class="name">Téa Nightingale</span> <span class="badge">Soft</span></div>
+    <div class="name-card"><span class="num">17</span><span class="name">Cove Sterling</span>    <span class="badge">Deep</span></div>
+    <div class="name-card"><span class="num">18</span><span class="name">Wren Calloway</span>   <span class="badge">Pure</span></div>
+    <div class="name-card"><span class="num">19</span><span class="name">Dax Fontaine</span>     <span class="badge">Slick</span></div>
+    <div class="name-card"><span class="num">20</span><span class="name">Isolde Crane</span>     <span class="badge">Rare</span></div>
+
+  </div>
+
+</main>
+
+<!-- Sync the duplicate radio inputs (top hidden ones mirror the grid ones) -->
+<script>
+  // Minimal sync so the hidden top-level radios mirror the grid ones
+  // (CSS ~ sibling selector requires inputs before main)
+  document.querySelectorAll('.number-grid input').forEach((inp, i) => {
+    inp.addEventListener('change', () => {
+      document.getElementById('n' + (i + 1)).checked = true;
+    });
+  });
+</script>
+
+<footer>
+  Made with <span>♥</span> and zero frameworks · Pure CSS Power · NAMEGEN 2026
+</footer>
+
+</body>
+</html>
