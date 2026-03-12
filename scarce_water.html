@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India's Water Crisis</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:ital,wght@0,300;0,600;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --blood: #c0392b;
+    --amber: #e67e22;
+    --sand: #d4a76a;
+    --dust: #8b6914;
+    --dark: #0a0705;
+    --char: #1a1208;
+    --ash: #2d2416;
+    --bone: #f0e6c8;
+    --crack: #c9a96e;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--bone);
+    font-family: 'Crimson Pro', serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--blood);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, background 0.3s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--amber);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ===== HERO ===== */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 30% 60%, #1a0e00 0%, var(--dark) 70%);
+  }
+
+  .cracked-earth {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 80px,
+        rgba(139, 105, 20, 0.03) 80px,
+        rgba(139, 105, 20, 0.03) 81px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 80px,
+        rgba(139, 105, 20, 0.03) 80px,
+        rgba(139, 105, 20, 0.03) 81px
+      );
+    animation: crackShift 20s linear infinite;
+  }
+
+  @keyframes crackShift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(80px, 80px); }
+  }
+
+  .drop-container {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .drop {
+    position: absolute;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(192, 57, 43, 0.6), transparent);
+    animation: fall linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(-100px); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(110vh); opacity: 0; }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--blood);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 1s ease 0.3s both;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 18vw, 16rem);
+    line-height: 0.85;
+    text-align: center;
+    position: relative;
+    animation: fadeUp 1s ease 0.5s both;
+  }
+
+  .hero-title .line1 { color: var(--bone); display: block; }
+  .hero-title .line2 {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--blood);
+    display: block;
+    position: relative;
+  }
+  .hero-title .line2::after {
+    content: 'DYING';
+    position: absolute;
+    left: 0; top: 0;
+    color: var(--blood);
+    clip-path: inset(0 100% 0 0);
+    animation: reveal 3s ease 1.5s forwards;
+  }
+
+  @keyframes reveal {
+    to { clip-path: inset(0 0% 0 0); }
+  }
+
+  .hero-sub {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--sand);
+    margin-top: 2.5rem;
+    max-width: 600px;
+    text-align: center;
+    line-height: 1.7;
+    animation: fadeUp 1s ease 0.9s both;
+    font-weight: 300;
+  }
+
+  .scroll-cta {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeUp 1s ease 1.5s both;
+  }
+
+  .scroll-cta span {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--dust);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--blood), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== COUNTER SECTION ===== */
+  #counter-section {
+    background: var(--blood);
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #counter-section::before {
+    content: 'CRISIS';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 25vw;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .counter-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat-card {
+    text-align: center;
+    border-left: 1px solid rgba(255,255,255,0.2);
+    padding-left: 2rem;
+  }
+
+  .stat-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+    color: #fff;
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    margin-top: 0.5rem;
+    display: block;
+    line-height: 1.5;
+  }
+
+  /* ===== WATER LEVEL ===== */
+  #water-section {
+    padding: 8rem 2rem;
+    background: var(--char);
+    position: relative;
+  }
+
+  .section-header {
+    max-width: 1100px;
+    margin: 0 auto 5rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 3rem;
+  }
+
+  .section-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 8rem;
+    color: var(--ash);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .section-title-block h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    color: var(--bone);
+    line-height: 1;
+  }
+
+  .section-title-block p {
+    font-size: 1.1rem;
+    color: var(--sand);
+    margin-top: 0.8rem;
+    max-width: 500px;
+    line-height: 1.7;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  .water-bars {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .water-bar-item {
+    display: grid;
+    grid-template-columns: 200px 1fr 80px;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .bar-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--sand);
+    text-align: right;
+    letter-spacing: 0.05em;
+  }
+
+  .bar-track {
+    height: 8px;
+    background: var(--ash);
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--blood), var(--amber));
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+
+  .bar-fill.animated { transform: scaleX(1); }
+
+  .bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 3px; height: 100%;
+    background: #fff;
+    box-shadow: 0 0 8px #fff;
+  }
+
+  .bar-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--amber);
+    text-align: right;
+  }
+
+  /* ===== TIMELINE ===== */
+  #timeline-section {
+    padding: 8rem 2rem;
+    background: linear-gradient(to bottom, var(--char), var(--dark));
+    position: relative;
+    overflow: hidden;
+  }
+
+  #timeline-section::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--dust), transparent);
+  }
+
+  .timeline {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 1fr 60px 1fr;
+    gap: 0;
+    margin-bottom: 4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.7s ease;
+  }
+
+  .timeline-item.visible { opacity: 1; transform: translateY(0); }
+
+  .timeline-item:nth-child(even) .timeline-content { grid-column: 3; }
+  .timeline-item:nth-child(even) .timeline-empty { grid-column: 1; }
+
+  .timeline-content {
+    padding: 2rem;
+    border: 1px solid var(--ash);
+    background: rgba(26, 18, 8, 0.6);
+    backdrop-filter: blur(4px);
+    position: relative;
+  }
+
+  .timeline-content::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--blood);
+  }
+
+  .timeline-year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    color: var(--blood);
+    line-height: 1;
+  }
+
+  .timeline-event {
+    font-size: 1.05rem;
+    color: var(--bone);
+    margin-top: 0.5rem;
+    line-height: 1.6;
+    font-weight: 600;
+  }
+
+  .timeline-detail {
+    font-size: 0.9rem;
+    color: var(--sand);
+    margin-top: 0.5rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .timeline-dot {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 2.3rem;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .dot {
+    width: 12px; height: 12px;
+    background: var(--blood);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--dark), 0 0 0 5px var(--dust);
+    flex-shrink: 0;
+  }
+
+  /* ===== MAP SECTION ===== */
+  #map-section {
+    padding: 8rem 2rem;
+    background: var(--dark);
+  }
+
+  .india-visual {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .crisis-zones {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .zone-item {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--ash);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: border-color 0.3s;
+  }
+
+  .zone-item:hover { border-color: var(--blood); }
+
+  .zone-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(192,57,43,0.05), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+
+  .zone-item:hover::before { transform: translateX(0); }
+
+  .zone-indicator {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+  }
+
+  .zone-critical { background: var(--blood); }
+  .zone-severe { background: var(--amber); color: var(--dark); }
+  .zone-moderate { background: var(--dust); }
+
+  .zone-info h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--bone);
+    text-transform: uppercase;
+  }
+
+  .zone-info p {
+    font-size: 0.9rem;
+    color: var(--sand);
+    margin-top: 0.3rem;
+    font-style: italic;
+  }
+
+  /* SVG India map */
+  .map-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map-container svg {
+    filter: drop-shadow(0 0 30px rgba(192,57,43,0.2));
+  }
+
+  /* ===== QUOTE SECTION ===== */
+  #quote-section {
+    padding: 10rem 2rem;
+    background: var(--blood);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  #quote-section::before {
+    content: '"';
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40vw;
+    color: rgba(0,0,0,0.1);
+    position: absolute;
+    top: -10%;
+    left: -5%;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .quote-text {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: #fff;
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.4;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+
+  .quote-attr {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2rem;
+    text-transform: uppercase;
+  }
+
+  /* ===== SOLUTIONS ===== */
+  #solutions-section {
+    padding: 8rem 2rem;
+    background: var(--char);
+  }
+
+  .solutions-grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2px;
+    background: var(--ash);
+  }
+
+  .solution-card {
+    background: var(--char);
+    padding: 3rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .solution-card:hover { background: var(--ash); }
+
+  .solution-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+    filter: grayscale(0.3);
+  }
+
+  .solution-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--bone);
+    letter-spacing: 0.05em;
+  }
+
+  .solution-desc {
+    font-size: 0.95rem;
+    color: var(--sand);
+    margin-top: 0.8rem;
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .solution-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 2px;
+    background: var(--blood);
+    transition: width 0.4s ease;
+  }
+
+  .solution-card:hover::after { width: 100%; }
+
+  /* ===== TICKER ===== */
+  .ticker-wrap {
+    background: var(--blood);
+    padding: 1rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ticker {
+    display: inline-block;
+    animation: ticker 25s linear infinite;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: #fff;
+  }
+
+  .ticker span { margin: 0 3rem; }
+  .ticker .sep { color: rgba(255,255,255,0.4); }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    padding: 4rem 2rem;
+    background: var(--dark);
+    text-align: center;
+    border-top: 1px solid var(--ash);
+  }
+
+  footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--dust);
+    letter-spacing: 0.2em;
+    line-height: 2;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .water-bar-item { grid-template-columns: 120px 1fr 60px; }
+    .india-visual { grid-template-columns: 1fr; }
+    .timeline-item { grid-template-columns: 1fr; }
+    .timeline-item:nth-child(even) .timeline-content { grid-column: 1; }
+    #timeline-section::after { display: none; }
+    .timeline-dot { display: none; }
+    .section-header { flex-direction: column; gap: 1rem; }
+    .section-number { font-size: 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>INDIA FACES WORST WATER CRISIS IN HISTORY</span><span class="sep">///</span>
+    <span>600 MILLION PEOPLE UNDER HIGH WATER STRESS</span><span class="sep">///</span>
+    <span>21 MAJOR CITIES TO RUN OUT OF GROUNDWATER BY 2030</span><span class="sep">///</span>
+    <span>200,000 DEATHS PER YEAR DUE TO CONTAMINATED WATER</span><span class="sep">///</span>
+    <span>INDIA FACES WORST WATER CRISIS IN HISTORY</span><span class="sep">///</span>
+    <span>600 MILLION PEOPLE UNDER HIGH WATER STRESS</span><span class="sep">///</span>
+    <span>21 MAJOR CITIES TO RUN OUT OF GROUNDWATER BY 2030</span><span class="sep">///</span>
+    <span>200,000 DEATHS PER YEAR DUE TO CONTAMINATED WATER</span><span class="sep">///</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="cracked-earth"></div>
+  <div class="drop-container" id="drops"></div>
+  <div class="hero-eyebrow">Emergency Dispatch — India Water Crisis Report</div>
+  <h1 class="hero-title">
+    <span class="line1">INDIA IS</span>
+    <span class="line2">DYING</span>
+  </h1>
+  <p class="hero-sub">of thirst. By 2030, the demand for water will be twice the available supply. The clock is not ticking — it has already stopped.</p>
+  <div class="scroll-cta">
+    <span>Scroll to understand</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- COUNTER -->
+<section id="counter-section">
+  <div class="counter-grid">
+    <div class="stat-card">
+      <span class="stat-number" data-target="600">0</span>
+      <span class="stat-label">Million people facing high water stress</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" data-target="21">0</span>
+      <span class="stat-label">Major cities projected to exhaust groundwater by 2030</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" data-target="70">0</span>
+      <span class="stat-label">% of surface water is contaminated & unsafe</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number" data-target="200">0</span>
+      <span class="stat-label">Thousand deaths annually from unsafe water</span>
+    </div>
+  </div>
+</section>
+
+<!-- WATER LEVELS -->
+<section id="water-section">
+  <div class="section-header">
+    <div class="section-number">01</div>
+    <div class="section-title-block">
+      <h2>Aquifers Running Dry</h2>
+      <p>India extracts more groundwater than any nation on Earth. These are what remains.</p>
+    </div>
+  </div>
+  <div class="water-bars">
+    <div class="water-bar-item">
+      <div class="bar-label">Punjab Aquifer</div>
+      <div class="bar-track"><div class="bar-fill" style="--w:0.12" data-width="0.12"></div></div>
+      <div class="bar-pct">12%</div>
+    </div>
+    <div class="water-bar-item">
+      <div class="bar-label">Rajasthan (Thar)</div>
+      <div class="bar-track"><div class="bar-fill" style="--w:0.08" data-width="0.08"></div></div>
+      <div class="bar-pct">8%</div>
+    </div>
+    <div class="water-bar-item">
+      <div class="bar-label">Haryana Groundwater</div>
+      <div class="bar-track"><div class="bar-fill" style="--w:0.19" data-width="0.19"></div></div>
+      <div class="bar-pct">19%</div>
+    </div>
+    <div class="water-bar-item">
+      <div class="bar-label">Deccan Plateau</div>
+      <div class="bar-track"><div class="bar-fill" style="--w:0.31" data-width="0.31"></div></div>
+      <div class="bar-pct">31%</div>
+    </div>
+    <div class="water-bar-item">
+      <div class="bar-label">Gangetic Plain</div>
+      <div class="bar-track"><div class="bar-fill" style="--w:0.44" data-width="0.44"></div></div>
+      <div class="bar-pct">44%</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline-section">
+  <div style="max-width:900px;margin:0 auto 5rem;text-align:center;">
+    <div style="font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.4em;color:var(--blood);margin-bottom:1rem;">CHRONOLOGY OF COLLAPSE</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--bone);">A Crisis Decades in the Making</h2>
+  </div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">1970s</div>
+        <div class="timeline-event">Green Revolution Begins Over-Extraction</div>
+        <div class="timeline-detail">Irrigation-intensive farming triples food output but depletes aquifers at unsustainable rates across Punjab & Haryana.</div>
+      </div>
+      <div class="timeline-dot"><div class="dot"></div></div>
+      <div class="timeline-empty"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-empty"></div>
+      <div class="timeline-dot"><div class="dot"></div></div>
+      <div class="timeline-content">
+        <div class="timeline-year">2001</div>
+        <div class="timeline-event">Gujarat Drought — 10,000 Villages Without Water</div>
+        <div class="timeline-detail">Catastrophic drought leaves millions without access. Early warning signs of a systemic national failure ignored.</div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2018</div>
+        <div class="timeline-event">Cape Town "Day Zero" Echoes in Chennai</div>
+        <div class="timeline-detail">Chennai's four main reservoirs hit near-zero. Tanker trucks become the lifeline for 9 million residents.</div>
+      </div>
+      <div class="timeline-dot"><div class="dot"></div></div>
+      <div class="timeline-empty"></div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-empty"></div>
+      <div class="timeline-dot"><div class="dot"></div></div>
+      <div class="timeline-content">
+        <div class="timeline-year">2023</div>
+        <div class="timeline-event">NITI Aayog: Crisis Declared Nationwide</div>
+        <div class="timeline-detail">Official government body confirms 40% of India's population will have no access to drinking water by 2030.</div>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-content">
+        <div class="timeline-year">2030</div>
+        <div class="timeline-event">Projected: Demand Doubles Supply</div>
+        <div class="timeline-detail">Unless immediate action is taken, India's water demand will exceed 1,500 billion cubic meters — twice what exists.</div>
+      </div>
+      <div class="timeline-dot"><div class="dot"></div></div>
+      <div class="timeline-empty"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- MAP / CRISIS ZONES -->
+<section id="map-section">
+  <div style="max-width:1100px;margin:0 auto 5rem;">
+    <div style="font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.4em;color:var(--blood);margin-bottom:1rem;">02 — GROUND ZERO</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--bone);">Where India Bleeds First</h2>
+  </div>
+  <div class="india-visual">
+    <div class="crisis-zones">
+      <div class="zone-item">
+        <div class="zone-indicator zone-critical">⚠</div>
+        <div class="zone-info">
+          <h3>Rajasthan — Critical</h3>
+          <p>Receives less than 300mm annual rainfall. Groundwater table has fallen 30+ meters since 1980.</p>
+        </div>
+      </div>
+      <div class="zone-item">
+        <div class="zone-indicator zone-critical">⚠</div>
+        <div class="zone-info">
+          <h3>Punjab — Critical</h3>
+          <p>Over-irrigation for wheat/rice has drained aquifers. Predicted to be desert by 2039.</p>
+        </div>
+      </div>
+      <div class="zone-item">
+        <div class="zone-indicator zone-severe">!</div>
+        <div class="zone-info">
+          <h3>Maharashtra — Severe</h3>
+          <p>Marathwada drought belt sees annual suicides among farmers. Latur ran dry in 2016.</p>
+        </div>
+      </div>
+      <div class="zone-item">
+        <div class="zone-indicator zone-severe">!</div>
+        <div class="zone-info">
+          <h3>Tamil Nadu — Severe</h3>
+          <p>Chennai is the first Indian metro to face "Day Zero". Reservoirs at 0.1% capacity in 2019.</p>
+        </div>
+      </div>
+      <div class="zone-item">
+        <div class="zone-indicator zone-moderate">~</div>
+        <div class="zone-info">
+          <h3>Gujarat — Moderate-High</h3>
+          <p>Irregular monsoons and Kutch desertification threaten 60 million people's water security.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SVG India Silhouette -->
+    <div class="map-container">
+      <svg viewBox="0 0 400 500" width="380" height="480" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="mapGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#c0392b" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#c0392b" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- India map path approximation -->
+        <path d="M160,20 L200,15 L240,25 L270,40 L290,60 L300,85 L310,110 L305,135 L315,155 L320,175 L310,200 L325,220 L330,245 L320,270 L305,290 L285,310 L265,335 L245,360 L230,385 L215,405 L200,430 L190,450 L180,435 L165,415 L150,390 L135,365 L120,340 L105,315 L90,290 L80,265 L75,240 L80,215 L90,195 L85,170 L75,148 L80,125 L90,105 L100,85 L110,65 L125,48 L140,32 Z"
+          fill="none" stroke="#8b6914" stroke-width="1.5" opacity="0.6"/>
+        <path d="M160,20 L200,15 L240,25 L270,40 L290,60 L300,85 L310,110 L305,135 L315,155 L320,175 L310,200 L325,220 L330,245 L320,270 L305,290 L285,310 L265,335 L245,360 L230,385 L215,405 L200,430 L190,450 L180,435 L165,415 L150,390 L135,365 L120,340 L105,315 L90,290 L80,265 L75,240 L80,215 L90,195 L85,170 L75,148 L80,125 L90,105 L100,85 L110,65 L125,48 L140,32 Z"
+          fill="rgba(192,57,43,0.08)"/>
+
+        <!-- Crisis hotspots -->
+        <circle cx="120" cy="200" r="18" fill="rgba(192,57,43,0.25)" filter="url(#glow)">
+          <animate attributeName="r" values="18;25;18" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="120" cy="200" r="6" fill="#c0392b"/>
+        <text x="145" y="205" font-family="Space Mono" font-size="8" fill="#e67e22" opacity="0.9">RAJASTHAN</text>
+
+        <circle cx="175" cy="100" r="14" fill="rgba(192,57,43,0.25)" filter="url(#glow)">
+          <animate attributeName="r" values="14;20;14" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="175" cy="100" r="5" fill="#c0392b"/>
+        <text x="192" y="104" font-family="Space Mono" font-size="8" fill="#e67e22" opacity="0.9">PUNJAB</text>
+
+        <circle cx="185" cy="295" r="14" fill="rgba(230,126,34,0.25)" filter="url(#glow)">
+          <animate attributeName="r" values="14;19;14" dur="3s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="185" cy="295" r="5" fill="#e67e22"/>
+        <text x="200" y="299" font-family="Space Mono" font-size="8" fill="#e67e22" opacity="0.9">MAHARASHTRA</text>
+
+        <circle cx="220" cy="390" r="12" fill="rgba(230,126,34,0.25)" filter="url(#glow)">
+          <animate attributeName="r" values="12;18;12" dur="2.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="220" cy="390" r="5" fill="#e67e22"/>
+        <text x="170" y="394" font-family="Space Mono" font-size="8" fill="#e67e22" opacity="0.9">TAMIL NADU</text>
+
+        <!-- Cracks decoration -->
+        <path d="M150,250 L160,270 L148,285" stroke="#8b6914" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <path d="M200,320 L210,340 L198,350" stroke="#8b6914" stroke-width="0.5" fill="none" opacity="0.4"/>
+        <path d="M170,160 L180,178 L170,188" stroke="#8b6914" stroke-width="0.5" fill="none" opacity="0.4"/>
+
+        <!-- Legend -->
+        <circle cx="30" cy="460" r="5" fill="#c0392b"/>
+        <text x="40" y="464" font-family="Space Mono" font-size="7" fill="#d4a76a">Critical</text>
+        <circle cx="90" cy="460" r="5" fill="#e67e22"/>
+        <text x="100" y="464" font-family="Space Mono" font-size="7" fill="#d4a76a">Severe</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section id="quote-section">
+  <p class="quote-text">"The wars of the 21st century will be fought over water. India is already living that future — not tomorrow, but today, in every cracked field and empty well."</p>
+  <p class="quote-attr">— NITI Aayog Water Crisis Report, 2023</p>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions-section">
+  <div style="max-width:1100px;margin:0 auto 5rem;">
+    <div style="font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:0.4em;color:var(--blood);margin-bottom:1rem;">03 — WHAT CAN BE DONE</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);color:var(--bone);">Before the Last Drop Falls</h2>
+  </div>
+  <div class="solutions-grid">
+    <div class="solution-card">
+      <span class="solution-icon">🌧</span>
+      <div class="solution-title">Rainwater Harvesting</div>
+      <p class="solution-desc">Reviving ancient stepwells and mandating rooftop collection systems in every urban building across India.</p>
+    </div>
+    <div class="solution-card">
+      <span class="solution-icon">🌾</span>
+      <div class="solution-title">Micro-Irrigation Reform</div>
+      <p class="solution-desc">Replacing flood irrigation with drip systems could cut agricultural water use by 50%, saving billions of liters annually.</p>
+    </div>
+    <div class="solution-card">
+      <span class="solution-icon">♻️</span>
+      <div class="solution-title">Wastewater Recycling</div>
+      <p class="solution-desc">Only 30% of urban wastewater is treated in India. Scaling treatment infrastructure is a matter of national survival.</p>
+    </div>
+    <div class="solution-card">
+      <span class="solution-icon">🌳</span>
+      <div class="solution-title">Watershed Restoration</div>
+      <p class="solution-desc">Planting 1 billion trees along river basins to restore natural water cycles disrupted by three decades of deforestation.</p>
+    </div>
+    <div class="solution-card">
+      <span class="solution-icon">📊</span>
+      <div class="solution-title">Smart Water Metering</div>
+      <p class="solution-desc">Real-time monitoring of water consumption in cities to eliminate the 40% lost to leakages in aging pipe infrastructure.</p>
+    </div>
+    <div class="solution-card">
+      <span class="solution-icon">⚖️</span>
+      <div class="solution-title">Water Rights Policy</div>
+      <p class="solution-desc">Establishing legal frameworks to protect rivers as living entities and penalize industrial over-extraction.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>ACT NOW</span><span class="sep">///</span>
+    <span>EVERY DROP COUNTS</span><span class="sep">///</span>
+    <span>1.4 BILLION PEOPLE</span><span class="sep">///</span>
+    <span>ONE FUTURE</span><span class="sep">///</span>
+    <span>ACT NOW</span><span class="sep">///</span>
+    <span>EVERY DROP COUNTS</span><span class="sep">///</span>
+    <span>1.4 BILLION PEOPLE</span><span class="sep">///</span>
+    <span>ONE FUTURE</span><span class="sep">///</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>INDIA WATER CRISIS REPORT &nbsp;///&nbsp; DATA SOURCES: NITI AAYOG, WORLD RESOURCES INSTITUTE, UN WATER</p>
+  <p style="margin-top:0.5rem;">DESIGNED TO ALARM. INTENDED TO ACT. &nbsp;///&nbsp; 2024</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => {
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    }, 80);
+  });
+
+  // Blood drop rain
+  const dropContainer = document.getElementById('drops');
+  for (let i = 0; i < 30; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'drop';
+    drop.style.cssText = `
+      left: ${Math.random() * 100}%;
+      height: ${40 + Math.random() * 80}px;
+      animation-duration: ${3 + Math.random() * 5}s;
+      animation-delay: ${Math.random() * 8}s;
+      opacity: ${0.1 + Math.random() * 0.3};
+    `;
+    dropContainer.appendChild(drop);
+  }
+
+  // Counter animation
+  const counters = document.querySelectorAll('[data-target]');
+  const animateCounter = (el) => {
+    const target = +el.dataset.target;
+    const suffix = el.dataset.suffix || '';
+    const dur = 2000;
+    const step = target / (dur / 16);
+    let current = 0;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = Math.floor(current).toLocaleString() + suffix;
+    }, 16);
+  };
+
+  const counterObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); counterObs.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObs.observe(c));
+
+  // Bar animations
+  const bars = document.querySelectorAll('.bar-fill');
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const w = e.target.dataset.width;
+        e.target.style.transform = `scaleX(${w})`;
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => barObs.observe(b));
+
+  // Timeline
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  const tlObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.2 });
+  timelineItems.forEach(t => tlObs.observe(t));
+</script>
+</body>
+</html>
