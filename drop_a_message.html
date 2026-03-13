@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DROP A MESSAGE</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f0ece3;
+    --acid: #c8f53e;
+    --rust: #e84b2a;
+    --mist: #b8c4d0;
+    --glow: rgba(200, 245, 62, 0.35);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    overflow: hidden;
+  }
+
+  /* ── Grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.6;
+  }
+
+  /* ── Ambient orbs ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.18;
+    pointer-events: none;
+    animation: drift 14s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 520px; height: 520px; background: var(--acid); top: -180px; left: -120px; animation-delay: 0s; }
+  .orb2 { width: 380px; height: 380px; background: var(--rust); bottom: -100px; right: -80px; animation-delay: -7s; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px, 30px) scale(1.08); } }
+
+  /* ── Stage ── */
+  .stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 0;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fadeDown 0.9s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .header-tag {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 8px;
+    opacity: 0.7;
+  }
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 10vw, 110px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+  }
+  .header h1 span {
+    color: var(--acid);
+    display: inline-block;
+    animation: pulse-text 3s ease-in-out infinite;
+  }
+  @keyframes pulse-text {
+    0%,100% { text-shadow: 0 0 0px var(--acid); }
+    50% { text-shadow: 0 0 30px var(--glow); }
+  }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Card ── */
+  .card {
+    position: relative;
+    width: min(560px, 92vw);
+    background: rgba(240, 236, 227, 0.04);
+    border: 1px solid rgba(240, 236, 227, 0.1);
+    border-radius: 4px;
+    padding: 32px;
+    backdrop-filter: blur(12px);
+    animation: fadeUp 1s 0.2s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, rgba(200,245,62,0.25), transparent 50%, rgba(232,75,42,0.15));
+    z-index: -1;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Textarea ── */
+  .field-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 10px;
+    opacity: 0.6;
+  }
+  .msg-wrap {
+    position: relative;
+  }
+  textarea {
+    width: 100%;
+    min-height: 148px;
+    background: rgba(10,10,15,0.6);
+    border: 1px solid rgba(240,236,227,0.12);
+    border-radius: 2px;
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 18px 20px;
+    resize: none;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    caret-color: var(--acid);
+  }
+  textarea::placeholder { color: rgba(184,196,208,0.35); font-style: italic; }
+  textarea:focus {
+    border-color: rgba(200,245,62,0.4);
+    box-shadow: 0 0 0 3px rgba(200,245,62,0.07), inset 0 0 30px rgba(200,245,62,0.03);
+  }
+
+  /* live char counter */
+  .counter {
+    position: absolute;
+    bottom: 10px; right: 14px;
+    font-size: 10px;
+    color: var(--mist);
+    opacity: 0.4;
+    transition: opacity 0.3s, color 0.3s;
+    pointer-events: none;
+  }
+  .counter.warn { color: var(--rust); opacity: 0.9; }
+
+  /* ── Send button ── */
+  .send-btn {
+    margin-top: 18px;
+    width: 100%;
+    height: 52px;
+    background: var(--acid);
+    color: var(--ink);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.12em;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.3s;
+  }
+  .send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(200,245,62,0.28);
+  }
+  .send-btn:active { transform: translateY(0); }
+  .send-btn .btn-text { position: relative; z-index: 1; transition: opacity 0.2s; }
+  .send-btn .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(10,10,15,0.18);
+    transform: scale(0);
+    animation: ripple-anim 0.55s linear;
+    pointer-events: none;
+  }
+  @keyframes ripple-anim {
+    to { transform: scale(4); opacity: 0; }
+  }
+  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── Sending overlay ── */
+  .sending-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(6px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 10;
+  }
+  .sending-overlay.active { opacity: 1; pointer-events: all; }
+
+  .sending-anim {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* paper plane */
+  .plane-wrap {
+    position: relative;
+    width: 80px; height: 80px;
+  }
+  .plane {
+    font-size: 42px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: plane-fly 1.6s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  @keyframes plane-fly {
+    0%   { transform: translate(-50%,-50%) scale(1) rotate(-10deg); opacity:1; }
+    60%  { transform: translate(80px,-60px) scale(1.3) rotate(15deg); opacity:1; }
+    100% { transform: translate(160px,-120px) scale(0.4) rotate(30deg); opacity:0; }
+  }
+
+  .trail-dot {
+    position: absolute;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--acid);
+    top: 50%; left: 50%;
+    opacity: 0;
+  }
+  .trail-dot:nth-child(2) { animation: trail 1.6s 0.1s forwards; }
+  .trail-dot:nth-child(3) { animation: trail 1.6s 0.22s forwards; }
+  .trail-dot:nth-child(4) { animation: trail 1.6s 0.34s forwards; }
+  @keyframes trail {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity:0; }
+    20%  { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    100% { transform: translate(60px,-45px) scale(0); opacity:0; }
+  }
+
+  .sending-label {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--acid);
+    animation: blink-label 0.8s ease-in-out infinite alternate;
+  }
+  @keyframes blink-label { from { opacity:0.4; } to { opacity:1; } }
+
+  /* ── Success state ── */
+  .success-box {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+    animation: pop-in 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .success-box.show { display: flex; }
+  @keyframes pop-in {
+    from { opacity:0; transform: scale(0.8); }
+    to   { opacity:1; transform: scale(1); }
+  }
+  .success-ring {
+    width: 68px; height: 68px;
+    border-radius: 50%;
+    border: 2px solid var(--acid);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    position: relative;
+    animation: ring-spin 0.6s ease-out;
+    box-shadow: 0 0 24px rgba(200,245,62,0.3);
+  }
+  @keyframes ring-spin {
+    from { transform: rotate(-180deg) scale(0); opacity:0; }
+    to   { transform: rotate(0) scale(1); opacity:1; }
+  }
+  .success-ring::after {
+    content: '';
+    position: absolute; inset: -8px;
+    border-radius: 50%;
+    border: 1px solid rgba(200,245,62,0.2);
+    animation: ring-pulse 1.5s ease-out 0.3s infinite;
+  }
+  @keyframes ring-pulse {
+    from { transform: scale(1); opacity:0.5; }
+    to   { transform: scale(1.4); opacity:0; }
+  }
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 0.06em;
+    color: var(--acid);
+  }
+  .success-sub {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--mist);
+    opacity: 0.6;
+    text-transform: uppercase;
+  }
+  .again-btn {
+    margin-top: 6px;
+    background: transparent;
+    border: 1px solid rgba(240,236,227,0.2);
+    color: var(--paper);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    padding: 10px 26px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+  }
+  .again-btn:hover { border-color: var(--acid); color: var(--acid); background: rgba(200,245,62,0.06); }
+
+  /* ── Floating particles ── */
+  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--acid);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float-particle linear infinite;
+  }
+
+  /* ── Ticker ── */
+  .ticker {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    border-top: 1px solid rgba(240,236,227,0.06);
+    overflow: hidden;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+  }
+  .ticker-inner {
+    display: flex;
+    gap: 64px;
+    white-space: nowrap;
+    animation: ticker-scroll 22s linear infinite;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(184,196,208,0.3);
+  }
+  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<div class="stage">
+  <div class="header">
+    <div class="header-tag">// transmission terminal</div>
+    <h1>DROP A <span>MSG</span></h1>
+  </div>
+
+  <div class="card" id="card">
+
+    <!-- Default compose view -->
+    <div id="compose-view">
+      <div class="field-label">// your message</div>
+      <div class="msg-wrap">
+        <textarea id="msg" placeholder="type something worth sending..." maxlength="300"></textarea>
+        <span class="counter" id="counter">0 / 300</span>
+      </div>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage(event)" disabled>
+        <span class="btn-text">TRANSMIT</span>
+      </button>
+    </div>
+
+    <!-- Sending overlay -->
+    <div class="sending-overlay" id="sendingOverlay">
+      <div class="sending-anim" id="sendingAnim">
+        <div class="plane-wrap">
+          <div class="trail-dot"></div>
+          <div class="trail-dot"></div>
+          <div class="trail-dot"></div>
+          <div class="plane">✈</div>
+        </div>
+        <div class="sending-label">transmitting</div>
+      </div>
+
+      <div class="success-box" id="successBox">
+        <div class="success-ring">✓</div>
+        <div class="success-title">DELIVERED</div>
+        <div class="success-sub">message received · across the void</div>
+        <button class="again-btn" onclick="reset()">send another</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom ticker -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<script>
+  // ── Particles ──
+  const particlesEl = document.getElementById('particles');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 3 + 1;
+    const dur = Math.random() * 18 + 10;
+    const delay = Math.random() * 20;
+    p.style.cssText = `
+      left: ${Math.random()*100}%;
+      top: ${Math.random()*100}%;
+      width: ${size}px; height: ${size}px;
+      opacity: ${Math.random() * 0.5};
+      animation-duration: ${dur}s;
+      animation-delay: -${delay}s;
+    `;
+    const dx = (Math.random()-0.5)*120;
+    const dy = -(Math.random()*200+80);
+    p.style.setProperty('--dx', dx+'px');
+    p.style.setProperty('--dy', dy+'px');
+    particlesEl.appendChild(p);
+  }
+
+  // inject keyframe dynamically
+  const style = document.createElement('style');
+  style.textContent = `@keyframes float-particle {
+    0%   { transform: translate(0,0) scale(1); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.2; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+  }`;
+  document.head.appendChild(style);
+
+  // ── Ticker ──
+  const phrases = ['end-to-end encrypted · ', 'zero latency transmission · ', 'signal sent · ', 'lost in the ether · ', 'message in a bottle · ', 'void received · '];
+  const full = [...phrases, ...phrases].join('');
+  document.getElementById('ticker').textContent = full;
+
+  // ── Textarea ──
+  const msgEl = document.getElementById('msg');
+  const counterEl = document.getElementById('counter');
+  const sendBtn = document.getElementById('sendBtn');
+
+  msgEl.addEventListener('input', () => {
+    const len = msgEl.value.length;
+    counterEl.textContent = `${len} / 300`;
+    counterEl.classList.toggle('warn', len >= 270);
+    sendBtn.disabled = len === 0;
+  });
+
+  // ── Ripple ──
+  sendBtn.addEventListener('click', (e) => {
+    const r = document.createElement('span');
+    r.className = 'ripple';
+    const rect = sendBtn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 2;
+    r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+    sendBtn.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  });
+
+  // ── Send ──
+  function sendMessage(e) {
+    if (!msgEl.value.trim()) return;
+    const overlay = document.getElementById('sendingOverlay');
+    const anim = document.getElementById('sendingAnim');
+    const success = document.getElementById('successBox');
+
+    overlay.classList.add('active');
+
+    // After plane animation, show success
+    setTimeout(() => {
+      anim.style.display = 'none';
+      success.classList.add('show');
+    }, 1800);
+  }
+
+  // ── Reset ──
+  function reset() {
+    const overlay = document.getElementById('sendingOverlay');
+    const anim = document.getElementById('sendingAnim');
+    const success = document.getElementById('successBox');
+
+    overlay.classList.remove('active');
+    setTimeout(() => {
+      anim.style.display = 'flex';
+      success.classList.remove('show');
+
+      // Re-clone plane-wrap to restart animation
+      const planeWrap = anim.querySelector('.plane-wrap');
+      const clone = planeWrap.cloneNode(true);
+      planeWrap.replaceWith(clone);
+
+      msgEl.value = '';
+      counterEl.textContent = '0 / 300';
+      counterEl.classList.remove('warn');
+      sendBtn.disabled = true;
+    }, 350);
+  }
+</script>
+</body>
+</html>
