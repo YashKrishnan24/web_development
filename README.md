@@ -8,7 +8,7 @@ This repository contains basic web development programs built using HTML, CSS, a
 
 The code examples in this repository focus on clarity and simplicity, making it easy to learn, modify, and experiment with.
 
-💡 What is Web Development?
+ What is Web Development?
 
 Web development is the process of creating websites and web applications that run on the internet or intranet. It mainly involves three core technologies:
 
@@ -23,7 +23,7 @@ Used to add interactivity and dynamic behavior such as form validation, animatio
 
 Together, these technologies form the foundation of modern web applications.
 
-📂 Repository Contents
+ Repository Contents
 
 Basic HTML page structures
 
@@ -35,7 +35,7 @@ Small practice projects and concept demonstrations
 
 Clean and well-commented code for easy understanding
 
-🎯 Purpose
+ Purpose
 
 Learn the fundamentals of web development
 
@@ -45,7 +45,7 @@ Build a strong foundation for frontend development
 
 Serve as a quick reference for basic web programs
 
-🚀 Who Can Use This?
+Who Can Use This?
 
 Beginners in web development
 
