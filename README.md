@@ -35,7 +35,7 @@ Small practice projects and concept demonstrations
 
 Clean and well-commented code for easy understanding
 
- Purpose
+ Purpose:
 
 Learn the fundamentals of web development
 
@@ -52,3 +52,5 @@ Beginners in web development
 Students learning frontend technologies
 
 Anyone revising HTML, CSS, and JavaScript basics
+
+Someone who wants to get a basic idea about how thinks work with html,css and js.
