@@ -3,525 +3,258 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DROP A MESSAGE</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<title>Drop a Message</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Syne:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --ink: #0a0a0f;
-    --paper: #f0ece3;
-    --acid: #c8f53e;
-    --rust: #e84b2a;
-    --mist: #b8c4d0;
-    --glow: rgba(200, 245, 62, 0.35);
-  }
-
-  html, body {
-    height: 100%;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: 'DM Mono', monospace;
-    overflow: hidden;
-  }
-
-  /* ── Grain overlay ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 9999; opacity: 0.6;
-  }
-
-  /* ── Ambient orbs ── */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0.18;
-    pointer-events: none;
-    animation: drift 14s ease-in-out infinite alternate;
-  }
-  .orb1 { width: 520px; height: 520px; background: var(--acid); top: -180px; left: -120px; animation-delay: 0s; }
-  .orb2 { width: 380px; height: 380px; background: var(--rust); bottom: -100px; right: -80px; animation-delay: -7s; }
-  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px, 30px) scale(1.08); } }
-
-  /* ── Stage ── */
-  .stage {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    gap: 0;
-    z-index: 1;
-  }
-
-  /* ── Header ── */
-  .header {
-    text-align: center;
-    margin-bottom: 36px;
-    animation: fadeDown 0.9s cubic-bezier(0.16,1,0.3,1) both;
-  }
-  .header-tag {
-    font-size: 10px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--mist);
-    margin-bottom: 8px;
-    opacity: 0.7;
-  }
-  .header h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(64px, 10vw, 110px);
-    line-height: 0.92;
-    letter-spacing: 0.02em;
-    color: var(--paper);
-  }
-  .header h1 span {
-    color: var(--acid);
-    display: inline-block;
-    animation: pulse-text 3s ease-in-out infinite;
-  }
-  @keyframes pulse-text {
-    0%,100% { text-shadow: 0 0 0px var(--acid); }
-    50% { text-shadow: 0 0 30px var(--glow); }
-  }
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-28px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Card ── */
-  .card {
-    position: relative;
-    width: min(560px, 92vw);
-    background: rgba(240, 236, 227, 0.04);
-    border: 1px solid rgba(240, 236, 227, 0.1);
-    border-radius: 4px;
-    padding: 32px;
-    backdrop-filter: blur(12px);
-    animation: fadeUp 1s 0.2s cubic-bezier(0.16,1,0.3,1) both;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: 4px;
-    background: linear-gradient(135deg, rgba(200,245,62,0.25), transparent 50%, rgba(232,75,42,0.15));
-    z-index: -1;
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(32px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── Textarea ── */
-  .field-label {
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--mist);
-    margin-bottom: 10px;
-    opacity: 0.6;
-  }
-  .msg-wrap {
-    position: relative;
-  }
-  textarea {
-    width: 100%;
-    min-height: 148px;
-    background: rgba(10,10,15,0.6);
-    border: 1px solid rgba(240,236,227,0.12);
-    border-radius: 2px;
-    color: var(--paper);
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    line-height: 1.7;
-    padding: 18px 20px;
-    resize: none;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    caret-color: var(--acid);
-  }
-  textarea::placeholder { color: rgba(184,196,208,0.35); font-style: italic; }
-  textarea:focus {
-    border-color: rgba(200,245,62,0.4);
-    box-shadow: 0 0 0 3px rgba(200,245,62,0.07), inset 0 0 30px rgba(200,245,62,0.03);
-  }
-
-  /* live char counter */
-  .counter {
-    position: absolute;
-    bottom: 10px; right: 14px;
-    font-size: 10px;
-    color: var(--mist);
-    opacity: 0.4;
-    transition: opacity 0.3s, color 0.3s;
-    pointer-events: none;
-  }
-  .counter.warn { color: var(--rust); opacity: 0.9; }
-
-  /* ── Send button ── */
-  .send-btn {
-    margin-top: 18px;
-    width: 100%;
-    height: 52px;
-    background: var(--acid);
-    color: var(--ink);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 0.12em;
-    border: none;
-    border-radius: 2px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s, box-shadow 0.3s;
-  }
-  .send-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(200,245,62,0.28);
-  }
-  .send-btn:active { transform: translateY(0); }
-  .send-btn .btn-text { position: relative; z-index: 1; transition: opacity 0.2s; }
-  .send-btn .ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(10,10,15,0.18);
-    transform: scale(0);
-    animation: ripple-anim 0.55s linear;
-    pointer-events: none;
-  }
-  @keyframes ripple-anim {
-    to { transform: scale(4); opacity: 0; }
-  }
-  .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-  /* ── Sending overlay ── */
-  .sending-overlay {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 4px;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(6px);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.3s;
-    z-index: 10;
-  }
-  .sending-overlay.active { opacity: 1; pointer-events: all; }
-
-  .sending-anim {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-
-  /* paper plane */
-  .plane-wrap {
-    position: relative;
-    width: 80px; height: 80px;
-  }
-  .plane {
-    font-size: 42px;
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    animation: plane-fly 1.6s cubic-bezier(0.4,0,0.2,1) forwards;
-  }
-  @keyframes plane-fly {
-    0%   { transform: translate(-50%,-50%) scale(1) rotate(-10deg); opacity:1; }
-    60%  { transform: translate(80px,-60px) scale(1.3) rotate(15deg); opacity:1; }
-    100% { transform: translate(160px,-120px) scale(0.4) rotate(30deg); opacity:0; }
-  }
-
-  .trail-dot {
-    position: absolute;
-    width: 5px; height: 5px;
-    border-radius: 50%;
-    background: var(--acid);
-    top: 50%; left: 50%;
-    opacity: 0;
-  }
-  .trail-dot:nth-child(2) { animation: trail 1.6s 0.1s forwards; }
-  .trail-dot:nth-child(3) { animation: trail 1.6s 0.22s forwards; }
-  .trail-dot:nth-child(4) { animation: trail 1.6s 0.34s forwards; }
-  @keyframes trail {
-    0%   { transform: translate(-50%,-50%) scale(0); opacity:0; }
-    20%  { opacity: 1; transform: translate(-50%,-50%) scale(1); }
-    100% { transform: translate(60px,-45px) scale(0); opacity:0; }
-  }
-
-  .sending-label {
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--acid);
-    animation: blink-label 0.8s ease-in-out infinite alternate;
-  }
-  @keyframes blink-label { from { opacity:0.4; } to { opacity:1; } }
-
-  /* ── Success state ── */
-  .success-box {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    text-align: center;
-    animation: pop-in 0.6s cubic-bezier(0.16,1,0.3,1) both;
-  }
-  .success-box.show { display: flex; }
-  @keyframes pop-in {
-    from { opacity:0; transform: scale(0.8); }
-    to   { opacity:1; transform: scale(1); }
-  }
-  .success-ring {
-    width: 68px; height: 68px;
-    border-radius: 50%;
-    border: 2px solid var(--acid);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-    position: relative;
-    animation: ring-spin 0.6s ease-out;
-    box-shadow: 0 0 24px rgba(200,245,62,0.3);
-  }
-  @keyframes ring-spin {
-    from { transform: rotate(-180deg) scale(0); opacity:0; }
-    to   { transform: rotate(0) scale(1); opacity:1; }
-  }
-  .success-ring::after {
-    content: '';
-    position: absolute; inset: -8px;
-    border-radius: 50%;
-    border: 1px solid rgba(200,245,62,0.2);
-    animation: ring-pulse 1.5s ease-out 0.3s infinite;
-  }
-  @keyframes ring-pulse {
-    from { transform: scale(1); opacity:0.5; }
-    to   { transform: scale(1.4); opacity:0; }
-  }
-  .success-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 0.06em;
-    color: var(--acid);
-  }
-  .success-sub {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    color: var(--mist);
-    opacity: 0.6;
-    text-transform: uppercase;
-  }
-  .again-btn {
-    margin-top: 6px;
-    background: transparent;
-    border: 1px solid rgba(240,236,227,0.2);
-    color: var(--paper);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    padding: 10px 26px;
-    border-radius: 2px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: border-color 0.3s, color 0.3s, background 0.3s;
-  }
-  .again-btn:hover { border-color: var(--acid); color: var(--acid); background: rgba(200,245,62,0.06); }
-
-  /* ── Floating particles ── */
-  .particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  .particle {
-    position: absolute;
-    width: 2px; height: 2px;
-    background: var(--acid);
-    border-radius: 50%;
-    opacity: 0;
-    animation: float-particle linear infinite;
-  }
-
-  /* ── Ticker ── */
-  .ticker {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    border-top: 1px solid rgba(240,236,227,0.06);
-    overflow: hidden;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    z-index: 2;
-  }
-  .ticker-inner {
-    display: flex;
-    gap: 64px;
-    white-space: nowrap;
-    animation: ticker-scroll 22s linear infinite;
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: rgba(184,196,208,0.3);
-  }
-  @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d0d0d;--surface:#141414;--border:rgba(255,255,255,0.07);--accent:#ff6b35;--accent2:#ffd166;--text:#f5f0e8;--muted:#6b6b6b;--glow:rgba(255,107,53,0.4)}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(255,107,53,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 80%,rgba(255,209,102,0.08) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 50% 50%,rgba(255,107,53,0.04) 0%,transparent 70%);pointer-events:none;z-index:0;animation:bgShift 12s ease-in-out infinite alternate}
+@keyframes bgShift{0%{opacity:1;transform:scale(1)}100%{opacity:0.7;transform:scale(1.05)}}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0}
+.wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px 100px}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.3);border-radius:100px;padding:6px 18px;font-size:11px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:32px;animation:fadeSlideDown 0.8s cubic-bezier(0.16,1,0.3,1) both}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.headline{text-align:center;margin-bottom:56px;animation:fadeSlideDown 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) both}
+.headline h1{font-family:'Playfair Display',serif;font-size:clamp(52px,9vw,100px);line-height:1;letter-spacing:-0.02em;color:var(--text)}
+.headline h1 em{font-style:italic;color:var(--accent);display:block}
+.headline p{margin-top:20px;font-size:14px;color:var(--muted);letter-spacing:0.08em}
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+.card{width:min(640px,100%);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:48px;position:relative;overflow:hidden;animation:fadeSlideUp 1s 0.2s cubic-bezier(0.16,1,0.3,1) both;transition:border-color 0.4s,box-shadow 0.4s}
+.card:hover{border-color:rgba(255,107,53,0.2);box-shadow:0 0 80px rgba(255,107,53,0.06)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,107,53,0.5),rgba(255,209,102,0.4),transparent);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%,100%{opacity:0.4}50%{opacity:1}}
+.card::after{content:'';position:absolute;bottom:-120px;right:-120px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.08),transparent 70%);pointer-events:none;transition:all 0.6s ease}
+.card:hover::after{bottom:-80px;right:-80px;opacity:0.8}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.field.no-mb{margin-bottom:0}
+label{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted);transition:color 0.3s}
+.field:focus-within label{color:var(--accent)}
+.input-wrap{position:relative}
+input[type="text"],input[type="email"],textarea,select{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;padding:14px 18px;outline:none;transition:border-color 0.3s,background 0.3s,box-shadow 0.3s,transform 0.2s;caret-color:var(--accent);-webkit-appearance:none}
+input[type="text"]:hover,input[type="email"]:hover,textarea:hover,select:hover{border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);transform:translateY(-1px)}
+input[type="text"]:focus,input[type="email"]:focus,textarea:focus,select:focus{border-color:rgba(255,107,53,0.5);background:rgba(255,107,53,0.04);box-shadow:0 0 0 4px rgba(255,107,53,0.08),0 4px 20px rgba(255,107,53,0.1);transform:translateY(-2px)}
+input::placeholder,textarea::placeholder{color:rgba(107,107,107,0.6)}
+textarea{min-height:150px;resize:none;line-height:1.7}
+select{cursor:pointer;appearance:none}
+.select-arrow{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);font-size:12px;transition:transform 0.3s}
+select:focus+.select-arrow{transform:translateY(-50%) rotate(180deg);color:var(--accent)}
+.counter{text-align:right;font-size:10px;color:var(--muted);margin-top:6px;transition:color 0.3s;letter-spacing:0.1em}
+.counter.warn{color:var(--accent)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.tag{font-size:11px;letter-spacing:0.1em;padding:7px 16px;border-radius:100px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);font-family:'Syne',sans-serif}
+.tag:hover{border-color:rgba(255,107,53,0.4);color:var(--accent);transform:translateY(-2px) scale(1.04);background:rgba(255,107,53,0.06)}
+.tag.active{border-color:var(--accent);background:rgba(255,107,53,0.15);color:var(--accent);transform:translateY(-1px)}
+.divider{height:1px;background:var(--border);margin:28px 0;position:relative;overflow:visible}
+.divider::before{content:'✦';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--surface);padding:0 12px;font-size:10px;color:var(--muted)}
+.submit-row{display:flex;align-items:center;gap:16px;margin-top:8px}
+.anon-check{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;flex-shrink:0}
+.anon-check input{display:none}
+.checkmark{width:20px;height:20px;border:1px solid rgba(255,255,255,0.15);border-radius:5px;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;transition:all 0.25s;flex-shrink:0}
+.anon-check:hover .checkmark{border-color:rgba(255,107,53,0.4)}
+.anon-check input:checked+.checkmark{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px rgba(255,107,53,0.4)}
+.checkmark-icon{width:10px;height:10px;stroke:#0d0d0d;stroke-width:2.5;fill:none;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset 0.25s 0.05s}
+.anon-check input:checked+.checkmark .checkmark-icon{stroke-dashoffset:0}
+.anon-label{font-size:12px;color:var(--muted);transition:color 0.3s}
+.anon-check:hover .anon-label{color:var(--text)}
+.submit-btn{flex:1;height:54px;background:var(--accent);color:#0d0d0d;font-family:'Syne',sans-serif;font-size:14px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.3s;display:flex;align-items:center;justify-content:center;gap:10px}
+.submit-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.2) 0%,transparent 50%);opacity:0;transition:opacity 0.3s}
+.submit-btn:hover{transform:translateY(-3px) scale(1.01);box-shadow:0 12px 40px rgba(255,107,53,0.5),0 4px 12px rgba(255,107,53,0.3)}
+.submit-btn:hover::before{opacity:1}
+.submit-btn:active{transform:translateY(0) scale(0.98);box-shadow:0 4px 16px rgba(255,107,53,0.3)}
+.submit-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-icon{width:18px;height:18px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1)}
+.submit-btn:hover .btn-icon{transform:translateX(4px) rotate(10deg)}
+.ripple-el{position:absolute;border-radius:50%;background:rgba(0,0,0,0.15);transform:scale(0);animation:ripple 0.6s linear;pointer-events:none}
+@keyframes ripple{to{transform:scale(4);opacity:0}}
+.overlay{position:absolute;inset:0;border-radius:20px;background:rgba(13,13,13,0.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:10}
+.overlay.show{opacity:1;pointer-events:all}
+.success-icon{width:80px;height:80px;border-radius:50%;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(255,107,53,0.3);animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;position:relative}
+.success-icon::after{content:'';position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(255,107,53,0.15);animation:ping 2s ease-out 0.5s infinite}
+@keyframes ping{from{transform:scale(1);opacity:0.5}to{transform:scale(1.5);opacity:0}}
+@keyframes popIn{from{transform:scale(0) rotate(-45deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.success-icon svg{width:30px;height:30px;stroke:var(--accent);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.success-title{font-family:'Playfair Display',serif;font-size:36px;color:var(--text);animation:fadeUp2 0.5s 0.2s both}
+.success-sub{font-size:12px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;animation:fadeUp2 0.5s 0.3s both}
+.reset-btn{margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--text);font-family:'Syne',sans-serif;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;padding:12px 28px;border-radius:10px;cursor:pointer;transition:all 0.3s;animation:fadeUp2 0.5s 0.4s both}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(255,107,53,0.06);transform:translateY(-2px)}
+@keyframes fadeUp2{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.ticker{position:fixed;bottom:0;left:0;right:0;height:32px;border-top:1px solid var(--border);background:rgba(13,13,13,0.8);backdrop-filter:blur(10px);overflow:hidden;display:flex;align-items:center;z-index:100}
+.ticker-track{display:flex;gap:60px;white-space:nowrap;animation:scrollTicker 24s linear infinite;font-size:9px;letter-spacing:0.3em;text-transform:uppercase;color:rgba(107,107,107,0.5)}
+@keyframes scrollTicker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.float-shape{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+.shape1{width:400px;height:400px;border:1px solid rgba(255,107,53,0.06);top:-150px;right:-150px;animation:rotateSlow 30s linear infinite}
+.shape2{width:250px;height:250px;border:1px solid rgba(255,209,102,0.05);bottom:50px;left:-100px;animation:rotateSlow 20s linear infinite reverse}
+@keyframes rotateSlow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.cursor-glow{position:fixed;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.07),transparent 70%);pointer-events:none;z-index:0;transform:translate(-50%,-50%);transition:left 0.1s,top 0.1s}
+@media(max-width:520px){.card{padding:28px 22px}.row{grid-template-columns:1fr}.submit-row{flex-direction:column;align-items:stretch}}
 </style>
 </head>
 <body>
 
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
+<div class="float-shape shape1"></div>
+<div class="float-shape shape2"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
 
-<!-- Floating particles -->
-<div class="particles" id="particles"></div>
+<div class="wrapper">
+  <div class="badge"><span class="badge-dot"></span>Live · Open Transmissions</div>
 
-<div class="stage">
-  <div class="header">
-    <div class="header-tag">// transmission terminal</div>
-    <h1>DROP A <span>MSG</span></h1>
+  <div class="headline">
+    <h1>Drop a <em>message.</em></h1>
+    <p>Say anything. Send it into the void. We're listening.</p>
   </div>
 
   <div class="card" id="card">
 
-    <!-- Default compose view -->
-    <div id="compose-view">
-      <div class="field-label">// your message</div>
-      <div class="msg-wrap">
-        <textarea id="msg" placeholder="type something worth sending..." maxlength="300"></textarea>
-        <span class="counter" id="counter">0 / 300</span>
+    <div class="overlay" id="overlay">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage(event)" disabled>
-        <span class="btn-text">TRANSMIT</span>
-      </button>
+      <div class="success-title">Message Sent</div>
+      <div class="success-sub">Delivered · Into the ether</div>
+      <button class="reset-btn" onclick="resetForm()">Send Another</button>
     </div>
 
-    <!-- Sending overlay -->
-    <div class="sending-overlay" id="sendingOverlay">
-      <div class="sending-anim" id="sendingAnim">
-        <div class="plane-wrap">
-          <div class="trail-dot"></div>
-          <div class="trail-dot"></div>
-          <div class="trail-dot"></div>
-          <div class="plane">✈</div>
-        </div>
-        <div class="sending-label">transmitting</div>
+    <div class="row">
+      <div class="field no-mb">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" placeholder="Jane Doe">
       </div>
+      <div class="field no-mb">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="jane@example.com">
+      </div>
+    </div>
 
-      <div class="success-box" id="successBox">
-        <div class="success-ring">✓</div>
-        <div class="success-title">DELIVERED</div>
-        <div class="success-sub">message received · across the void</div>
-        <button class="again-btn" onclick="reset()">send another</button>
+    <div class="divider"></div>
+
+    <div class="field">
+      <label for="subject">Subject</label>
+      <input type="text" id="subject" placeholder="What's on your mind?">
+    </div>
+
+    <div class="field">
+      <label>Tone of message</label>
+      <div class="tags" id="tags">
+        <button class="tag active" data-t="casual">Casual</button>
+        <button class="tag" data-t="urgent">Urgent</button>
+        <button class="tag" data-t="love">Heartfelt</button>
+        <button class="tag" data-t="mystery">Mysterious</button>
+        <button class="tag" data-t="curious">Curious</button>
+        <button class="tag" data-t="formal">Formal</button>
       </div>
+    </div>
+
+    <div class="field">
+      <label for="msg">Message</label>
+      <div class="input-wrap">
+        <textarea id="msg" placeholder="Type your message here... Make it count." maxlength="500"></textarea>
+      </div>
+      <div class="counter" id="counter">0 / 500</div>
+    </div>
+
+    <div class="field">
+      <label for="priority">Priority</label>
+      <div class="input-wrap">
+        <select id="priority">
+          <option value="normal">Normal — no rush</option>
+          <option value="soon">Soon — when you can</option>
+          <option value="urgent">Urgent — asap</option>
+          <option value="sos">SOS — right now</option>
+        </select>
+        <span class="select-arrow">▾</span>
+      </div>
+    </div>
+
+    <div class="submit-row">
+      <label class="anon-check">
+        <input type="checkbox" id="anon">
+        <div class="checkmark">
+          <svg class="checkmark-icon" viewBox="0 0 12 12">
+            <polyline points="2 6 5 9 10 3"></polyline>
+          </svg>
+        </div>
+        <span class="anon-label">Send anonymously</span>
+      </label>
+
+      <button class="submit-btn" id="submitBtn" onclick="handleSubmit(event)" disabled>
+        <span>Transmit</span>
+        <svg class="btn-icon" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
     </div>
 
   </div>
 </div>
 
-<!-- Bottom ticker -->
 <div class="ticker">
-  <div class="ticker-inner" id="ticker"></div>
+  <div class="ticker-track" id="tickerTrack"></div>
 </div>
 
 <script>
-  // ── Particles ──
-  const particlesEl = document.getElementById('particles');
-  for (let i = 0; i < 28; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 3 + 1;
-    const dur = Math.random() * 18 + 10;
-    const delay = Math.random() * 20;
-    p.style.cssText = `
-      left: ${Math.random()*100}%;
-      top: ${Math.random()*100}%;
-      width: ${size}px; height: ${size}px;
-      opacity: ${Math.random() * 0.5};
-      animation-duration: ${dur}s;
-      animation-delay: -${delay}s;
-    `;
-    const dx = (Math.random()-0.5)*120;
-    const dy = -(Math.random()*200+80);
-    p.style.setProperty('--dx', dx+'px');
-    p.style.setProperty('--dy', dy+'px');
-    particlesEl.appendChild(p);
-  }
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
 
-  // inject keyframe dynamically
-  const style = document.createElement('style');
-  style.textContent = `@keyframes float-particle {
-    0%   { transform: translate(0,0) scale(1); opacity: 0; }
-    10%  { opacity: 0.6; }
-    90%  { opacity: 0.2; }
-    100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
-  }`;
-  document.head.appendChild(style);
+const phrases = ['say it · ','drop a line · ','make it count · ','we read everything · ','anonymous or not · ','your words matter · ','transmission open · ','inbox: zero judgement · '];
+document.getElementById('tickerTrack').textContent = [...phrases,...phrases].join('');
 
-  // ── Ticker ──
-  const phrases = ['end-to-end encrypted · ', 'zero latency transmission · ', 'signal sent · ', 'lost in the ether · ', 'message in a bottle · ', 'void received · '];
-  const full = [...phrases, ...phrases].join('');
-  document.getElementById('ticker').textContent = full;
+document.getElementById('tags').addEventListener('click', e => {
+  const btn = e.target.closest('.tag');
+  if (!btn) return;
+  document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+});
 
-  // ── Textarea ──
-  const msgEl = document.getElementById('msg');
-  const counterEl = document.getElementById('counter');
-  const sendBtn = document.getElementById('sendBtn');
+const msgEl = document.getElementById('msg');
+const counterEl = document.getElementById('counter');
+const submitBtn = document.getElementById('submitBtn');
 
-  msgEl.addEventListener('input', () => {
-    const len = msgEl.value.length;
-    counterEl.textContent = `${len} / 300`;
-    counterEl.classList.toggle('warn', len >= 270);
-    sendBtn.disabled = len === 0;
-  });
+msgEl.addEventListener('input', () => {
+  const len = msgEl.value.length;
+  counterEl.textContent = len + ' / 500';
+  counterEl.classList.toggle('warn', len >= 450);
+  submitBtn.disabled = msgEl.value.trim().length === 0;
+});
 
-  // ── Ripple ──
-  sendBtn.addEventListener('click', (e) => {
-    const r = document.createElement('span');
-    r.className = 'ripple';
-    const rect = sendBtn.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 2;
-    r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
-    sendBtn.appendChild(r);
-    setTimeout(() => r.remove(), 600);
-  });
+submitBtn.addEventListener('click', e => {
+  const r = document.createElement('span');
+  r.className = 'ripple-el';
+  const rect = submitBtn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  r.style.cssText = 'width:' + size + 'px;height:' + size + 'px;left:' + (e.clientX - rect.left - size / 2) + 'px;top:' + (e.clientY - rect.top - size / 2) + 'px';
+  submitBtn.appendChild(r);
+  setTimeout(() => r.remove(), 700);
+});
 
-  // ── Send ──
-  function sendMessage(e) {
-    if (!msgEl.value.trim()) return;
-    const overlay = document.getElementById('sendingOverlay');
-    const anim = document.getElementById('sendingAnim');
-    const success = document.getElementById('successBox');
+function handleSubmit(e) {
+  if (!msgEl.value.trim()) return;
+  submitBtn.disabled = true;
+  submitBtn.querySelector('span').textContent = 'Sending…';
+  setTimeout(() => document.getElementById('overlay').classList.add('show'), 900);
+}
 
-    overlay.classList.add('active');
-
-    // After plane animation, show success
-    setTimeout(() => {
-      anim.style.display = 'none';
-      success.classList.add('show');
-    }, 1800);
-  }
-
-  // ── Reset ──
-  function reset() {
-    const overlay = document.getElementById('sendingOverlay');
-    const anim = document.getElementById('sendingAnim');
-    const success = document.getElementById('successBox');
-
-    overlay.classList.remove('active');
-    setTimeout(() => {
-      anim.style.display = 'flex';
-      success.classList.remove('show');
-
-      // Re-clone plane-wrap to restart animation
-      const planeWrap = anim.querySelector('.plane-wrap');
-      const clone = planeWrap.cloneNode(true);
-      planeWrap.replaceWith(clone);
-
-      msgEl.value = '';
-      counterEl.textContent = '0 / 300';
-      counterEl.classList.remove('warn');
-      sendBtn.disabled = true;
-    }, 350);
-  }
+function resetForm() {
+  document.getElementById('overlay').classList.remove('show');
+  setTimeout(() => {
+    ['name','email','subject'].forEach(id => document.getElementById(id).value = '');
+    msgEl.value = '';
+    document.getElementById('priority').value = 'normal';
+    document.getElementById('anon').checked = false;
+    counterEl.textContent = '0 / 500';
+    counterEl.classList.remove('warn');
+    submitBtn.querySelector('span').textContent = 'Transmit';
+    submitBtn.disabled = true;
+    document.querySelectorAll('.tag').forEach((t, i) => t.classList.toggle('active', i === 0));
+  }, 300);
+}
 </script>
 </body>
 </html>
