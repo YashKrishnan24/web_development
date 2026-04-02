@@ -35,7 +35,7 @@
     position: relative;
   }
 
-  /* Animated grid background */
+  
   body::before {
     content: '';
     position: fixed;
@@ -48,7 +48,7 @@
     z-index: 0;
   }
 
-  /* Floating orbs */
+  
   .orb {
     position: fixed;
     border-radius: 50%;
@@ -79,7 +79,7 @@
     gap: 18px;
   }
 
-  /* Header */
+  
   .header {
     width: 100%;
     display: flex;
@@ -121,7 +121,7 @@
   }
   .stat-box .value.gold { color: var(--gold); }
 
-  /* Timer bar */
+  
   .timer-container {
     width: 100%;
     background: var(--surface);
@@ -144,7 +144,7 @@
   }
   @keyframes urgentPulse { to { opacity: 0.6; } }
 
-  /* Target word display */
+  
   .target-panel {
     width: 100%;
     background: var(--surface);
@@ -216,7 +216,7 @@
     100% { transform: translateY(-4px) scale(1.05); }
   }
 
-  /* Hint */
+  
   .hint-text {
     font-size: 12px;
     color: var(--muted);
@@ -225,7 +225,7 @@
   }
   .hint-text span { color: var(--accent2); }
 
-  /* Game arena */
+  
   .arena {
     width: 100%;
     height: 280px;
@@ -249,7 +249,7 @@
     pointer-events: none;
   }
 
-  /* Falling letters */
+  
   .falling-letter {
     position: absolute;
     width: 52px;
@@ -302,7 +302,7 @@
     80%     { transform: translateX(4px); }
   }
 
-  /* Score popup */
+  
   .score-popup {
     position: fixed;
     font-size: 32px;
@@ -320,7 +320,7 @@
     100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
   }
 
-  /* Word complete burst */
+  
   .word-burst {
     position: absolute;
     inset: 0;
@@ -337,7 +337,7 @@
     100% { opacity: 0; transform: scale(1.1); }
   }
 
-  /* Controls */
+  
   .controls {
     width: 100%;
     display: flex;
@@ -372,7 +372,7 @@
   }
   .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
 
-  /* Difficulty badges */
+  
   .diff-badges {
     display: flex;
     gap: 8px;
@@ -397,7 +397,7 @@
     box-shadow: 0 0 12px rgba(200,245,66,0.3);
   }
 
-  /* Word complete toast */
+  
   .toast {
     position: fixed;
     top: 50%;
@@ -441,7 +441,7 @@
     margin-top: 4px;
   }
 
-  /* Game Over screen */
+  
   .gameover {
     display: none;
     position: fixed;
@@ -479,7 +479,7 @@
     letter-spacing: 2px;
   }
 
-  /* Particles */
+
   .particle {
     position: fixed;
     border-radius: 50%;
@@ -492,7 +492,7 @@
     100% { opacity: 0; transform: var(--tx) scale(0); }
   }
 
-  /* Streak indicator */
+  
   .streak {
     position: fixed;
     top: 20px;
@@ -518,7 +518,7 @@
 <div class="orb orb3"></div>
 
 <div class="container">
-  <!-- Header -->
+  
   <div class="header">
     <div class="logo">Word<span>Collect</span></div>
     <div class="stats">
