@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IPL — The Grand Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+:root {
+  --gold:       #E8B84B;
+  --gold-dim:   #9A7520;
+  --gold-glow:  rgba(232,184,75,0.25);
+  --deep:       #070B1A;
+  --navy:       #0C1230;
+  --panel:      #111828;
+  --crimson:    #C0272D;
+  --teal:       #19A89C;
+  --light:      #EDE8DC;
+  --muted:      #8A93AA;
+  --white:      #FFFFFF;
+  --border:     rgba(232,184,75,0.18);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior:smooth; font-size:16px; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--deep);
+  color: var(--light);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   NOISE OVERLAY
+═══════════════════════════════════════════ */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.5;
+}
+
+/* ═══════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════ */
+.cursor {
+  width:10px; height:10px;
+  background:var(--gold);
+  border-radius:50%;
+  position:fixed; pointer-events:none;
+  z-index:9999; transform:translate(-50%,-50%);
+  transition:transform 0.1s ease;
+}
+.cursor-trail {
+  width:32px; height:32px;
+  border:1.5px solid var(--gold);
+  border-radius:50%;
+  position:fixed; pointer-events:none;
+  z-index:9998; transform:translate(-50%,-50%);
+  transition:all 0.3s ease; opacity:0.5;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav {
+  position:fixed; top:0; left:0; right:0;
+  z-index:100;
+  padding:1.2rem 3rem;
+  display:flex; align-items:center; justify-content:space-between;
+  background:rgba(7,11,26,0.85);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:1.8rem;
+  letter-spacing:0.08em;
+  background:linear-gradient(90deg, var(--gold), #FFF8E1, var(--gold));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.nav-links {
+  display:flex; gap:2rem; list-style:none;
+}
+.nav-links a {
+  color:var(--muted); text-decoration:none;
+  font-size:0.8rem; letter-spacing:0.12em;
+  text-transform:uppercase; font-weight:500;
+  transition:color 0.3s;
+}
+.nav-links a:hover { color:var(--gold); }
+.nav-pill {
+  background:var(--gold); color:var(--deep);
+  padding:0.45rem 1.2rem; border-radius:2rem;
+  font-size:0.75rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero {
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  padding:6rem 2rem 4rem;
+  text-align:center;
+}
+
+.hero-bg {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(232,184,75,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 80%, rgba(192,39,45,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 20%, rgba(25,168,156,0.07) 0%, transparent 60%),
+    linear-gradient(180deg, #0C1230 0%, #070B1A 100%);
+}
+
+.orbit {
+  position:absolute;
+  border:1px solid var(--border);
+  border-radius:50%;
+  animation:spin linear infinite;
+}
+.orbit-1 { width:500px; height:500px; top:50%; left:50%; margin:-250px 0 0 -250px; animation-duration:80s; }
+.orbit-2 { width:750px; height:750px; top:50%; left:50%; margin:-375px 0 0 -375px; animation-duration:120s; animation-direction:reverse; }
+.orbit-3 { width:1000px; height:1000px; top:50%; left:50%; margin:-500px 0 0 -500px; animation-duration:160s; }
+.orbit::before {
+  content:''; position:absolute;
+  width:8px; height:8px;
+  background:var(--gold); border-radius:50%;
+  top:-4px; left:50%;
+  box-shadow:0 0 12px var(--gold);
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+.hero-eyebrow {
+  position:relative; z-index:2;
+  font-size:0.7rem; letter-spacing:0.4em;
+  text-transform:uppercase; color:var(--gold);
+  border:1px solid var(--border);
+  background:rgba(232,184,75,0.06);
+  padding:0.4rem 1.5rem; border-radius:2rem;
+  margin-bottom:2rem;
+  opacity:0; animation:fadeUp 0.7s 0.3s forwards;
+}
+.hero-main {
+  position:relative; z-index:2;
+  font-family:'Bebas Neue', sans-serif;
+  font-size:clamp(4rem, 14vw, 13rem);
+  line-height:0.88;
+  background:linear-gradient(135deg, #E8B84B 0%, #FFF8E1 35%, #E8B84B 60%, #7A5C10 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  opacity:0; animation:fadeUp 0.8s 0.5s forwards;
+}
+.hero-sub {
+  position:relative; z-index:2;
+  font-family:'Cormorant Garamond', serif;
+  font-style:italic; font-size:clamp(1.1rem, 2.5vw, 1.8rem);
+  color:var(--muted); margin-top:1rem;
+  opacity:0; animation:fadeUp 0.8s 0.7s forwards;
+}
+.hero-sub span { color:var(--gold); font-style:normal; font-weight:600; }
+
+.hero-stats {
+  position:relative; z-index:2;
+  display:flex; gap:3rem; margin-top:4rem;
+  opacity:0; animation:fadeUp 0.8s 0.9s forwards;
+}
+.stat-item { text-align:center; }
+.stat-num {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:3rem; color:var(--gold);
+  line-height:1;
+}
+.stat-label {
+  font-size:0.7rem; letter-spacing:0.2em;
+  text-transform:uppercase; color:var(--muted);
+  margin-top:0.3rem;
+}
+
+.scroll-cue {
+  position:absolute; bottom:2.5rem; left:50%;
+  transform:translateX(-50%); z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:0.5rem;
+  color:var(--muted); font-size:0.65rem; letter-spacing:0.25em;
+  text-transform:uppercase;
+  opacity:0; animation:fadeUp 1s 1.4s forwards;
+}
+.scroll-line {
+  width:1px; height:50px;
+  background:linear-gradient(to bottom, var(--gold), transparent);
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%,100% { opacity:0.3; transform:scaleY(0.8); }
+  50% { opacity:1; transform:scaleY(1); }
+}
+
+/* ═══════════════════════════════════════════
+   SECTION WRAPPER
+═══════════════════════════════════════════ */
+section { position:relative; z-index:1; }
+
+.section-header {
+  text-align:center;
+  padding:5rem 2rem 3rem;
+}
+.section-tag {
+  display:inline-block;
+  font-size:0.65rem; letter-spacing:0.35em;
+  text-transform:uppercase; color:var(--gold);
+  border:1px solid var(--border);
+  padding:0.3rem 1rem; border-radius:2rem;
+  margin-bottom:1.2rem;
+}
+.section-title {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:clamp(2.5rem, 6vw, 5rem);
+  letter-spacing:0.03em;
+  background:linear-gradient(135deg, var(--white) 0%, var(--gold) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1;
+}
+.section-desc {
+  color:var(--muted); max-width:600px; margin:1rem auto 0;
+  font-size:0.95rem; line-height:1.7;
+}
+
+/* ═══════════════════════════════════════════
+   FORMATION STORY (pre-2008)
+═══════════════════════════════════════════ */
+#formation {
+  padding:2rem 0 6rem;
+  background:linear-gradient(180deg, var(--deep) 0%, var(--navy) 100%);
+}
+
+.formation-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem; max-width:1100px;
+  margin:3rem auto; padding:0 3rem;
+}
+
+.formation-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px; padding:2.5rem;
+  position:relative; overflow:hidden;
+  transition:transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  cursor:default;
+}
+.formation-card::before {
+  content:''; position:absolute;
+  top:-60px; right:-60px;
+  width:200px; height:200px;
+  border-radius:50%;
+  background:radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+  transition:opacity 0.3s;
+}
+.formation-card:hover {
+  transform:translateY(-6px);
+  border-color:var(--gold-dim);
+  box-shadow:0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px var(--gold-dim);
+}
+.card-year {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:4rem; color:var(--gold); opacity:0.15;
+  line-height:1; position:absolute; top:1rem; right:1.5rem;
+}
+.card-icon {
+  width:48px; height:48px;
+  background:rgba(232,184,75,0.12);
+  border:1px solid var(--border);
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; margin-bottom:1.2rem;
+}
+.card-label {
+  font-size:0.65rem; letter-spacing:0.3em;
+  text-transform:uppercase; color:var(--gold);
+  margin-bottom:0.5rem;
+}
+.card-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.5rem; font-weight:600;
+  color:var(--white); margin-bottom:0.8rem;
+}
+.card-body {
+  font-size:0.88rem; line-height:1.75;
+  color:var(--muted);
+}
+
+/* ═══════════════════════════════════════════
+   MAIN TIMELINE
+═══════════════════════════════════════════ */
+#timeline {
+  padding:2rem 0 8rem;
+  background:var(--deep);
+  position:relative;
+}
+#timeline::before {
+  content:'';
+  position:absolute;
+  top:0; bottom:0; left:50%;
+  width:1px;
+  background:linear-gradient(to bottom, transparent, var(--gold-dim) 10%, var(--gold-dim) 90%, transparent);
+  transform:translateX(-50%);
+}
+
+.timeline-wrapper {
+  max-width:1100px; margin:0 auto; padding:2rem 3rem;
+  position:relative;
+}
+
+.tl-item {
+  display:grid;
+  grid-template-columns:1fr 60px 1fr;
+  gap:0; margin-bottom:4rem;
+  align-items:start;
+  opacity:0; transform:translateY(30px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.tl-item.visible {
+  opacity:1; transform:translateY(0);
+}
+.tl-item:nth-child(odd) .tl-content { grid-column:1; }
+.tl-item:nth-child(odd) .tl-spacer  { grid-column:2; }
+.tl-item:nth-child(odd) .tl-empty   { grid-column:3; }
+.tl-item:nth-child(even) .tl-empty  { grid-column:1; }
+.tl-item:nth-child(even) .tl-spacer { grid-column:2; }
+.tl-item:nth-child(even) .tl-content{ grid-column:3; }
+
+.tl-content {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px; padding:2rem;
+  position:relative;
+  transition:border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  cursor:default;
+}
+.tl-content:hover {
+  border-color:var(--gold-dim);
+  box-shadow:0 16px 40px rgba(0,0,0,0.4), 0 0 20px rgba(232,184,75,0.08);
+  transform:scale(1.02);
+}
+.tl-content.champion { border-color:rgba(232,184,75,0.4); }
+.tl-content.champion::after {
+  content:'🏆 CHAMPION';
+  position:absolute; top:-12px; right:1rem;
+  background:var(--gold); color:var(--deep);
+  font-size:0.6rem; font-weight:700;
+  letter-spacing:0.15em; padding:0.2rem 0.6rem;
+  border-radius:2rem;
+}
+
+.tl-year-badge {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:0.85rem; letter-spacing:0.1em;
+  color:var(--deep); background:var(--gold);
+  padding:0.2rem 0.7rem; border-radius:2rem;
+  display:inline-block; margin-bottom:0.8rem;
+}
+.tl-season {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.4rem; font-weight:600;
+  color:var(--white); margin-bottom:0.3rem;
+}
+.tl-winner {
+  font-size:0.75rem; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--teal);
+  margin-bottom:0.8rem; font-weight:500;
+}
+.tl-body {
+  font-size:0.85rem; line-height:1.7;
+  color:var(--muted); margin-bottom:1rem;
+}
+.tl-highlights {
+  display:flex; flex-wrap:wrap; gap:0.4rem;
+}
+.tl-tag {
+  background:rgba(232,184,75,0.08);
+  border:1px solid var(--border);
+  color:var(--gold); font-size:0.65rem;
+  letter-spacing:0.08em;
+  padding:0.25rem 0.6rem; border-radius:1rem;
+}
+.tl-tag.red { background:rgba(192,39,45,0.1); border-color:rgba(192,39,45,0.3); color:#E05A60; }
+.tl-tag.teal { background:rgba(25,168,156,0.1); border-color:rgba(25,168,156,0.3); color:var(--teal); }
+
+/* Centre dot */
+.tl-spacer {
+  display:flex; align-items:flex-start;
+  justify-content:center; padding-top:1.5rem;
+}
+.tl-dot {
+  width:18px; height:18px;
+  background:var(--gold); border-radius:50%;
+  box-shadow:0 0 0 5px rgba(232,184,75,0.2), 0 0 20px var(--gold-glow);
+  flex-shrink:0; position:relative; z-index:2;
+  transition:transform 0.3s, box-shadow 0.3s;
+}
+.tl-item:hover .tl-dot {
+  transform:scale(1.4);
+  box-shadow:0 0 0 8px rgba(232,184,75,0.2), 0 0 30px var(--gold);
+}
+.tl-empty { visibility:hidden; }
+
+/* ═══════════════════════════════════════════
+   IMPACT SECTION
+═══════════════════════════════════════════ */
+#impact {
+  padding:4rem 0 8rem;
+  background:linear-gradient(180deg, var(--deep) 0%, var(--navy) 50%, var(--deep) 100%);
+}
+
+.impact-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2rem; max-width:1100px;
+  margin:3rem auto 0; padding:0 3rem;
+}
+.impact-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:20px; padding:2.5rem;
+  text-align:center; position:relative;
+  overflow:hidden;
+  transition:transform 0.35s, border-color 0.35s, box-shadow 0.35s;
+}
+.impact-card:hover {
+  transform:translateY(-8px);
+  border-color:rgba(232,184,75,0.5);
+  box-shadow:0 30px 60px rgba(0,0,0,0.5), 0 0 30px rgba(232,184,75,0.1);
+}
+.impact-card::before {
+  content:''; position:absolute; inset:-1px;
+  border-radius:20px;
+  background:linear-gradient(135deg, rgba(232,184,75,0.1), transparent 60%);
+  pointer-events:none;
+}
+.impact-emoji {
+  font-size:2.5rem; margin-bottom:1rem;
+  display:block;
+}
+.impact-num {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:3.5rem;
+  background:linear-gradient(135deg, var(--gold), #FFF8E1);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text; line-height:1;
+}
+.impact-label {
+  font-size:0.7rem; letter-spacing:0.2em;
+  text-transform:uppercase; color:var(--muted);
+  margin:0.4rem 0 1rem;
+}
+.impact-desc {
+  font-size:0.83rem; line-height:1.65;
+  color:var(--muted);
+}
+
+/* ═══════════════════════════════════════════
+   FILTER TABS
+═══════════════════════════════════════════ */
+.filter-bar {
+  display:flex; gap:0.5rem; justify-content:center;
+  flex-wrap:wrap; margin-bottom:3rem;
+}
+.filter-btn {
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted); font-size:0.75rem;
+  letter-spacing:0.12em; text-transform:uppercase;
+  padding:0.5rem 1.2rem; border-radius:2rem;
+  cursor:pointer; font-family:'DM Sans', sans-serif;
+  transition:all 0.25s;
+}
+.filter-btn:hover, .filter-btn.active {
+  background:var(--gold); color:var(--deep);
+  border-color:var(--gold); font-weight:600;
+}
+
+/* ═══════════════════════════════════════════
+   CHAMPIONS WALL
+═══════════════════════════════════════════ */
+#champions {
+  padding:4rem 0 8rem;
+  background:var(--deep);
+}
+.champions-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
+  gap:1.5rem; max-width:1100px;
+  margin:3rem auto 0; padding:0 3rem;
+}
+.champ-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px; padding:1.8rem 1.2rem;
+  text-align:center;
+  transition:transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+  cursor:default;
+}
+.champ-card:hover {
+  transform:translateY(-6px) rotate(-1deg);
+  border-color:var(--gold-dim);
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+.champ-season {
+  font-size:0.65rem; letter-spacing:0.25em;
+  text-transform:uppercase; color:var(--muted);
+  margin-bottom:0.5rem;
+}
+.champ-team {
+  font-family:'Bebas Neue', sans-serif;
+  font-size:1.5rem; color:var(--white); line-height:1.1;
+}
+.champ-trophy { font-size:1.8rem; margin:0.6rem 0 0.4rem; }
+.champ-mvp {
+  font-size:0.7rem; color:var(--gold);
+  letter-spacing:0.05em;
+}
+
+/* team color accents */
+.mi   { border-top:3px solid #004BA0; }
+.csk  { border-top:3px solid #FDB913; }
+.kkr  { border-top:3px solid #3A1C5A; }
+.srh  { border-top:3px solid #FF6B1A; }
+.rcb  { border-top:3px solid #C0272D; }
+.rr   { border-top:3px solid #E91E8C; }
+.dc   { border-top:3px solid #17479E; }
+.gt   { border-top:3px solid #1C3A5E; }
+.lsg  { border-top:3px solid #A2FFFD; }
+.pbks { border-top:3px solid #ED1B24; }
+
+/* ═══════════════════════════════════════════
+   LEGACY SECTION
+═══════════════════════════════════════════ */
+#legacy {
+  padding:4rem 0 8rem;
+  background:linear-gradient(180deg, var(--deep) 0%, var(--navy) 100%);
+}
+.legacy-inner {
+  max-width:900px; margin:0 auto; padding:0 3rem;
+}
+.legacy-quote {
+  font-family:'Cormorant Garamond', serif;
+  font-size:clamp(1.5rem,3.5vw,2.5rem);
+  font-style:italic; line-height:1.5;
+  color:var(--white); text-align:center;
+  border-left:3px solid var(--gold);
+  padding-left:2rem; margin:3rem 0;
+}
+.legacy-quote cite {
+  display:block; font-family:'DM Sans', sans-serif;
+  font-size:0.8rem; letter-spacing:0.15em;
+  text-transform:uppercase; color:var(--gold);
+  font-style:normal; margin-top:1rem;
+}
+.legacy-pillars {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:2rem; margin-top:3rem;
+}
+.pillar {
+  background:rgba(232,184,75,0.04);
+  border:1px solid var(--border);
+  border-radius:14px; padding:2rem;
+}
+.pillar-icon { font-size:1.8rem; margin-bottom:0.8rem; }
+.pillar-title {
+  font-family:'Cormorant Garamond', serif;
+  font-size:1.2rem; font-weight:600;
+  color:var(--white); margin-bottom:0.6rem;
+}
+.pillar-body { font-size:0.85rem; line-height:1.7; color:var(--muted); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  background:var(--deep);
+  border-top:1px solid var(--border);
+  padding:3rem; text-align:center;
+}
+footer p { color:var(--muted); font-size:0.8rem; }
+footer strong { color:var(--gold); }
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width:900px) {
+  nav { padding:1rem 1.5rem; }
+  .nav-links { display:none; }
+
+  .formation-grid { grid-template-columns:1fr; padding:0 1.5rem; }
+  .impact-grid    { grid-template-columns:1fr 1fr; padding:0 1.5rem; }
+  .legacy-pillars { grid-template-columns:1fr; }
+
+  /* Flatten timeline on mobile */
+  #timeline::before { left:24px; }
+  .tl-item {
+    grid-template-columns:48px 1fr !important;
+    grid-template-rows:auto;
+  }
+  .tl-item .tl-empty { display:none; }
+  .tl-item .tl-spacer { grid-column:1 !important; grid-row:1; padding-top:1.2rem; }
+  .tl-item .tl-content {
+    grid-column:2 !important; grid-row:1;
+  }
+  .timeline-wrapper { padding:2rem 1rem 2rem 0.5rem; }
+  .champions-grid { padding:0 1.5rem; }
+  .section-header { padding:4rem 1.5rem 2rem; }
+  .hero-stats { gap:1.5rem; }
+}
+
+@media (max-width:600px) {
+  .impact-grid { grid-template-columns:1fr; }
+  .hero-stats { flex-direction:column; gap:1rem; }
+}
+
+/* ═══════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════ */
+#progress-bar {
+  position:fixed; top:0; left:0;
+  height:3px; background:linear-gradient(90deg, var(--crimson), var(--gold), var(--teal));
+  z-index:200; transition:width 0.1s;
+  box-shadow:0 0 10px var(--gold);
+}
+
+/* ═══════════════════════════════════════════
+   HIDDEN until visible
+═══════════════════════════════════════════ */
+.reveal {
+  opacity:0; transform:translateY(24px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursorTrail"></div>
+
+<!-- PROGRESS -->
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IPL Chronicle</div>
+  <ul class="nav-links">
+    <li><a href="#formation">Formation</a></li>
+    <li><a href="#timeline">Timeline</a></li>
+    <li><a href="#champions">Champions</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#legacy">Legacy</a></li>
+  </ul>
+  <div class="nav-pill">2008–2025</div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="orbit orbit-1"></div>
+  <div class="orbit orbit-2"></div>
+  <div class="orbit orbit-3"></div>
+
+  <p class="hero-eyebrow">Indian Premier League · The Complete Story</p>
+  <h1 class="hero-main">IPL</h1>
+  <p class="hero-sub">From a bold idea to a <span>₹90,000 Crore empire</span> — cricket's greatest revolution</p>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num" data-target="17">0</div>
+      <div class="stat-label">Seasons</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="10">0</div>
+      <div class="stat-label">Teams</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="240">0</div>
+      <div class="stat-label">Matches / Season</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" data-target="600">0</div>
+      <div class="stat-label">M+ Viewers</div>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ═══ FORMATION ═══ -->
+<section id="formation">
+  <div class="section-header reveal">
+    <span class="section-tag">The Beginning</span>
+    <h2 class="section-title">How IPL Was Born</h2>
+    <p class="section-desc">Long before the first ball was bowled in 2008, a series of pivotal moments set the stage for cricket's greatest revolution.</p>
+  </div>
+
+  <div class="formation-grid">
+    <div class="formation-card reveal">
+      <div class="card-year">2003</div>
+      <div class="card-icon">🏏</div>
+      <div class="card-label">The Seed</div>
+      <div class="card-title">ICL Threat & BCCI's Wake-Up Call</div>
+      <div class="card-body">The Board of Control for Cricket in India (BCCI) watched global T20 leagues gain popularity. The ICL (Indian Cricket League) — a rebel franchise — threatened to poach players and bypass the BCCI's authority, forcing the board to act decisively.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="card-year">2007</div>
+      <div class="card-icon">🌍</div>
+      <div class="card-label">T20 World Cup</div>
+      <div class="card-title">India Wins the Inaugural T20 WC</div>
+      <div class="card-body">India's stunning victory in the ICC T20 World Cup in South Africa, led by MS Dhoni, ignited an enormous hunger for T20 cricket across the nation. The atmosphere was electric — BCCI realised this format was the future.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="card-year">Sep 2007</div>
+      <div class="card-icon">💡</div>
+      <div class="card-label">The Architect</div>
+      <div class="card-title">Lalit Modi Pitches the Vision</div>
+      <div class="card-body">Lalit Modi, BCCI Vice President, proposed a franchise-based Twenty20 league modelled on the English Premier League and NBA. He envisioned a league where cities owned teams, Bollywood met cricket, and global stars competed alongside Indian talent.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="card-year">Oct 2007</div>
+      <div class="card-icon">📋</div>
+      <div class="card-label">Official Launch</div>
+      <div class="card-title">BCCI Announces the IPL</div>
+      <div class="card-body">On 13 September 2007, BCCI officially announced the formation of the Indian Premier League. Eight city-based franchises were auctioned off for a combined ₹4,161 crore (~$724 million) — an unprecedented sum in world cricket.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="card-year">Jan 2008</div>
+      <div class="card-icon">⭐</div>
+      <div class="card-label">Mega Auction</div>
+      <div class="card-title">First Player Auction in Mumbai</div>
+      <div class="card-body">The inaugural IPL Player Auction in Mumbai sent shockwaves worldwide. M.S. Dhoni was sold to Chennai Super Kings for $1.5 million. Rohit Sharma, Yuvraj Singh, Andrew Flintoff — stars fetched prices never seen in cricket history before.</div>
+    </div>
+    <div class="formation-card reveal">
+      <div class="card-year">Apr 2008</div>
+      <div class="card-icon">🎇</div>
+      <div class="card-label">Day Zero</div>
+      <div class="card-title">First Match — Bangalore, April 18</div>
+      <div class="card-body">The very first IPL match was played between Kolkata Knight Riders and Royal Challengers Bangalore at the M. Chinnaswamy Stadium. Brendon McCullum scored a breathtaking 158* off 73 balls — announcing to the world that cricket would never be the same again.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAIN TIMELINE ═══ -->
+<section id="timeline">
+  <div class="section-header reveal">
+    <span class="section-tag">Season by Season</span>
+    <h2 class="section-title">The Grand Timeline</h2>
+    <p class="section-desc">Every season, every champion, every defining moment — from 2008 to 2025.</p>
+  </div>
+
+  <div class="filter-bar reveal">
+    <button class="filter-btn active" data-filter="all">All Seasons</button>
+    <button class="filter-btn" data-filter="milestone">Milestones</button>
+    <button class="filter-btn" data-filter="controversy">Controversies</button>
+    <button class="filter-btn" data-filter="record">Records</button>
+  </div>
+
+  <div class="timeline-wrapper">
+
+    <!-- 2008 -->
+    <div class="tl-item champion" data-tags="milestone,record">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2008 — Season 1</span>
+        <div class="tl-season">Rajasthan Royals — Champions</div>
+        <div class="tl-winner">🏆 Winner: Rajasthan Royals (Shane Warne, Captain)</div>
+        <p class="tl-body">The historic first season. Brendon McCullum's 158* in the opening match set the tone. Shane Warne's "Dad's Army" Rajasthan Royals — a team of unknowns and veterans — stunned everyone by winning the inaugural title. Prize money: $5.5 million.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">McCullum 158*</span>
+          <span class="tl-tag teal">8 Teams</span>
+          <span class="tl-tag">59 Matches</span>
+          <span class="tl-tag record">Historic First</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2009 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2009 — Season 2</span>
+        <div class="tl-season">Deccan Chargers — Champions</div>
+        <div class="tl-winner">🏆 Winner: Deccan Chargers (Adam Gilchrist)</div>
+        <p class="tl-body">Shifted to South Africa due to Indian elections, this was the first overseas IPL. Deccan Chargers, the bottom-placed team in Season 1, made an incredible comeback to claim the title. Adam Gilchrist was their batting anchor.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag teal">Held in South Africa</span>
+          <span class="tl-tag">Biggest Upset</span>
+          <span class="tl-tag">Adam Gilchrist</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2010 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2010 — Season 3</span>
+        <div class="tl-season">Chennai Super Kings — Champions</div>
+        <div class="tl-winner">🏆 Winner: CSK (MS Dhoni, Captain)</div>
+        <p class="tl-body">CSK's dynasty began. MS Dhoni led Chennai Super Kings to their first title in a thrilling final against Mumbai Indians. The Chennai-Mumbai rivalry was born — the greatest rivalry in IPL history. Sachin Tendulkar won the Orange Cap.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">Dhoni Era Begins</span>
+          <span class="tl-tag teal">CSK vs MI Rivalry</span>
+          <span class="tl-tag">Sachin Orange Cap</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2011 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2011 — Season 4</span>
+        <div class="tl-season">Chennai Super Kings — Back to Back</div>
+        <div class="tl-winner">🏆 Winner: CSK (Second Consecutive Title)</div>
+        <p class="tl-body">CSK became the first team to win back-to-back IPL titles. Two new teams — Pune Warriors and Kochi Tuskers Kerala — joined the league (10 teams). Chris Gayle's blazing form made him the most feared T20 batsman on earth.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">10 Teams</span>
+          <span class="tl-tag teal">First Back-to-Back</span>
+          <span class="tl-tag">Chris Gayle Storm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2012 -->
+    <div class="tl-item champion" data-tags="record">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2012 — Season 5</span>
+        <div class="tl-season">Kolkata Knight Riders — First Title</div>
+        <div class="tl-winner">🏆 Winner: KKR (Gautam Gambhir, Captain)</div>
+        <p class="tl-body">Kolkata Knight Riders, once the most underperforming franchise, transformed into champions under Gautam Gambhir's aggressive captaincy. Chris Gayle smashed the fastest century in IPL history (30 balls). Sunil Narine's spin wrecked batsmen worldwide.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">Gayle 100 in 30 balls</span>
+          <span class="tl-tag teal">KKR Revival</span>
+          <span class="tl-tag record">Narine's Magic</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2013 -->
+    <div class="tl-item champion" data-tags="milestone,controversy">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2013 — Season 6</span>
+        <div class="tl-season">Mumbai Indians — First Title</div>
+        <div class="tl-winner">🏆 Winner: Mumbai Indians (Rohit Sharma)</div>
+        <p class="tl-body">MI won their first ever IPL title. However, the season was marred by a massive spot-fixing and betting scandal involving players like S. Sreesanth. CSK and RR were later suspended for two seasons. IPL's darkest chapter.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag red">Spot-Fixing Scandal</span>
+          <span class="tl-tag">Rohit Sharma Era</span>
+          <span class="tl-tag red">Sreesanth Banned</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2014 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2014 — Season 7</span>
+        <div class="tl-season">Kolkata Knight Riders — Second Title</div>
+        <div class="tl-winner">🏆 Winner: KKR (Manish Pandey, Rising Talent)</div>
+        <p class="tl-body">KKR claimed their second title. CSK and RR were temporarily banned — replaced by Rising Pune Supergiant and Gujarat Lions. Manish Pandey became the first Indian to score an IPL century, announcing the next generation of Indian talent.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">Manish Pandey 100</span>
+          <span class="tl-tag teal">UAE Leg Included</span>
+          <span class="tl-tag">KKR Dynasty</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2015 -->
+    <div class="tl-item champion" data-tags="record">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2015 — Season 8</span>
+        <div class="tl-season">Mumbai Indians — Second Title</div>
+        <div class="tl-winner">🏆 Winner: Mumbai Indians</div>
+        <p class="tl-body">Mumbai Indians cemented their status as IPL's powerhouse franchise. Lendl Simmons smashed a scintillating fifty in the final to seal the deal. Rohit Sharma established himself as the best captain in T20 franchise cricket.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">Rohit Sharma Leadership</span>
+          <span class="tl-tag teal">MI Supremacy</span>
+          <span class="tl-tag">Lendl Simmons Blitz</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2016 -->
+    <div class="tl-item champion" data-tags="record,milestone">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2016 — Season 9</span>
+        <div class="tl-season">Sunrisers Hyderabad — First Title</div>
+        <div class="tl-winner">🏆 Winner: SRH (David Warner, Captain)</div>
+        <p class="tl-body">Virat Kohli had the greatest T20 batting season in history — 973 runs, 4 centuries — yet RCB fell in the finals. SRH won their maiden title led by David Warner and the deadly pace of Bhuvneshwar Kumar. Mushtaq Ali Trophy record runs by Kohli.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag record">Kohli 973 Runs</span>
+          <span class="tl-tag record">4 Kohli Centuries</span>
+          <span class="tl-tag teal">SRH First Title</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2017 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2017 — Season 10</span>
+        <div class="tl-season">Mumbai Indians — Third Title</div>
+        <div class="tl-winner">🏆 Winner: Mumbai Indians (Last Ball Thriller)</div>
+        <p class="tl-body">A heart-stopping final — MI beat RPS by 1 run off the last ball. Krunal Pandya was the hero. IPL celebrated its 10th anniversary with fanfare. The league crossed 200 million viewers globally. Harbhajan Singh dismissed Steve Smith to turn the tide.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">Won by 1 Run</span>
+          <span class="tl-tag teal">10th Anniversary</span>
+          <span class="tl-tag record">200M Viewers</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2018 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2018 — Season 11</span>
+        <div class="tl-season">Chennai Super Kings — Return of Kings</div>
+        <div class="tl-winner">🏆 Winner: CSK (Post-Ban Return)</div>
+        <p class="tl-body">CSK returned from a 2-year ban and immediately won the title — the most emotional championship in IPL history. "Whistle Podu!" The whole of Chennai celebrated. Suresh Raina, Shane Watson, and Dhoni showed IPL had its kings back.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag teal">Post-Ban Champions</span>
+          <span class="tl-tag">Watson 117* Final</span>
+          <span class="tl-tag milestone">Emotional Return</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2019 -->
+    <div class="tl-item champion" data-tags="record">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2019 — Season 12</span>
+        <div class="tl-season">Mumbai Indians — Record Fourth Title</div>
+        <div class="tl-winner">🏆 Winner: Mumbai Indians (5th & Final Over Heist)</div>
+        <p class="tl-body">Lasith Malinga defended 9 off the last over to give MI their 4th title against CSK — cricket's greatest finale. Jasprit Bumrah cemented himself as the world's best T20 death bowler. CSK's Imran Tahir won the Purple Cap (26 wickets).</p>
+        <div class="tl-highlights">
+          <span class="tl-tag record">4th MI Title</span>
+          <span class="tl-tag">Malinga Last Over</span>
+          <span class="tl-tag teal">Greatest Final</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2020 -->
+    <div class="tl-item champion" data-tags="milestone,controversy">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2020 — Season 13</span>
+        <div class="tl-season">Mumbai Indians — Historic Fifth Title</div>
+        <div class="tl-winner">🏆 Winner: Mumbai Indians (UAE Bubble)</div>
+        <p class="tl-body">Held entirely in UAE behind closed doors due to COVID-19, IPL proved it could survive any adversity. Mumbai Indians won their record 5th title. Ishan Kishan, Trent Boult, and Hardik Pandya were outstanding. The season got 200M+ viewers despite the pandemic.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag red">COVID-19 Season</span>
+          <span class="tl-tag teal">Behind Closed Doors</span>
+          <span class="tl-tag record">5th MI Title — Record</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2021 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2021 — Season 14</span>
+        <div class="tl-season">Chennai Super Kings — Fourth Title</div>
+        <div class="tl-winner">🏆 Winner: CSK (Dhoni's 4th)</div>
+        <p class="tl-body">Split across India and UAE due to mid-season COVID outbreak. CSK won their 4th IPL title. Faf du Plessis was magnificent. MS Dhoni, now 40, showed he still had the magic. The season marked Varun Chakravarthy's rise as a mystery spinner.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag">CSK 4th Title</span>
+          <span class="tl-tag red">Mid-Season Break</span>
+          <span class="tl-tag teal">Dhoni at 40</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2022 -->
+    <div class="tl-item champion" data-tags="milestone,record">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2022 — Season 15</span>
+        <div class="tl-season">Gujarat Titans — Debut Champions</div>
+        <div class="tl-winner">🏆 Winner: Gujarat Titans (Hardik Pandya, Captain)</div>
+        <p class="tl-body">Two new teams joined — Gujarat Titans and Lucknow Super Giants. The league expanded to 10 teams with 74 matches. Hardik Pandya led debutant GT to a historic title win. Jos Buttler was a one-man batting army for RR (863 runs, 4 centuries).</p>
+        <div class="tl-highlights">
+          <span class="tl-tag milestone">10-Team Expansion</span>
+          <span class="tl-tag record">Buttler 4 Centuries</span>
+          <span class="tl-tag teal">GT Debut Title</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2023 -->
+    <div class="tl-item champion" data-tags="record">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2023 — Season 16</span>
+        <div class="tl-season">Chennai Super Kings — Fifth Title</div>
+        <div class="tl-winner">🏆 Winner: CSK (Record-Equalling 5th Title)</div>
+        <p class="tl-body">CSK equalled MI's record of 5 IPL titles. Devon Conway and Ruturaj Gaikwad were phenomenal. Ravindra Jadeja and Deepak Chahar were key in the knockout rounds. IPL's media rights deal was signed for a staggering ₹48,390 crore for 2023–27.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag record">₹48,390 Cr Media Deal</span>
+          <span class="tl-tag">CSK 5th Title</span>
+          <span class="tl-tag teal">Conway-Gaikwad Duo</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2024 -->
+    <div class="tl-item champion" data-tags="milestone,record">
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2024 — Season 17</span>
+        <div class="tl-season">Kolkata Knight Riders — Third Title</div>
+        <div class="tl-winner">🏆 Winner: KKR (Shreyas Iyer, Captain)</div>
+        <p class="tl-body">KKR won their 3rd IPL title in commanding fashion under Shreyas Iyer. Mitchell Starc became the costliest player in IPL history (₹24.75 crore). Sunil Narine reinvented himself as an opening batter. KKR's score of 272 set an all-time IPL record.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag record">Starc ₹24.75 Cr</span>
+          <span class="tl-tag record">272 — All-Time High</span>
+          <span class="tl-tag teal">Narine Opener</span>
+        </div>
+      </div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-empty"></div>
+    </div>
+
+    <!-- 2025 -->
+    <div class="tl-item champion" data-tags="milestone">
+      <div class="tl-empty"></div>
+      <div class="tl-spacer"><div class="tl-dot"></div></div>
+      <div class="tl-content champion">
+        <span class="tl-year-badge">IPL 2025 — Season 18 · Ongoing</span>
+        <div class="tl-season">The Next Chapter Begins</div>
+        <div class="tl-winner">⚡ Season In Progress — April 2025</div>
+        <p class="tl-body">The 18th edition of IPL is underway with record-breaking attendance. Rishabh Pant (₹27 crore — highest ever in IPL auction history) headlines LSG. All 10 franchises battle in the most competitive season yet. Virat Kohli continues his pursuit of a maiden IPL title with RCB.</p>
+        <div class="tl-highlights">
+          <span class="tl-tag milestone">Pant ₹27 Cr Record</span>
+          <span class="tl-tag teal">Season 18</span>
+          <span class="tl-tag">Kohli's Final Chase?</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline-wrapper -->
+</section>
+
+<!-- ═══ CHAMPIONS WALL ═══ -->
+<section id="champions">
+  <div class="section-header reveal">
+    <span class="section-tag">Hall of Champions</span>
+    <h2 class="section-title">Every IPL Winner</h2>
+    <p class="section-desc">A wall of glory — every team that lifted the coveted trophy.</p>
+  </div>
+
+  <div class="champions-grid">
+    <div class="champ-card rr reveal">
+      <div class="champ-season">IPL 2008</div>
+      <div class="champ-team">Rajasthan Royals</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Captain: Shane Warne</div>
+    </div>
+    <div class="champ-card dc reveal">
+      <div class="champ-season">IPL 2009</div>
+      <div class="champ-team">Deccan Chargers</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Star: Adam Gilchrist</div>
+    </div>
+    <div class="champ-card csk reveal">
+      <div class="champ-season">IPL 2010</div>
+      <div class="champ-team">Chennai Super Kings</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Captain: MS Dhoni</div>
+    </div>
+    <div class="champ-card csk reveal">
+      <div class="champ-season">IPL 2011</div>
+      <div class="champ-team">Chennai Super Kings</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Back-to-Back</div>
+    </div>
+    <div class="champ-card kkr reveal">
+      <div class="champ-season">IPL 2012</div>
+      <div class="champ-team">Kolkata Knight Riders</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Captain: G. Gambhir</div>
+    </div>
+    <div class="champ-card mi reveal">
+      <div class="champ-season">IPL 2013</div>
+      <div class="champ-team">Mumbai Indians</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Captain: Rohit Sharma</div>
+    </div>
+    <div class="champ-card kkr reveal">
+      <div class="champ-season">IPL 2014</div>
+      <div class="champ-team">Kolkata Knight Riders</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Second Title</div>
+    </div>
+    <div class="champ-card mi reveal">
+      <div class="champ-season">IPL 2015</div>
+      <div class="champ-team">Mumbai Indians</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Second Title</div>
+    </div>
+    <div class="champ-card srh reveal">
+      <div class="champ-season">IPL 2016</div>
+      <div class="champ-team">Sunrisers Hyderabad</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Captain: D. Warner</div>
+    </div>
+    <div class="champ-card mi reveal">
+      <div class="champ-season">IPL 2017</div>
+      <div class="champ-team">Mumbai Indians</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Won by 1 Run</div>
+    </div>
+    <div class="champ-card csk reveal">
+      <div class="champ-season">IPL 2018</div>
+      <div class="champ-team">Chennai Super Kings</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Post-Ban Glory</div>
+    </div>
+    <div class="champ-card mi reveal">
+      <div class="champ-season">IPL 2019</div>
+      <div class="champ-team">Mumbai Indians</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">4th Title Record</div>
+    </div>
+    <div class="champ-card mi reveal">
+      <div class="champ-season">IPL 2020</div>
+      <div class="champ-team">Mumbai Indians</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">5th Title — Highest</div>
+    </div>
+    <div class="champ-card csk reveal">
+      <div class="champ-season">IPL 2021</div>
+      <div class="champ-team">Chennai Super Kings</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Dhoni at 40</div>
+    </div>
+    <div class="champ-card gt reveal">
+      <div class="champ-season">IPL 2022</div>
+      <div class="champ-team">Gujarat Titans</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Debut Champions</div>
+    </div>
+    <div class="champ-card csk reveal">
+      <div class="champ-season">IPL 2023</div>
+      <div class="champ-team">Chennai Super Kings</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">Record-Equalling 5th</div>
+    </div>
+    <div class="champ-card kkr reveal">
+      <div class="champ-season">IPL 2024</div>
+      <div class="champ-team">Kolkata Knight Riders</div>
+      <div class="champ-trophy">🏆</div>
+      <div class="champ-mvp">3rd Title</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ IMPACT ═══ -->
+<section id="impact">
+  <div class="section-header reveal">
+    <span class="section-tag">Numbers Don't Lie</span>
+    <h2 class="section-title">IPL's Staggering Impact</h2>
+    <p class="section-desc">The Indian Premier League is not just a cricket tournament — it is a global phenomenon that reshaped sports, entertainment, and the Indian economy.</p>
+  </div>
+
+  <div class="impact-grid">
+    <div class="impact-card reveal">
+      <span class="impact-emoji">💰</span>
+      <div class="impact-num">₹90,000Cr</div>
+      <div class="impact-label">Brand Value (2024)</div>
+      <div class="impact-desc">IPL's brand value surpassed that of the NFL and EPL in terms of per-match viewership value. The 2023–27 media rights alone were sold for ₹48,390 crore.</div>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-emoji">📺</span>
+      <div class="impact-num">600M+</div>
+      <div class="impact-label">Peak Viewers</div>
+      <div class="impact-desc">Over 600 million unique viewers watched IPL 2023 in India, with global viewership across 120 countries. It is the most watched cricket league in history.</div>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-emoji">🌏</span>
+      <div class="impact-num">120+</div>
+      <div class="impact-label">Countries Broadcasting</div>
+      <div class="impact-desc">IPL broadcasts reached over 120 countries, making it the world's second most watched cricket event after the ICC World Cup, and the premier domestic T20 league on earth.</div>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-emoji">🏏</span>
+      <div class="impact-num">1,000+</div>
+      <div class="impact-label">Players Developed</div>
+      <div class="impact-desc">IPL has nurtured over 1,000 domestic players — giving exposure to uncapped Indian players alongside global stars. Hardik Pandya, Jasprit Bumrah, and KL Rahul are products of the IPL system.</div>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-emoji">🏟️</span>
+      <div class="impact-num">10</div>
+      <div class="impact-label">Franchise Cities</div>
+      <div class="impact-desc">From 8 in 2008 to 10 in 2022, IPL expanded to include Gujarat and Lucknow — creating new cricketing cultures and fanbases across India's heartland.</div>
+    </div>
+    <div class="impact-card reveal">
+      <span class="impact-emoji">🎯</span>
+      <div class="impact-num">₹27Cr</div>
+      <div class="impact-label">Highest Auction Bid (2025)</div>
+      <div class="impact-desc">Rishabh Pant was sold for ₹27 crore in 2025 — the highest in IPL auction history. Just 17 years ago, the biggest bid was Dhoni at $1.5 million. The scale of growth is extraordinary.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LEGACY ═══ -->
+<section id="legacy">
+  <div class="section-header reveal">
+    <span class="section-tag">Why IPL Matters</span>
+    <h2 class="section-title">The Enduring Legacy</h2>
+    <p class="section-desc">IPL transformed Indian cricket — and Indian society — forever.</p>
+  </div>
+
+  <div class="legacy-inner">
+    <blockquote class="legacy-quote reveal">
+      "IPL changed the ecosystem of Indian cricket. It took the game to smaller towns, gave domestic players a shot at earning life-changing money, and put Indian cricket on the global map in a way no other tournament could."
+      <cite>— Sourav Ganguly, Former BCCI President</cite>
+    </blockquote>
+
+    <div class="legacy-pillars">
+      <div class="pillar reveal">
+        <div class="pillar-icon">🇮🇳</div>
+        <div class="pillar-title">Transforming Indian Cricket</div>
+        <div class="pillar-body">IPL became the greatest finishing school for Indian players. Youngsters from Jharkhand, Himachal Pradesh, and Assam now share dressing rooms with AB de Villiers and Steve Smith. India's dominance in world T20 cricket is directly linked to IPL's competitive intensity.</div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-icon">💼</div>
+        <div class="pillar-title">Economic Powerhouse</div>
+        <div class="pillar-body">IPL generates thousands of crores in GDP contribution — through advertising, tourism, hospitality, merchandise, and media. Cities hosting matches see massive spikes in hotel and local business revenue. IPL is India's single biggest annual sporting event economically.</div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-icon">🎬</div>
+        <div class="pillar-title">Cricket Meets Entertainment</div>
+        <div class="pillar-body">IPL fused Bollywood with cricket for the first time. Shah Rukh Khan owns KKR. Preity Zinta owns PBKS. Cheerleaders, DJs, and post-match concerts changed how Indians experience cricket — a stadium is now an event venue, not just a sports ground.</div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-icon">🌐</div>
+        <div class="pillar-title">Global Standard for T20</div>
+        <div class="pillar-body">IPL inspired leagues worldwide — BBL, PSL, CPL, SA20, ILT20, and more. Every T20 league looks to IPL as its gold standard. International players shape their schedules around the IPL window. Playing IPL is now a career goal for every cricketer on earth.</div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-icon">🧠</div>
+        <div class="pillar-title">Data & Technology Revolution</div>
+        <div class="pillar-body">IPL introduced analytics, DRS reviews, Hawk-Eye, Spidercam, and real-time pitch reports at a scale unseen in cricket before. Teams now employ full-time data analysts and video review squads. The IPL changed how cricket thinks and prepares at every level.</div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar-icon">🔥</div>
+        <div class="pillar-title">Breeding World-Class Talent</div>
+        <div class="pillar-body">Bumrah, Hardik Pandya, Rishabh Pant, Yuzvendra Chahal, Ishan Kishan — all were groomed through IPL. The league's pressure-cooker environment simulates international cricket. India's consistent ICC success since 2007 is built on an IPL backbone.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="nav-logo" style="display:inline-block;margin-bottom:1rem;">IPL Chronicle</div>
+  <p>From a spark of an idea in 2007 to the world's greatest cricket league. <strong>The revolution is ongoing.</strong></p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;">Educational tribute · Data accurate up to IPL 2025 Season</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const cursorTrail = document.getElementById('cursorTrail');
+let mx=0, my=0, tx=0, ty=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
+(function animTrail(){
+  tx += (mx - tx) * 0.18;
+  ty += (my - ty) * 0.18;
+  cursorTrail.style.left = tx + 'px';
+  cursorTrail.style.top  = ty + 'px';
+  requestAnimationFrame(animTrail);
+})();
+
+/* ── PROGRESS BAR ── */
+const bar = document.getElementById('progress-bar');
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  bar.style.width = pct + '%';
+});
+
+/* ── COUNT UP ── */
+function countUp(el, target, duration=2000) {
+  const start = performance.now();
+  function step(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(eased * target);
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
+const statNums = document.querySelectorAll('.stat-num[data-target]');
+let statsStarted = false;
+const heroObs = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting && !statsStarted) {
+    statsStarted = true;
+    statNums.forEach(el => countUp(el, +el.dataset.target, 1800));
+  }
+}, { threshold: 0.5 });
+heroObs.observe(document.getElementById('hero'));
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.reveal, .tl-item, .formation-card, .impact-card, .champ-card, .pillar');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => observer.observe(el));
+
+/* ── FILTER TABS ── */
+const filterBtns = document.querySelectorAll('.filter-btn');
+const tlItems = document.querySelectorAll('.tl-item');
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    tlItems.forEach(item => {
+      const tags = item.dataset.tags || '';
+      if (filter === 'all' || tags.includes(filter)) {
+        item.style.display = 'grid';
+        setTimeout(() => item.style.opacity = '1', 10);
+      } else {
+        item.style.opacity = '0';
+        setTimeout(() => item.style.display = 'none', 300);
+      }
+    });
+  });
+});
+
+/* ── NAV ACTIVE STATE ── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.style.color = a.getAttribute('href') === '#'+current ? 'var(--gold)' : '';
+  });
+});
+</script>
+</body>
+</html>
