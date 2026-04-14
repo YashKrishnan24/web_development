@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Landing Page</title>
+  <style>
+    :root {
+      --bg: #0d1221;
+      --sun: #f9c74f;
+      --text: #f8f9fa;
+      --accent: #89c2d9;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top, #2e3a74 0%, #0d1221 50%);
+      color: var(--text);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .page {
+      width: min(100%, 1100px);
+      padding: 24px;
+      display: grid;
+      gap: 28px;
+      position: relative;
+    }
+
+    .hero {
+      display: grid;
+      gap: 20px;
+      background: rgba(18, 28, 58, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      box-shadow: 0 24px 80px var(--shadow);
+      padding: 40px;
+      overflow: hidden;
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.45;
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 220px;
+      height: 220px;
+      top: -60px;
+      right: -90px;
+      background: rgba(255, 153, 102, 0.35);
+    }
+
+    .hero::after {
+      width: 180px;
+      height: 180px;
+      bottom: -70px;
+      left: -60px;
+      background: rgba(137, 194, 217, 0.35);
+    }
+
+    .hero-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 1.03;
+      max-width: 640px;
+      animation: slideIn 1s ease-out both;
+    }
+
+    .hero-title span {
+      color: var(--sun);
+    }
+
+    .hero-text {
+      max-width: 640px;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #cbd5e1;
+      animation: fadeIn 1.3s ease-out both;
+      animation-delay: 0.15s;
+    }
+
+    .form-card {
+      display: grid;
+      gap: 20px;
+      padding: 28px;
+      border-radius: 24px;
+      background: rgba(6, 16, 44, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+      animation: fadeIn 1.4s ease-out both;
+      animation-delay: 0.2s;
+    }
+
+    .form-card label {
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #9fb3d2;
+    }
+
+    .form-card input {
+      border: none;
+      border-radius: 16px;
+      padding: 18px 20px;
+      font-size: 1rem;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      outline: none;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .form-card input:focus {
+      background: rgba(255, 255, 255, 0.14);
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 2px rgba(255, 199, 71, 0.18);
+    }
+
+    .form-card button {
+      border: none;
+      border-radius: 16px;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #f9c74f 0%, #f08a5d 100%);
+      color: #0d1221;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 18px 35px rgba(249, 199, 79, 0.25);
+    }
+
+    .form-card button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 22px 48px rgba(249, 199, 79, 0.4);
+    }
+
+    .greeting-panel {
+      min-height: 160px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border-radius: 24px;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      position: relative;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .greeting-panel p {
+      font-size: 1.05rem;
+      color: #a6b8d8;
+      margin-bottom: 14px;
+    }
+
+    .greeting-panel h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--text);
+      letter-spacing: -0.04em;
+    }
+
+    .feature-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-top: 12px;
+      animation: fadeIn 1.5s ease-out both;
+      animation-delay: 0.25s;
+    }
+
+    .feature-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+      transition: transform 0.25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: var(--sun);
+    }
+
+    .feature-card p {
+      color: #b8c8e1;
+      line-height: 1.7;
+      font-size: 0.96rem;
+    }
+
+    .dot {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .dot:nth-child(1) { top: 24px; left: 22px; animation-duration: 5.6s; }
+    .dot:nth-child(2) { bottom: 32px; right: 28px; animation-duration: 7.2s; }
+    .dot:nth-child(3) { top: 180px; right: 48px; animation-duration: 5s; }
+    .dot:nth-child(4) { bottom: 116px; left: 72px; animation-duration: 6.4s; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 199, 79, 0.12); }
+      50% { box-shadow: 0 0 0 26px rgba(255, 199, 79, 0.03); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-16px); }
+    }
+
+    @media (max-width: 760px) {
+      .hero {
+        padding: 28px;
+      }
+      .hero-title {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-header">
+        <div>
+          <h1 class="hero-title">Say hello to your personalized <span>welcome experience</span></h1>
+          <p class="hero-text">Type your name below and watch the page come alive with a greeting crafted just for you. Stylish motion, vibrant accents, and a modern layout make this landing page feel instantly special.</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <label for="nameInput">Enter your name</label>
+        <input id="nameInput" type="text" placeholder="Your name here" autocomplete="off" />
+        <button id="greetBtn" type="button">Create my greeting</button>
+      </div>
+
+      <div class="greeting-panel" id="greetingPanel">
+        <p>Welcome visitor, we can't wait to meet you.</p>
+        <h2>Your greeting will appear here soon.</h2>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature-card">
+          <h3>Personalized greeting</h3>
+          <p>Enter your name and get an animated welcome message tailored just for you.</p>
+        </article>
+        <article class="feature-card">
+          <h3>Smooth animations</h3>
+          <p>Floating accents, fade-ins, and responsive interactions make this page feel alive.</p>
+        </article>
+        <article class="feature-card">
+          <h3>Modern look</h3>
+          <p>A polished glass-style card layout and subtle gradients ensure the design stays eye-catching.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const nameInput = document.getElementById('nameInput');
+    const greetBtn = document.getElementById('greetBtn');
+    const greetingPanel = document.getElementById('greetingPanel');
+
+    function showGreeting() {
+      const name = nameInput.value.trim();
+      const title = greetingPanel.querySelector('h2');
+      const description = greetingPanel.querySelector('p');
+
+      if (!name) {
+        description.textContent = 'Please enter your name to unlock the welcome message.';
+        title.textContent = 'Your magical greeting is waiting...';
+        greetingPanel.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))';
+        return;
+      }
+
+      description.textContent = `Hello ${name}! Your landing page is ready to shine.`;
+      title.textContent = `Welcome to your experience, ${name}!`;
+      greetingPanel.style.background = 'linear-gradient(180deg, rgba(249,199,79,0.16), rgba(255,255,255,0.03))';
+      title.animate(
+        [
+          { transform: 'translateY(16px) scale(0.98)', opacity: 0 },
+          { transform: 'translateY(0) scale(1)', opacity: 1 }
+        ],
+        { duration: 450, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+      );
+    }
+
+    greetBtn.addEventListener('click', showGreeting);
+    nameInput.addEventListener('keypress', (event) => {
+      if (event.key === 'Enter') showGreeting();
+    });
+
+    window.addEventListener('load', () => {
+      nameInput.focus();
+    });
+  </script>
+</body>
+</html>
