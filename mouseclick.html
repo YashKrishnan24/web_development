@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bubble Clicks — Hello There</title>
+  <style>
+    :root{
+      --bg1:#0f172a;
+      --bg2:#0b3a5b;
+      --accent:#ffd166;
+      --glass: rgba(255,255,255,0.06);
+    }
+
+    /* Page layout */
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: radial-gradient(1200px 600px at 10% 20%, rgba(255,255,255,0.02), transparent),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      color:#fff;
+      overflow:hidden;
+      cursor:crosshair;
+    }
+
+    /* Center hint */
+    .hint{
+      position:fixed;
+      left:50%;
+      top:18px;
+      transform:translateX(-50%);
+      background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      padding:8px 14px;
+      border-radius:999px;
+      font-weight:600;
+      letter-spacing:0.6px;
+      color:#e6eef8;
+      box-shadow: 0 6px 20px rgba(2,6,23,0.6);
+      backdrop-filter: blur(6px);
+      z-index:1000;
+    }
+
+    /* Bubble base style */
+    .bubble{
+      position:fixed;
+      pointer-events:none;
+      border-radius:50%;
+      mix-blend-mode:screen;
+      will-change: transform, opacity;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.45), inset 0 -6px 18px rgba(255,255,255,0.06);
+      transform-origin:center;
+      opacity:0.95;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Floating animation */
+    @keyframes floatUp {
+      0%   { transform: translateY(0) scale(0.9); opacity:1; filter: blur(0px); }
+      40%  { transform: translateY(-40vh) scale(1.05); opacity:0.95; filter: blur(0.2px); }
+      80%  { transform: translateY(-60vh) scale(1.02); opacity:0.6; filter: blur(0.6px); }
+      100% { transform: translateY(-70vh) scale(1.0); opacity:0; filter: blur(1.2px); }
+    }
+
+    /* Pop animation when removed */
+    @keyframes pop {
+      0% { transform: scale(1); opacity:1; }
+      60% { transform: scale(1.25); opacity:0.9; }
+      100% { transform: scale(0.2); opacity:0; }
+    }
+
+    /* HELLO THERE overlay */
+    .hello-overlay{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:2000;
+      pointer-events:none;
+    }
+
+    .hello-card{
+      pointer-events:auto;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border-radius:18px;
+      padding:28px 36px;
+      text-align:center;
+      box-shadow: 0 20px 60px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      transform: translateY(20px) scale(0.98);
+      animation: helloIn 420ms cubic-bezier(.2,.9,.2,1) forwards;
+      backdrop-filter: blur(8px);
+    }
+
+    @keyframes helloIn {
+      from { opacity:0; transform: translateY(30px) scale(0.96); }
+      to   { opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    .hello-title{
+      font-size: clamp(28px, 4.6vw, 44px);
+      margin:0 0 6px 0;
+      color:var(--accent);
+      letter-spacing:1px;
+      font-weight:800;
+      text-shadow: 0 6px 30px rgba(255,209,102,0.08);
+    }
+
+    .hello-sub{
+      margin:0;
+      color:#dfeffb;
+      opacity:0.95;
+      font-weight:600;
+      letter-spacing:0.4px;
+    }
+
+    /* small close button */
+    .hello-close{
+      margin-top:14px;
+      display:inline-block;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:#fff;
+      padding:8px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      letter-spacing:0.6px;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .hello-close:hover{ transform: translateY(-3px); background: rgba(255,255,255,0.02); }
+
+    /* small accessibility note for keyboard users */
+    .sr-only{
+      position:absolute;
+      left:-9999px;
+      width:1px;
+      height:1px;
+      overflow:hidden;
+    }
+  </style>
+</head>
+<body>
+  <div class="hint">Click anywhere — make bubbles. Triple-click quickly for a surprise.</div>
+
+  <!-- Accessible label for screen readers -->
+  <div class="sr-only" aria-live="polite">Interactive bubble canvas. Click to create bubbles.</div>
+
+  <script>
+    // Configuration
+    const TRIPLE_CLICK_WINDOW = 700; // ms allowed between consecutive clicks
+    const BUBBLE_LIFETIME = 4200; // ms before bubble removed (should match animation)
+    const COLORS = [
+      'rgba(255, 209, 102, 0.18)',
+      'rgba(102, 255, 218, 0.14)',
+      'rgba(163, 103, 255, 0.12)',
+      'rgba(255, 102, 178, 0.12)',
+      'rgba(102, 179, 255, 0.12)'
+    ];
+
+    let clickCount = 0;
+    let lastClickAt = 0;
+    let tripleTimeout = null;
+    let helloVisible = false;
+
+    // Utility: random between min and max
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    // Create a bubble at the click coordinates
+    function createBubble(x, y){
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+
+      // Random size and color
+      const size = Math.round(rand(36, 120));
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+      bubble.style.left = (x - size/2) + 'px';
+      bubble.style.top = (y - size/2) + 'px';
+      bubble.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.55), transparent 20%), ${color}`;
+      bubble.style.opacity = 0.98;
+
+      // Slight rotation and animation duration variation
+      const duration = rand(3.6, 5.2); // seconds
+      bubble.style.animation = `floatUp ${duration}s ease-out forwards`;
+
+      // Add a subtle wobble using transform
+      bubble.animate([
+        { transform: 'translateY(0) rotate(0deg)' },
+        { transform: 'translateY(-6px) rotate(3deg)' },
+        { transform: 'translateY(0) rotate(-2deg)' }
+      ], { duration: 900 + Math.random()*600, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' });
+
+      // Remove after lifetime or when animation ends
+      setTimeout(() => {
+        // pop effect before removing
+        bubble.style.animation = `pop 260ms ease forwards`;
+        setTimeout(() => bubble.remove(), 260);
+      }, BUBBLE_LIFETIME - 300);
+
+      document.body.appendChild(bubble);
+    }
+
+    // Show the HELLO THERE overlay
+    function showHello(){
+      if (helloVisible) return;
+      helloVisible = true;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'hello-overlay';
+      overlay.setAttribute('role','dialog');
+      overlay.setAttribute('aria-modal','true');
+
+      const card = document.createElement('div');
+      card.className = 'hello-card';
+
+      const title = document.createElement('h1');
+      title.className = 'hello-title';
+      title.textContent = 'HELLO THERE';
+
+      const sub = document.createElement('p');
+      sub.className = 'hello-sub';
+      sub.textContent = 'Nice to see you — keep clicking for more bubbles.';
+
+      const close = document.createElement('button');
+      close.className = 'hello-close';
+      close.textContent = 'Close';
+      close.addEventListener('click', () => {
+        overlay.remove();
+        helloVisible = false;
+      });
+
+      card.appendChild(title);
+      card.appendChild(sub);
+      card.appendChild(close);
+      overlay.appendChild(card);
+      document.body.appendChild(overlay);
+
+      // Auto-dismiss after a short while
+      setTimeout(() => {
+        if (helloVisible) {
+          overlay.remove();
+          helloVisible = false;
+        }
+      }, 4200);
+    }
+
+    // Click handler
+    document.addEventListener('click', (ev) => {
+      // Create bubble at click position
+      createBubble(ev.clientX, ev.clientY);
+
+      // Triple-click detection (three clicks in a row within TRIPLE_CLICK_WINDOW)
+      const now = Date.now();
+      if (now - lastClickAt <= TRIPLE_CLICK_WINDOW) {
+        clickCount++;
+      } else {
+        clickCount = 1;
+      }
+      lastClickAt = now;
+
+      // Clear any pending reset and set a new one
+      if (tripleTimeout) clearTimeout(tripleTimeout);
+      tripleTimeout = setTimeout(() => { clickCount = 0; }, TRIPLE_CLICK_WINDOW + 50);
+
+      if (clickCount >= 3) {
+        clickCount = 0;
+        showHello();
+      }
+    });
+
+    // Keyboard accessibility: space or enter triggers a bubble at center
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === ' ' || ev.key === 'Enter') {
+        ev.preventDefault();
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        createBubble(cx, cy);
+      }
+    });
+
+    // Clean up bubbles if window is resized (optional)
+    window.addEventListener('resize', () => {
+      // remove old bubbles that might be off-screen
+      document.querySelectorAll('.bubble').forEach(b => {
+        const rect = b.getBoundingClientRect();
+        if (rect.bottom < -200 || rect.top > window.innerHeight + 200) b.remove();
+      });
+    });
+  </script>
+</body>
+</html>
