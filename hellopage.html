@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalist Glassmorphism Profile</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 1;
+        }
+        .blob1 {
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 94, 98, 0.6);
+            top: 10%;
+            left: 20%;
+            animation: move1 10s infinite alternate;
+        }
+        .blob2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 210, 255, 0.6);
+            bottom: 10%;
+            right: 15%;
+            animation: move2 12s infinite alternate;
+        }
+
+        @keyframes move1 {
+            from { transform: translate(0, 0); }
+            to { transform: translate(50px, 50px); }
+        }
+        @keyframes move2 {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-60px, -40px); }
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            width: 350px;
+            text-align: center;
+            z-index: 10;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        h2 {
+            margin: 0 0 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 25px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #b8f2e6;
+            min-height: 20px;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+
+    <div class="glass-card">
+        <div class="profile-img">👨‍💻</div>
+        <h2 id="name-display">Yash Krishnan</h2>
+        <p>B.Tech CSE Student | Developer</p>
+        
+        <div class="btn-container">
+            <button class="btn" onclick="viewProjects()">GitHub</button>
+            <button class="btn" onclick="sayHello()">Connect</button>
+        </div>
+
+        <div id="feedback"></div>
+    </div>
+
+    <script>
+        const feedbackEl = document.getElementById('feedback');
+
+        function viewProjects() {
+            feedbackEl.textContent = "Redirecting to GitHub repositories...";
+            feedbackEl.style.color = "#a8e6cf";
+        }
+
+        function sayHello() {
+            feedbackEl.textContent = "Drop a message! Opening contact form...";
+            feedbackEl.style.color = "#ffecd2";
+        }
+    </script>
+</body>
+</html>
