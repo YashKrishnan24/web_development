@@ -5,120 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dream Catcher</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #0c0c0c, #1a1a2e, #16213e);
-            font-family: 'Arial', sans-serif;
+            background: radial-gradient(circle at center, #0f172a, #020617);
+            font-family: 'Outfit', sans-serif;
             overflow: hidden;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #ffffff;
+            color: #f8fafc;
         }
 
         .dream-catcher {
             position: relative;
-            width: 400px;
-            height: 400px;
+            width: 600px;
+            height: 600px;
             border-radius: 50%;
-            border: 2px solid #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            border: 1px dashed rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 0 60px rgba(56, 189, 248, 0.05), 0 0 80px rgba(129, 140, 248, 0.05);
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: spin 40s linear infinite;
+        }
+
+        .center-hub {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(56, 189, 248, 0.1);
+            z-index: 10;
+            animation: counter-spin 40s linear infinite;
+        }
+
+        .center-hub h1 {
+            font-size: 2em;
+            margin: 0;
+            font-weight: 600;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .center-hub p {
+            font-size: 0.95em;
+            margin: 12px 0 0;
+            color: #94a3b8;
+            font-weight: 300;
         }
 
         .dream {
             position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            padding: 10px;
-            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 300;
             text-align: center;
-            opacity: 0;
-            animation: float 8s infinite ease-in-out;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            transition: opacity 0.8s ease, transform 0.8s ease, box-shadow 0.3s ease;
+            cursor: default;
         }
 
-        .dream:nth-child(1) { animation-delay: 0s; }
-        .dream:nth-child(2) { animation-delay: 1s; }
-        .dream:nth-child(3) { animation-delay: 2s; }
-        .dream:nth-child(4) { animation-delay: 3s; }
-        .dream:nth-child(5) { animation-delay: 4s; }
-        .dream:nth-child(6) { animation-delay: 5s; }
-        .dream:nth-child(7) { animation-delay: 6s; }
-        .dream:nth-child(8) { animation-delay: 7s; }
-
-        @keyframes float {
-            0%, 100% { opacity: 0; transform: translateY(0) rotate(0deg); }
-            25% { opacity: 1; transform: translateY(-50px) rotate(90deg); }
-            50% { opacity: 1; transform: translateY(-100px) rotate(180deg); }
-            75% { opacity: 1; transform: translateY(-50px) rotate(270deg); }
+        .dream:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
         }
 
-        .center-text {
-            position: absolute;
-            text-align: center;
-            z-index: 10;
+        .dream-inner {
+            display: block;
+            animation: counter-spin 40s linear infinite;
         }
 
-        .center-text h1 {
-            font-size: 2em;
-            margin: 0;
-            text-shadow: 0 0 10px #00d4ff;
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
         }
 
-        .center-text p {
-            font-size: 1.2em;
-            margin: 10px 0 0 0;
-            opacity: 0.8;
+        @keyframes counter-spin {
+            100% { transform: rotate(-360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="dream-catcher">
-        <div class="center-text">
+    <div class="dream-catcher" id="catcher">
+        <div class="center-hub">
             <h1>Dream Catcher</h1>
-            <p>Catch your dreams as they float by...</p>
+            <p>Catch your dreams<br>as they float by</p>
         </div>
-        <div class="dream" id="dream1">Dream of flying high</div>
-        <div class="dream" id="dream2">Explore hidden worlds</div>
-        <div class="dream" id="dream3">Build amazing things</div>
-        <div class="dream" id="dream4">Discover new passions</div>
-        <div class="dream" id="dream5">Travel to distant lands</div>
-        <div class="dream" id="dream6">Create beautiful art</div>
-        <div class="dream" id="dream7">Learn something new</div>
-        <div class="dream" id="dream8">Make a difference</div>
     </div>
 
     <script>
-        // Function to generate random dreams
-        function generateDream() {
-            const dreams = [
-                "Dream of endless possibilities",
-                "Imagine a world without limits",
-                "Chase the stars in your mind",
-                "Unleash your inner creativity",
-                "Find peace in the chaos",
-                "Embrace the unknown",
-                "Create your own reality",
-                "Inspire others with your vision"
-            ];
-            return dreams[Math.floor(Math.random() * dreams.length)];
+        const dreamsList = [
+            "Dream of flying high", "Explore hidden worlds", "Build amazing things",
+            "Discover new passions", "Travel to distant lands", "Create beautiful art",
+            "Learn something new", "Make a difference", "Dream of endless possibilities",
+            "Imagine a world without limits", "Chase the stars in your mind",
+            "Unleash your inner creativity", "Find peace in the chaos",
+            "Embrace the unknown", "Create your own reality", "Inspire others"
+        ];
+
+        const catcher = document.getElementById('catcher');
+        const numDreams = 8;
+        const radius = 280;
+        const dreamElements = [];
+
+        for (let i = 0; i < numDreams; i++) {
+            const angle = (i / numDreams) * 2 * Math.PI;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+
+            const dream = document.createElement('div');
+            dream.className = 'dream';
+            dream.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+
+            const inner = document.createElement('span');
+            inner.className = 'dream-inner';
+            inner.textContent = dreamsList[i];
+            
+            dream.appendChild(inner);
+            catcher.appendChild(dream);
+            dreamElements.push({ el: dream, inner: inner, x, y });
         }
 
-        // Update dreams every 10 seconds
+        function getRandomDream(currentText) {
+            let newDream = currentText;
+            while (newDream === currentText) {
+                newDream = dreamsList[Math.floor(Math.random() * dreamsList.length)];
+            }
+            return newDream;
+        }
+
         setInterval(() => {
-            const dreamElements = document.querySelectorAll('.dream');
-            dreamElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.textContent = generateDream();
-                }, index * 1000);
-            });
-        }, 10000);
+            const targetIndex = Math.floor(Math.random() * numDreams);
+            const targetObj = dreamElements[targetIndex];
+            
+            targetObj.el.style.opacity = '0';
+            targetObj.el.style.transform = `translate(calc(-50% + ${targetObj.x}px), calc(-50% + ${targetObj.y}px)) scale(0.8)`;
+
+            setTimeout(() => {
+                targetObj.inner.textContent = getRandomDream(targetObj.inner.textContent);
+                targetObj.el.style.opacity = '1';
+                targetObj.el.style.transform = `translate(calc(-50% + ${targetObj.x}px), calc(-50% + ${targetObj.y}px)) scale(1)`;
+            }, 800);
+        }, 3000);
     </script>
 </body>
 </html>
