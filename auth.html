@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus - Neural Portal</title>
+    <title>Aether Core Initialization</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
@@ -15,7 +15,7 @@
         }
 
         body {
-            background-color: #030305;
+            background: radial-gradient(circle at 50% 50%, #0a0a12 0%, #030305 100%);
             color: #ffffff;
             overflow: hidden;
             height: 100vh;
@@ -24,7 +24,7 @@
             justify-content: center;
         }
 
-        #network-canvas {
+        #bg-canvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -33,7 +33,7 @@
             z-index: 0;
         }
 
-        .auth-wrapper {
+        .auth-container {
             position: relative;
             z-index: 10;
             width: 100%;
@@ -47,34 +47,40 @@
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .glass-panel {
+        .glass-card {
             background: rgba(15, 15, 20, 0.4);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
             padding: 48px 40px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        .logo-container {
+        .brand-icon {
             display: flex;
             justify-content: center;
             margin-bottom: 32px;
         }
 
-        .logo-icon {
+        .icon-box {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background: linear-gradient(135deg, #10b981, #3b82f6);
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+            animation: pulseShadow 2s infinite alternate;
         }
 
-        .logo-icon svg {
+        @keyframes pulseShadow {
+            from { box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+            to { box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6); }
+        }
+
+        .icon-box svg {
             width: 24px;
             height: 24px;
             color: white;
@@ -88,19 +94,19 @@
             letter-spacing: -0.5px;
         }
 
-        p.subtitle {
+        p.desc {
             text-align: center;
             color: #94a3b8;
             font-size: 15px;
             margin-bottom: 40px;
         }
 
-        .input-group {
+        .field-wrapper {
             position: relative;
             margin-bottom: 24px;
         }
 
-        .input-group input {
+        .field-wrapper input {
             width: 100%;
             padding: 16px 20px;
             background: rgba(255, 255, 255, 0.03);
@@ -112,13 +118,18 @@
             outline: none;
         }
 
-        .input-group input:focus {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        .field-wrapper input[type="password"],
+        .field-wrapper input.visible {
+            padding-right: 50px; 
         }
 
-        .input-group label {
+        .field-wrapper input:focus {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .field-wrapper label {
             position: absolute;
             left: 20px;
             top: 50%;
@@ -129,19 +140,41 @@
             transition: all 0.3s ease;
         }
 
-        .input-group input:focus ~ label,
-        .input-group input:not(:placeholder-shown) ~ label {
+        .field-wrapper input:focus ~ label,
+        .field-wrapper input:not(:placeholder-shown) ~ label {
             top: 0;
             font-size: 12px;
             background: #0d0d12;
             padding: 0 8px;
-            color: #38bdf8;
+            color: #3b82f6;
         }
 
-        .btn-submit {
+        .eye-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eye-btn:hover {
+            color: #3b82f6;
+        }
+
+        .eye-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .action-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background: linear-gradient(135deg, #10b981, #3b82f6);
             border: none;
             border-radius: 12px;
             color: #ffffff;
@@ -151,14 +184,18 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .btn-submit:hover {
+        .action-btn:hover:not(.active) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
         }
 
-        .btn-submit::after {
+        .action-btn::after {
             content: '';
             position: absolute;
             top: 0;
@@ -169,186 +206,314 @@
             transition: all 0.5s ease;
         }
 
-        .btn-submit:hover::after {
+        .action-btn:hover::after {
             left: 100%;
         }
 
-        .footer-links {
+        .action-btn.active {
+            background: rgba(59, 130, 246, 0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: rotate 1s ease-in-out infinite;
+        }
+
+        .action-btn.active .loader {
+            display: block;
+        }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .links {
             display: flex;
             justify-content: space-between;
             margin-top: 24px;
             font-size: 14px;
         }
 
-        .footer-links a {
+        .links a {
             color: #94a3b8;
             text-decoration: none;
             transition: color 0.3s;
         }
 
-        .footer-links a:hover {
-            color: #38bdf8;
+        .links a:hover {
+            color: #3b82f6;
         }
     </style>
 </head>
 <body>
 
-    <canvas id="network-canvas"></canvas>
+    <canvas id="bg-canvas"></canvas>
 
-    <div class="auth-wrapper">
-        <div class="glass-panel">
-            <div class="logo-container">
-                <div class="logo-icon">
+    <div class="auth-container">
+        <div class="glass-card">
+            <div class="brand-icon">
+                <div class="icon-box">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                     </svg>
                 </div>
             </div>
             
-            <h2>Welcome Back</h2>
-            <p class="subtitle">Enter your credentials to access the grid.</p>
+            <h2>Aether Core</h2>
+            <p class="desc">Establish secure uplink sequence.</p>
 
-            <form onsubmit="event.preventDefault();">
-                <div class="input-group">
-                    <input type="email" id="email" placeholder=" " required>
-                    <label for="email">Email Address</label>
+            <form id="authForm">
+                <div class="field-wrapper">
+                    <input type="email" id="userEmail" placeholder=" " required>
+                    <label for="userEmail">Identification ID</label>
                 </div>
 
-                <div class="input-group">
-                    <input type="password" id="password" placeholder=" " required>
-                    <label for="password">Password</label>
+                <div class="field-wrapper">
+                    <input type="password" id="userPass" placeholder=" " required>
+                    <label for="userPass">Passcode</label>
+                    <div class="eye-btn" id="revealPass">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn-submit">Initialize Session</button>
+                <button type="submit" class="action-btn" id="execBtn">
+                    <div class="loader"></div>
+                    <span class="btn-label">Connect</span>
+                </button>
             </form>
 
-            <div class="footer-links">
-                <a href="#">Forgot password?</a>
-                <a href="#">Request access</a>
+            <div class="links">
+                <a href="#">Recover passcode</a>
+                <a href="#">Register node</a>
             </div>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('network-canvas');
-        const ctx = canvas.getContext('2d');
+        const revealBtn = document.getElementById('revealPass');
+        const passInput = document.getElementById('userPass');
 
-        let width, height;
-        let particles = [];
-        const particleCount = 100;
-        const connectionDistance = 150;
+        revealBtn.addEventListener('click', () => {
+            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passInput.setAttribute('type', type);
+            
+            if(type === 'text') {
+                revealBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                </svg>`;
+                passInput.classList.add('visible');
+            } else {
+                revealBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>`;
+                passInput.classList.remove('visible');
+            }
+        });
+
+        const authForm = document.getElementById('authForm');
+        const execBtn = document.getElementById('execBtn');
+        const btnLabel = document.querySelector('.btn-label');
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            execBtn.classList.add('active');
+            btnLabel.textContent = 'Syncing...';
+            
+            setTimeout(() => {
+                execBtn.classList.remove('active');
+                execBtn.style.background = 'linear-gradient(135deg, #8b5cf6, #d946ef)';
+                btnLabel.textContent = 'Uplink Established';
+                
+                triggerWave(window.innerWidth/2, window.innerHeight/2, 50);
+            }, 2000);
+        });
+
+        const cvs = document.getElementById('bg-canvas');
+        const ctx = cvs.getContext('2d');
+
+        let w, h;
+        let points = [];
+        let waves = [];
+        const count = 120;
+        const limit = 150;
         
-        let mouse = {
+        let pointer = {
             x: null,
             y: null,
-            radius: 200
+            rad: 150
         };
 
         window.addEventListener('mousemove', (e) => {
-            mouse.x = e.x;
-            mouse.y = e.y;
+            pointer.x = e.x;
+            pointer.y = e.y;
         });
 
         window.addEventListener('mouseout', () => {
-            mouse.x = null;
-            mouse.y = null;
+            pointer.x = null;
+            pointer.y = null;
         });
 
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+        window.addEventListener('click', (e) => {
+            triggerWave(e.x, e.y, 15);
+        });
+
+        function triggerWave(x, y, forceLevel) {
+            waves.push({ x: x, y: y, rad: 0, opacity: 1 });
+
+            for (let i = 0; i < points.length; i++) {
+                let dx = points[i].x - x;
+                let dy = points[i].y - y;
+                let dist = Math.sqrt(dx * dx + dy * dist);
+
+                if (dist < 300) {
+                    let f = (300 - dist) / 300;
+                    points[i].vx += (dx / dist) * f * forceLevel;
+                    points[i].vy += (dy / dist) * f * forceLevel;
+                }
+            }
+        }
+
+        function scale() {
+            w = cvs.width = window.innerWidth;
+            h = cvs.height = window.innerHeight;
         }
 
         window.addEventListener('resize', () => {
-            resize();
-            init();
+            scale();
+            start();
         });
 
-        class Particle {
+        class NodeEntity {
             constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 1;
-                this.vy = (Math.random() - 0.5) * 1;
-                this.baseRadius = Math.random() * 2 + 1;
-                this.radius = this.baseRadius;
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.origVx = (Math.random() - 0.5) * 1;
+                this.origVy = (Math.random() - 0.5) * 1;
+                this.vx = this.origVx;
+                this.vy = this.origVy;
+                this.baseSize = Math.random() * 2 + 1;
+                this.size = this.baseSize;
+                this.drag = 0.95;
             }
 
-            update() {
+            step() {
+                if (Math.abs(this.vx) > Math.abs(this.origVx)) this.vx *= this.drag;
+                if (Math.abs(this.vy) > Math.abs(this.origVy)) this.vy *= this.drag;
+
                 this.x += this.vx;
                 this.y += this.vy;
 
-                if (this.x < 0 || this.x > width) this.vx = -this.vx;
-                if (this.y < 0 || this.y > height) this.vy = -this.vy;
+                if (this.x < 0 || this.x > w) {
+                    this.vx = -this.vx;
+                    this.origVx = -this.origVx;
+                    this.x = this.x < 0 ? 0 : w;
+                }
+                if (this.y < 0 || this.y > h) {
+                    this.vy = -this.vy;
+                    this.origVy = -this.origVy;
+                    this.y = this.y < 0 ? 0 : h;
+                }
 
-                if (mouse.x != null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
+                if (pointer.x != null) {
+                    let dx = pointer.x - this.x;
+                    let dy = pointer.y - this.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
                     
-                    if (distance < mouse.radius) {
-                        const forceDirectionX = dx / distance;
-                        const forceDirectionY = dy / distance;
-                        const force = (mouse.radius - distance) / mouse.radius;
+                    if (dist < pointer.rad) {
+                        const dirX = dx / dist;
+                        const dirY = dy / dist;
+                        const f = (pointer.rad - dist) / pointer.rad;
                         
-                        this.x -= forceDirectionX * force * 2;
-                        this.y -= forceDirectionY * force * 2;
-                        this.radius = this.baseRadius * 2;
+                        this.x -= dirX * f * 2;
+                        this.y -= dirY * f * 2;
+                        this.size = this.baseSize * 2;
                     } else {
-                        this.radius = this.baseRadius;
+                        this.size = this.baseSize;
                     }
                 }
             }
 
-            draw() {
+            render() {
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(129, 140, 248, 0.8)';
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.8)';
                 ctx.fill();
             }
         }
 
-        function init() {
-            particles = [];
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
+        function start() {
+            points = [];
+            waves = [];
+            for (let i = 0; i < count; i++) {
+                points.push(new NodeEntity());
             }
         }
 
-        function connect() {
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dx = particles[a].x - particles[b].x;
-                    let dy = particles[a].y - particles[b].y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
+        function link() {
+            for (let a = 0; a < points.length; a++) {
+                for (let b = a; b < points.length; b++) {
+                    let dx = points[a].x - points[b].x;
+                    let dy = points[a].y - points[b].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
 
-                    if (distance < connectionDistance) {
-                        let opacity = 1 - (distance / connectionDistance);
-                        ctx.strokeStyle = `rgba(56, 189, 248, ${opacity * 0.5})`;
+                    if (dist < limit) {
+                        let alpha = 1 - (dist / limit);
+                        ctx.strokeStyle = `rgba(16, 185, 129, ${alpha * 0.5})`;
                         ctx.lineWidth = 1;
                         ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
+                        ctx.moveTo(points[a].x, points[a].y);
+                        ctx.lineTo(points[b].x, points[b].y);
                         ctx.stroke();
                     }
                 }
             }
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, width, height);
+        function renderWaves() {
+            for (let i = waves.length - 1; i >= 0; i--) {
+                let r = waves[i];
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, r.rad, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(59, 130, 246, ${r.opacity})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
 
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
+                r.rad += 5;
+                r.opacity -= 0.02;
+
+                if (r.opacity <= 0) {
+                    waves.splice(i, 1);
+                }
             }
-            connect();
         }
 
-        resize();
-        init();
-        animate();
+        function run() {
+            requestAnimationFrame(run);
+            ctx.clearRect(0, 0, w, h);
+
+            for (let i = 0; i < points.length; i++) {
+                points[i].step();
+                points[i].render();
+            }
+            link();
+            renderWaves();
+        }
+
+        scale();
+        start();
+        run();
     </script>
 </body>
 </html>
