@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preference Quiz</title>
+    <style>
+        /* Modern Glassmorphism UI */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            padding: 20px;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 24px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        p {
+            color: #f1f1f1;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 12px 20px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            color: #555;
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Utility classes for toggling views */
+        .hidden {
+            display: none;
+        }
+
+        #result-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glass-container">
+        <div id="start-screen">
+            <h1>Let's Guess!</h1>
+            <p>Answer a few simple preference questions, and we'll guess your gender based on traditional patterns.</p>
+            <button class="btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <h1 id="question-text">Question goes here</h1>
+            <p id="question-counter">Question 1 of 3</p>
+            <div id="options-container">
+                </div>
+        </div>
+
+        <div id="result-screen" class="hidden">
+            <h1>Our Guess Is...</h1>
+            <div id="result-text">Male</div>
+            <p>Remember, this is just a fun programmatic guess based on traditional stereotypes!</p>
+            <button class="btn" onclick="resetQuiz()">Take it Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Data and Logic
+        const questions = [
+            {
+                question: "When getting dressed up for a formal event, what is your go-to attire?",
+                options: [
+                    { text: "A tailored suit and tie", value: "male" },
+                    { text: "A nice dress or gown", value: "female" },
+                    { text: "Whatever is clean and comfortable", value: "neutral" }
+                ]
+            },
+            {
+                question: "If you had a free weekend to treat yourself, what would you do?",
+                options: [
+                    { text: "Watch sports or play video games", value: "male" },
+                    { text: "Go shopping or have a spa day", value: "female" },
+                    { text: "Read a book or watch a documentary", value: "neutral" }
+                ]
+            },
+            {
+                question: "What does your typical daily grooming routine look like?",
+                options: [
+                    { text: "Quick wash, maybe shave, and out the door", value: "male" },
+                    { text: "Skincare routine, makeup, and styling hair", value: "female" },
+                    { text: "Basic hygiene, nothing too extensive", value: "neutral" }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let scores = {
+            male: 0,
+            female: 0
+        };
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const questionCounter = document.getElementById('question-counter');
+        const resultText = document.getElementById('result-text');
+
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            questionText.textContent = currentQuestion.question;
+            questionCounter.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            
+            optionsContainer.innerHTML = ''; // Clear previous options
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option.text;
+                button.className = 'btn';
+                button.onclick = () => selectOption(option.value);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectOption(value) {
+            // Tally scores
+            if (value === 'male') scores.male++;
+            if (value === 'female') scores.female++;
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            // Determine result based on score tally
+            if (scores.male > scores.female) {
+                resultText.textContent = "Male 👦";
+            } else if (scores.female > scores.male) {
+                resultText.textContent = "Female 👧";
+            } else {
+                resultText.textContent = "Neutral / Unclear 🤷";
+            }
+        }
+
+        function resetQuiz() {
+            currentQuestionIndex = 0;
+            scores = { male: 0, female: 0 };
+            resultScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
