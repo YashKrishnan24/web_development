@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPro | Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7fa;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #888888;
+            --accent: #2563eb;
+            --success: #10b981;
+            --border: #e5e7eb;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; }
+        
+        /* Sidebar layout */
+        .sidebar { width: 250px; background: var(--card-bg); height: 100vh; padding: 2rem 1rem; border-right: 1px solid var(--border); }
+        .sidebar h2 { color: var(--accent); margin-bottom: 2rem; padding-left: 1rem; }
+        .sidebar ul { list-style: none; }
+        .sidebar li { padding: 1rem; color: var(--text-muted); cursor: pointer; border-radius: 8px; margin-bottom: 0.5rem; transition: background 0.2s; }
+        .sidebar li:hover, .sidebar li.active { background: var(--bg-color); color: var(--accent); font-weight: 600; }
+        
+        /* Main Content */
+        .main-content { flex: 1; padding: 2rem; overflow-y: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        
+        /* KPI Cards */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .kpi-card { background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .kpi-card h3 { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .kpi-card .value { font-size: 1.8rem; font-weight: bold; }
+        .kpi-card .trend.positive { color: var(--success); font-size: 0.9rem; margin-top: 0.5rem; display: inline-block; }
+        
+        /* Chart Container */
+        .chart-container { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>MarketPro</h2>
+        <ul>
+            <li class="active">Dashboard</li>
+            <li>Portfolio</li>
+            <li>Watchlist</li>
+            <li>Settings</li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+        <header>
+            <h1>Market Overview</h1>
+            <p>Welcome back, Investor</p>
+        </header>
+
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <h3>S&P 500</h3>
+                <div class="value">5,204.31</div>
+                <div class="trend positive">▲ +1.24%</div>
+            </div>
+            <div class="kpi-card">
+                <h3>NASDAQ</h3>
+                <div class="value">16,428.82</div>
+                <div class="trend positive">▲ +1.51%</div>
+            </div>
+            <div class="kpi-card">
+                <h3>Portfolio Value</h3>
+                <div class="value">$124,500.00</div>
+                <div class="trend positive">▲ +3.4% This Week</div>
+            </div>
+        </section>
+
+        <section class="chart-container">
+            <canvas id="marketChart" height="100"></canvas>
+        </section>
+    </main>
+
+    <script>
+        const ctx = document.getElementById('marketChart').getContext('2d');
+        const marketChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Portfolio Performance ($)',
+                    data: [115000, 118000, 116500, 121000, 119500, 123000, 124500],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4 // Smooth curves
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: false, grid: { borderDash: [5, 5] } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
