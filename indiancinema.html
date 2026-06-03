@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolution of Indian Cinema</title>
+    <style>
+        /* CSS Variables for a Cinematic Theme */
+        :root {
+            --bg-color: #0a0a0a;
+            --timeline-color: #00e5ff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-glow: rgba(0, 229, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 0%, #1a1a2e 0%, var(--bg-color) 70%);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 4rem 1rem 2rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, var(--timeline-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Timeline Container */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+        }
+
+        /* The Center Line */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: linear-gradient(to bottom, transparent, var(--timeline-color), transparent);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        /* Individual Timeline Items */
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .container:nth-child(1) { animation-delay: 0.2s; }
+        .container:nth-child(2) { animation-delay: 0.4s; }
+        .container:nth-child(3) { animation-delay: 0.6s; }
+        .container:nth-child(4) { animation-delay: 0.8s; }
+        .container:nth-child(5) { animation-delay: 1.0s; }
+
+        .left { left: 0; }
+        .right { left: 50%; }
+
+        /* The Timeline Dots */
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--bg-color);
+            border: 4px solid var(--timeline-color);
+            border-radius: 50%;
+            top: 32px;
+            right: -10px;
+            z-index: 1;
+            box-shadow: 0 0 15px var(--timeline-color);
+            transition: all 0.3s ease;
+        }
+
+        .right::after {
+            left: -10px;
+        }
+
+        /* Glassmorphism Cards */
+        .content {
+            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        /* Hover Effects */
+        .content:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--timeline-color);
+            box-shadow: 0 15px 35px var(--glass-glow);
+        }
+
+        .container:hover::after {
+            background-color: var(--timeline-color);
+            transform: scale(1.3);
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            color: var(--timeline-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .content p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Tag Styling */
+        .tags {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(0, 229, 255, 0.1);
+            color: var(--timeline-color);
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            .container {
+                width: 100%;
+                padding-left: 80px;
+                padding-right: 25px;
+            }
+            .container.right {
+                left: 0;
+            }
+            .container::after {
+                left: 21px;
+            }
+            .right::after {
+                left: 21px;
+            }
+            .content h2 {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Director's Cut</h1>
+        <p>A technical and artistic timeline of Indian Cinema. Study the masters, understand the shifts in production, and shape the future of storytelling.</p>
+    </div>
+
+    <div class="timeline">
+        
+        <div class="container left">
+            <div class="content">
+                <h2>1896 <span style="font-size: 1rem; color: #fff;">The Spark</span></h2>
+                <h3>The Lumière Brothers in Bombay</h3>
+                <p>Cinema arrives in India. Six short films are screened at the Watson Hotel in Mumbai. For a young filmmaker, this marks the genesis of utilizing the camera not just to capture reality, but to project it to the masses.</p>
+                <div class="tags">
+                    <span class="tag">Cinematography</span>
+                    <span class="tag">Exhibition</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container right">
+            <div class="content">
+                <h2>1913 <span style="font-size: 1rem; color: #fff;">The Foundation</span></h2>
+                <h3>Raja Harishchandra</h3>
+                <p>Dadasaheb Phalke directs India's first full-length feature film. Shot entirely on a hand-cranked camera with an all-male cast playing female roles, it is a masterclass in early practical production, set design, and grassroots distribution.</p>
+                <div class="tags">
+                    <span class="tag">Silent Era</span>
+                    <span class="tag">Production Design</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container left">
+            <div class="content">
+                <h2>1931 <span style="font-size: 1rem; color: #fff;">The Talkie</span></h2>
+                <h3>Alam Ara & The Advent of Sound</h3>
+                <p>Directed by Ardeshir Irani, Indian cinema finds its voice. The introduction of synchronized sound completely overhauled production workflows, forcing directors to rethink framing, acting nuances, and the integration of musical numbers.</p>
+                <div class="tags">
+                    <span class="tag">Sound Design</span>
+                    <span class="tag">Audio Sync</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container right">
+            <div class="content">
+                <h2>1950s <span style="font-size: 1rem; color: #fff;">The Golden Age</span></h2>
+                <h3>Parallel Cinema & Studio Craft</h3>
+                <p>The era of Satyajit Ray, Guru Dutt, and Bimal Roy. 'Pather Panchali' brings neorealism and international acclaim to India, while domestic studios perfect lighting techniques, dramatic composition, and complex character arcs.</p>
+                <div class="tags">
+                    <span class="tag">Auteur Theory</span>
+                    <span class="tag">Lighting</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container left">
+            <div class="content">
+                <h2>2010s+ <span style="font-size: 1rem; color: #fff;">The Scale</span></h2>
+                <h3>VFX & Pan-India Blockbusters</h3>
+                <p>Projects like 'Baahubali' redefine the scope of Indian cinema. The industry shifts toward heavy CGI pipelines, pre-visualization, and cross-lingual distribution, opening massive opportunities for VFX artists and technical directors.</p>
+                <div class="tags">
+                    <span class="tag">CGI/VFX</span>
+                    <span class="tag">Pre-Viz</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
