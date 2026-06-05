@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Constitution of India - Interactive Explorer</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-color: #f4f4f0;
+      --text-main: #111827;
+      --card-bg: #ffffff;
+      --border-color: #111827;
+      
+      
+      --accent-history: #ff6b6b;
+      --accent-formation: #4ecdc4;
+      --accent-figures: #ffe66d;
+      --accent-impact: #1a535c;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      margin-top: 2rem;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 3px solid var(--border-color);
+      /* Solid flat shadow - No blur */
+      box-shadow: 6px 6px 0px var(--border-color);
+      padding: 1.5rem;
+      cursor: pointer;
+      position: relative;
+      border-radius: 4px;
+    }
+
+    
+    #card-history { border-top: 8px solid var(--accent-history); }
+    #card-formation { border-top: 8px solid var(--accent-formation); }
+    #card-figures { border-top: 8px solid var(--accent-figures); }
+    #card-impact { border-top: 8px solid var(--accent-impact); }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-header .icon {
+      font-size: 2rem;
+    }
+
+    .card-header h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    
+    .content {
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+      margin-top: 0;
+      line-height: 1.6;
+    }
+
+    .content p, .content ul {
+      padding-top: 1rem;
+      border-top: 2px dashed #e5e7eb;
+    }
+
+    .content ul {
+      list-style-type: none;
+    }
+
+    .content ul li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>The Constitution of India</h1>
+    <p>A simple, interactive guide to the supreme law of the land.</p>
+  </header>
+
+  <main class="grid-container">
+    
+    <div class="card" id="card-history">
+      <div class="card-header">
+        <span class="icon">📜</span>
+        <h2>History</h2>
+      </div>
+      <div class="content">
+        <p>Originated from the desire for self-rule. The Cabinet Mission Plan (1946) set the stage to transfer power from the British and build a framework for a sovereign, independent nation.</p>
+      </div>
+    </div>
+
+    <div class="card" id="card-formation">
+      <div class="card-header">
+        <span class="icon">🏛️</span>
+        <h2>Formation</h2>
+      </div>
+      <div class="content">
+        <p>Drafted by the Constituent Assembly. It took exactly <strong>2 years, 11 months, and 18 days</strong> to complete. It was adopted on Nov 26, 1949, and officially enforced on Jan 26, 1950.</p>
+      </div>
+    </div>
+
+    <div class="card" id="card-figures">
+      <div class="card-header">
+        <span class="icon">🖋️</span>
+        <h2>Main Figures</h2>
+      </div>
+      <div class="content">
+        <ul>
+          <li><strong>Dr. B.R. Ambedkar:</strong> Chairman of the Drafting Committee.</li>
+          <li><strong>Dr. Rajendra Prasad:</strong> President of the Assembly.</li>
+          <li><strong>Jawaharlal Nehru:</strong> Introduced the Objective Resolution.</li>
+          <li><strong>B.N. Rau:</strong> Constitutional Advisor.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" id="card-impact">
+      <div class="card-header">
+        <span class="icon">🌍</span>
+        <h2>Impact</h2>
+      </div>
+      <div class="content">
+        <p>It is the world's longest written constitution. It established India as a Sovereign, Socialist, Secular, Democratic Republic, guaranteeing Fundamental Rights to all citizens.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.card');
+
+      cards.forEach((card) => {
+        const content = card.querySelector('.content');
+
+        
+        card.addEventListener('mouseenter', () => {
+          
+          anime({
+            targets: card,
+            scale: 1.03,
+            boxShadow: '10px 10px 0px #111827',
+            translateY: -4,
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+
+          
+          anime({
+            targets: content,
+            height: content.scrollHeight + 'px',
+            opacity: 1,
+            marginTop: '1rem',
+            duration: 350,
+            easing: 'easeOutQuart'
+          });
+
+          
+          anime({
+            targets: '.card:not(:hover)',
+            opacity: 0.5,
+            scale: 0.98,
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+        });
+
+      
+        card.addEventListener('mouseleave', () => {
+          
+          anime({
+            targets: card,
+            scale: 1,
+            boxShadow: '6px 6px 0px #111827',
+            translateY: 0,
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+
+        
+          anime({
+            targets: content,
+            height: 0,
+            opacity: 0,
+            marginTop: 0,
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+
+          
+          anime({
+            targets: '.card',
+            opacity: 1,
+            scale: 1,
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
