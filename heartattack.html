@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>India Heart Attack Deaths — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+<style>
+  :root {
+    --red-50:  #fff1f1;
+    --red-100: #ffd6d6;
+    --red-300: #f87171;
+    --red-500: #e24b4a;
+    --red-700: #a32d2d;
+    --red-900: #501313;
+    --bg:      #0d0c0c;
+    --bg2:     #141212;
+    --bg3:     #1c1919;
+    --bg4:     #241f1f;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text1:   #f5f0ee;
+    --text2:   #a89e9b;
+    --text3:   #6b6260;
+    --blue:    #378ADD;
+    --pink:    #D4537E;
+    --purple:  #7F77DD;
+    --teal:    #1D9E75;
+    --amber:   #EF9F27;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text1);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* ── HEADER ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left {}
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red-500);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--red-500);
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.0;
+    color: var(--text1);
+    letter-spacing: -0.02em;
+  }
+  h1 span { color: var(--red-500); }
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .source-tag {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .update-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: var(--teal);
+  }
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    position: relative;
+  }
+  .live-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1px solid var(--teal);
+    opacity: 0;
+    animation: ripple 2s ease-out infinite;
+  }
+  @keyframes ripple { 0%{opacity:.7;transform:scale(1)} 100%{opacity:0;transform:scale(2.4)} }
+
+  /* ── HERO STRIP ── */
+  .hero-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .hero-cell {
+    background: var(--bg2);
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-cell::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--red-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .hero-cell:hover::after { transform: scaleX(1); }
+  .hero-cell-label {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .hero-cell-num {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 800;
+    color: var(--text1);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .hero-cell-num.red { color: var(--red-500); }
+  .hero-cell-sub {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .hero-cell-badge {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+  }
+  .badge-danger { background: rgba(226,75,74,0.15); color: var(--red-300); border: 1px solid rgba(226,75,74,0.3); }
+  .badge-success { background: rgba(29,158,117,0.15); color: #5DCAA5; border: 1px solid rgba(29,158,117,0.3); }
+
+  /* ── LIVE TICKER ── */
+  .ticker-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: auto 1px auto 1px auto;
+    align-items: center;
+    gap: 24px;
+  }
+  .ticker-divider { height: 40px; background: var(--border2); }
+  .ticker-section {}
+  .ticker-lbl { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .ticker-val {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--red-300);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .ticker-note { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+  /* ── METRICS ROW ── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .metric-cell {
+    background: var(--bg2);
+    padding: 20px 20px 18px;
+    transition: background 0.2s;
+    cursor: default;
+  }
+  .metric-cell:hover { background: var(--bg3); }
+  .metric-icon { font-size: 18px; color: var(--text3); margin-bottom: 10px; }
+  .metric-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text1);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .metric-label { font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
+
+  /* ── TREND CHART ── */
+  .chart-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 28px 20px;
+    margin-bottom: 20px;
+  }
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .chart-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text1);
+    letter-spacing: -0.01em;
+  }
+  .tab-group { display: flex; gap: 4px; }
+  .tab-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { border-color: var(--red-500); color: var(--red-300); }
+  .tab-btn.active { background: var(--red-500); color: #fff; border-color: var(--red-500); }
+
+  .bar-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    height: 160px;
+    margin-bottom: 8px;
+  }
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    justify-content: flex-end;
+    gap: 5px;
+    cursor: pointer;
+    position: relative;
+  }
+  .bar-val-top {
+    font-size: 9px;
+    color: var(--text3);
+    font-variant-numeric: tabular-nums;
+    transition: color 0.2s;
+  }
+  .bar-col:hover .bar-val-top { color: var(--red-300); }
+  .bar-outer {
+    width: 100%;
+    background: var(--bg4);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    overflow: visible;
+  }
+  .bar-inner {
+    width: 100%;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.6s cubic-bezier(.4,0,.2,1), background 0.2s;
+  }
+  .bar-col:hover .bar-inner { filter: brightness(1.2); }
+  .bar-col.sel .bar-inner { outline: 2px solid var(--red-300); outline-offset: 2px; }
+  .bar-yr { font-size: 9px; color: var(--text3); letter-spacing: 0.04em; }
+  .bar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    color: var(--text1);
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 10;
+  }
+  .bar-col:hover .bar-tooltip { opacity: 1; }
+  .chart-footer { font-size: 9px; color: var(--text3); letter-spacing: 0.06em; margin-top: 6px; }
+
+  /* ── BOTTOM GRID ── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .section-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text1);
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+
+  /* progress bars */
+  .prog-list { display: flex; flex-direction: column; gap: 12px; }
+  .prog-item {}
+  .prog-head { display: flex; justify-content: space-between; font-size: 11px; color: var(--text2); margin-bottom: 5px; }
+  .prog-track { height: 5px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 3px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+
+  /* donut */
+  .donut-wrap { display: flex; align-items: center; gap: 24px; }
+  .donut-svg { flex-shrink: 0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .legend-pct { font-weight: 500; color: var(--text1); margin-left: auto; }
+
+  /* insight cards */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .insight-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    background: var(--bg3);
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .insight-item:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .insight-icon { font-size: 20px; margin-bottom: 10px; }
+  .insight-head {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text1);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .insight-body { font-size: 11px; color: var(--text2); line-height: 1.6; }
+
+  /* ── HEARTBEAT LINE ── */
+  .ecg-wrap {
+    margin-bottom: 20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 28px;
+    overflow: hidden;
+    position: relative;
+  }
+  .ecg-label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .ecg-svg { width: 100%; height: 60px; display: block; }
+  .ecg-line { fill: none; stroke: var(--red-500); stroke-width: 1.5; }
+  .ecg-glow { fill: none; stroke: var(--red-300); stroke-width: 3; opacity: 0.25; }
+  .ecg-scan {
+    fill: none;
+    stroke: var(--red-300);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    animation: ecgScan 3s linear infinite;
+  }
+  @keyframes ecgScan { from { transform: translateX(-100%); } to { transform: translateX(960px); } }
+
+  /* ── STATE MAP BAR ── */
+  .state-row { display: flex; flex-direction: column; gap: 8px; }
+  .state-item { display: flex; align-items: center; gap: 10px; }
+  .state-name { font-size: 11px; color: var(--text2); width: 130px; flex-shrink: 0; }
+  .state-bar-track { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .state-bar-fill { height: 100%; border-radius: 3px; background: var(--red-500); transition: width 1s cubic-bezier(.4,0,.2,1); }
+  .state-pct { font-size: 10px; color: var(--text3); width: 36px; text-align: right; }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-note { font-size: 10px; color: var(--text3); line-height: 1.6; max-width: 500px; }
+  .footer-src { font-size: 10px; color: var(--text3); text-align: right; }
+
+  /* ── ANIMATIONS ── */
+  .fade-up { opacity: 0; transform: translateY(16px); animation: fadeUp 0.5s ease forwards; }
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+  .fade-up:nth-child(1) { animation-delay: 0.05s; }
+  .fade-up:nth-child(2) { animation-delay: 0.12s; }
+  .fade-up:nth-child(3) { animation-delay: 0.18s; }
+  .fade-up:nth-child(4) { animation-delay: 0.24s; }
+  .fade-up:nth-child(5) { animation-delay: 0.30s; }
+  .fade-up:nth-child(6) { animation-delay: 0.36s; }
+  .fade-up:nth-child(7) { animation-delay: 0.42s; }
+  .fade-up:nth-child(8) { animation-delay: 0.48s; }
+
+  @media (max-width: 640px) {
+    .hero-strip { grid-template-columns: 1fr; }
+    .ticker-card { grid-template-columns: 1fr; }
+    .ticker-divider { display: none; }
+    .metrics-row { grid-template-columns: repeat(2, 1fr); }
+    .bottom-grid { grid-template-columns: 1fr; }
+    .insight-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header fade-up">
+    <div class="header-left">
+      <div class="eyebrow">Public Health Data</div>
+      <h1>Heart Attack<br><span>Deaths in India</span></h1>
+    </div>
+    <div class="header-right">
+      <div class="update-dot"><div class="live-dot"></div> Live counter active</div>
+      <div class="source-tag">IHME GBD 2024 · WHO</div>
+    </div>
+  </div>
+
+  <!-- ECG LINE -->
+  <div class="ecg-wrap fade-up">
+    <div class="ecg-label">Simulated cardiac activity signal</div>
+    <svg class="ecg-svg" viewBox="0 0 960 60" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <clipPath id="ecgClip"><rect x="0" y="0" width="960" height="60"/></clipPath>
+      </defs>
+      <g clip-path="url(#ecgClip)">
+        <polyline class="ecg-glow" id="ecgPathGlow"/>
+        <polyline class="ecg-line" id="ecgPath"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- HERO STRIP -->
+  <div class="hero-strip fade-up">
+    <div class="hero-cell">
+      <div class="hero-cell-label">Estimated IHD deaths — 2023</div>
+      <div class="hero-cell-num red">2.03M</div>
+      <div class="hero-cell-sub">Ischaemic heart disease (incl. heart attacks)<br>is the single largest cause of death in India.</div>
+      <div class="hero-cell-badge badge-danger">↑ 47% since 2000</div>
+    </div>
+    <div class="hero-cell">
+      <div class="hero-cell-label">India's share of global IHD burden</div>
+      <div class="hero-cell-num">18.6<span style="font-size:0.5em;color:var(--text2);">%</span></div>
+      <div class="hero-cell-sub">Nearly 1 in 5 heart-disease deaths worldwide<br>occurs in India.</div>
+      <div class="hero-cell-badge badge-success">Rate/100k: improving slightly</div>
+    </div>
+  </div>
+
+  <!-- LIVE TICKER -->
+  <div class="ticker-card fade-up">
+    <div class="ticker-section">
+      <div class="ticker-lbl">Deaths since page opened</div>
+      <div class="ticker-val" id="liveCount">0</div>
+      <div class="ticker-note">≈ 3.9 deaths per minute</div>
+    </div>
+    <div class="ticker-divider"></div>
+    <div class="ticker-section">
+      <div class="ticker-lbl">Deaths today (est.)</div>
+      <div class="ticker-val" id="todayCount">0</div>
+      <div class="ticker-note">Based on 2023 annual total</div>
+    </div>
+    <div class="ticker-divider"></div>
+    <div class="ticker-section">
+      <div class="ticker-lbl">Time elapsed</div>
+      <div class="ticker-val" id="elapsed">0s</div>
+      <div class="ticker-note">Seconds on this page</div>
+    </div>
+  </div>
+
+  <!-- METRICS ROW -->
+  <div class="metrics-row fade-up">
+    <div class="metric-cell">
+      <div class="metric-icon"><i class="ti ti-clock" aria-hidden="true"></i></div>
+      <div class="metric-value">~3.9</div>
+      <div class="metric-label">deaths per minute</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
+      <div class="metric-value">400K+</div>
+      <div class="metric-label">working-age deaths (30–59 yrs)</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-icon"><i class="ti ti-chart-line" aria-hidden="true"></i></div>
+      <div class="metric-value">2×</div>
+      <div class="metric-label">faster rise in under-55 age group</div>
+    </div>
+    <div class="metric-cell">
+      <div class="metric-icon"><i class="ti ti-building-hospital" aria-hidden="true"></i></div>
+      <div class="metric-value">70%</div>
+      <div class="metric-label">preventable through lifestyle changes</div>
+    </div>
+  </div>
+
+  <!-- TREND CHART -->
+  <div class="chart-card fade-up">
+    <div class="chart-header">
+      <div class="chart-title">Annual IHD Deaths — Trend (millions)</div>
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="setView('all',this)">All Years</button>
+        <button class="tab-btn" onclick="setView('recent',this)">2018–2023</button>
+      </div>
+    </div>
+    <div class="bar-area" id="barArea"></div>
+    <div class="chart-footer">SOURCE: Institute for Health Metrics and Evaluation (IHME), Global Burden of Disease 2024</div>
+  </div>
+
+  <!-- BOTTOM GRID -->
+  <div class="bottom-grid fade-up">
+
+    <!-- Age distribution -->
+    <div class="section-card">
+      <div class="section-title">Deaths by age group</div>
+      <div class="prog-list" id="ageList"></div>
+    </div>
+
+    <!-- Sex + Urban -->
+    <div class="section-card">
+      <div class="section-title">By sex</div>
+      <div class="prog-list" id="sexList"></div>
+      <div class="section-title" style="margin-top:20px;">Urban vs rural</div>
+      <div class="prog-list" id="urbanList"></div>
+    </div>
+
+  </div>
+
+  <!-- STATE MAP + INSIGHTS -->
+  <div class="bottom-grid fade-up">
+
+    <!-- State burden -->
+    <div class="section-card">
+      <div class="section-title">Top states by cardiac death burden</div>
+      <div class="state-row" id="stateList"></div>
+    </div>
+
+    <!-- Risk factors donut -->
+    <div class="section-card">
+      <div class="section-title">Key risk factors (% contribution)</div>
+      <div class="donut-wrap">
+        <svg class="donut-svg" width="110" height="110" viewBox="0 0 110 110" role="img" aria-label="Donut chart of risk factors for IHD deaths in India">
+          <title>Risk factors for IHD deaths in India</title>
+          <g id="donutG" transform="translate(55,55)"></g>
+        </svg>
+        <div class="donut-legend" id="donutLegend"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="section-card fade-up" style="margin-bottom:20px;">
+    <div class="section-title">Key findings</div>
+    <div class="insight-grid" id="insightGrid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer fade-up">
+    <div class="footer-note">
+      Data represents Ischaemic Heart Disease (IHD) mortality, which includes acute myocardial infarction (heart attack) as its primary component.
+      Annual figures are estimates with uncertainty intervals. Live ticker is a real-time approximation based on 2023 annual estimates.
+    </div>
+    <div class="footer-src">
+      Sources: IHME GBD 2024 · WHO CVD Report · Lancet India
+    </div>
+  </div>
+
+</div>
+<script>
+/* ── DATA ── */
+const allData = [
+  {yr:'2000',v:1.38},{yr:'2003',v:1.49},{yr:'2006',v:1.60},
+  {yr:'2009',v:1.70},{yr:'2012',v:1.80},{yr:'2015',v:1.89},
+  {yr:'2018',v:1.96},{yr:'2020',v:2.02},{yr:'2021',v:2.10},
+  {yr:'2022',v:2.07},{yr:'2023',v:2.03}
+];
+const recentData = allData.slice(-6);
+
+const ageData = [
+  {label:'70 years +',    pct:44, color:'#E24B4A'},
+  {label:'55 – 69 years', pct:33, color:'#F09595'},
+  {label:'40 – 54 years', pct:17, color:'#F7C1C1'},
+  {label:'Under 40',      pct:6,  color:'rgba(226,75,74,0.3)'},
+];
+const sexData = [
+  {label:'Male',   pct:62, color:'#378ADD'},
+  {label:'Female', pct:38, color:'#D4537E'},
+];
+const urbanData = [
+  {label:'Urban', pct:55, color:'#7F77DD'},
+  {label:'Rural', pct:45, color:'#888780'},
+];
+const stateData = [
+  {name:'Uttar Pradesh',  pct:100},
+  {name:'Maharashtra',    pct:85},
+  {name:'West Bengal',    pct:72},
+  {name:'Tamil Nadu',     pct:68},
+  {name:'Karnataka',      pct:61},
+  {name:'Rajasthan',      pct:54},
+  {name:'Gujarat',        pct:50},
+];
+const riskData = [
+  {label:'Hypertension',   pct:28, color:'#E24B4A'},
+  {label:'Diabetes',       pct:22, color:'#EF9F27'},
+  {label:'Smoking',        pct:18, color:'#7F77DD'},
+  {label:'Air pollution',  pct:15, color:'#D4537E'},
+  {label:'High cholesterol',pct:10, color:'#378ADD'},
+  {label:'Other',          pct:7,  color:'#888780'},
+];
+const insights = [
+  {icon:'ti-trending-up',   color:'#E24B4A', head:'Early onset rising',      body:'Heart attacks in Indians aged 35–54 have risen 2× faster than in older age groups over the past decade, driven by sedentary lifestyles and metabolic risk.'},
+  {icon:'ti-map-pin',       color:'#EF9F27', head:'Regional concentration',  body:'UP, Maharashtra, Tamil Nadu & West Bengal account for ~38% of all cardiac deaths nationally, reflecting population density and urban pollution.'},
+  {icon:'ti-activity',      color:'#7F77DD', head:'Air quality link',         body:'Ambient PM2.5 exposure contributes to ~15% of IHD deaths in India. Northern states face 3–5× higher pollution-related cardiac risk than coastal regions.'},
+  {icon:'ti-heart-off',     color:'#D4537E', head:'Working-age toll',         body:'Over 400,000 deaths annually strike people aged 30–59. This creates significant economic loss and a growing public-health workforce crisis.'},
+];
+
+/* ── BAR CHART ── */
+let currentView = 'all';
+let selIdx = null;
+
+function setView(v, btn) {
+  currentView = v;
+  selIdx = null;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderBars();
+}
+
+function renderBars() {
+  const data = currentView === 'all' ? allData : recentData;
+  const max = Math.max(...data.map(d => d.v));
+  const el = document.getElementById('barArea');
+  el.innerHTML = '';
+  data.forEach((d, i) => {
+    const pct = (d.v / max) * 100;
+    const intense = d.v >= 2.0 ? '#E24B4A' : d.v >= 1.75 ? '#c05252' : '#7a3535';
+    const col = document.createElement('div');
+    col.className = 'bar-col' + (selIdx === i ? ' sel' : '');
+    col.innerHTML = `
+      <span class="bar-val-top">${d.v.toFixed(2)}M</span>
+      <div class="bar-outer" style="height:${pct.toFixed(1)}%;">
+        <div class="bar-inner" style="height:100%;background:${intense};"></div>
+        <div class="bar-tooltip">${d.yr}: ${d.v.toFixed(2)}M deaths</div>
+      </div>
+      <span class="bar-yr">${d.yr}</span>`;
+    col.onclick = () => { selIdx = i; renderBars(); };
+    el.appendChild(col);
+  });
+}
+
+/* ── PROGRESS BARS ── */
+function renderProg(containerId, data) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = data.map(d => `
+    <div class="prog-item">
+      <div class="prog-head"><span>${d.label}</span><span>${d.pct}%</span></div>
+      <div class="prog-track">
+        <div class="prog-fill" style="width:0%;background:${d.color};" data-target="${d.pct}"></div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── STATE BARS ── */
+function renderStates() {
+  const el = document.getElementById('stateList');
+  el.innerHTML = stateData.map(s => `
+    <div class="state-item">
+      <span class="state-name">${s.name}</span>
+      <div class="state-bar-track">
+        <div class="state-bar-fill" style="width:0%;" data-target="${s.pct}"></div>
+      </div>
+      <span class="state-pct">${s.pct === 100 ? 'Highest' : s.pct + '%'}</span>
+    </div>`).join('');
+}
+
+/* ── DONUT ── */
+function renderDonut() {
+  const g = document.getElementById('donutG');
+  const R = 40, r = 24;
+  let start = -Math.PI / 2;
+  const total = riskData.reduce((a, b) => a + b.pct, 0);
+  riskData.forEach(d => {
+    const angle = (d.pct / total) * 2 * Math.PI;
+    const end = start + angle;
+    const x1 = R * Math.cos(start), y1 = R * Math.sin(start);
+    const x2 = R * Math.cos(end),   y2 = R * Math.sin(end);
+    const xi1 = r * Math.cos(start), yi1 = r * Math.sin(start);
+    const xi2 = r * Math.cos(end),   yi2 = r * Math.sin(end);
+    const large = angle > Math.PI ? 1 : 0;
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', `M ${x1} ${y1} A ${R} ${R} 0 ${large} 1 ${x2} ${y2} L ${xi2} ${yi2} A ${r} ${r} 0 ${large} 0 ${xi1} ${yi1} Z`);
+    path.setAttribute('fill', d.color);
+    path.setAttribute('opacity', '0.9');
+    path.style.transition = 'opacity 0.2s';
+    path.onmouseenter = () => path.setAttribute('opacity','1');
+    path.onmouseleave = () => path.setAttribute('opacity','0.9');
+    g.appendChild(path);
+    start = end;
+  });
+  const legend = document.getElementById('donutLegend');
+  legend.innerHTML = riskData.map(d => `
+    <div class="legend-item">
+      <div class="legend-dot" style="background:${d.color};"></div>
+      <span>${d.label}</span>
+      <span class="legend-pct">${d.pct}%</span>
+    </div>`).join('');
+}
+
+/* ── INSIGHTS ── */
+function renderInsights() {
+  const el = document.getElementById('insightGrid');
+  el.innerHTML = insights.map(d => `
+    <div class="insight-item">
+      <div class="insight-icon"><i class="ti ${d.icon}" style="color:${d.color};" aria-hidden="true"></i></div>
+      <div class="insight-head">${d.head}</div>
+      <div class="insight-body">${d.body}</div>
+    </div>`).join('');
+}
+
+/* ── ECG LINE ── */
+function renderECG() {
+  const W = 960, H = 60, mid = H / 2;
+  const pts = [];
+  let x = 0;
+  while (x < W) {
+    pts.push([x, mid]);
+    x += 6;
+    if (x + 60 < W) {
+      pts.push([x, mid]);
+      pts.push([x + 6, mid - 18]);
+      pts.push([x + 12, mid + 28]);
+      pts.push([x + 18, mid - 10]);
+      pts.push([x + 24, mid + 6]);
+      pts.push([x + 30, mid]);
+      x += 30;
+    }
+  }
+  const str = pts.map(p => p.join(',')).join(' ');
+  document.getElementById('ecgPath').setAttribute('points', str);
+  document.getElementById('ecgPathGlow').setAttribute('points', str);
+}
+
+/* ── LIVE TICKER ── */
+const startTime = Date.now();
+const perMinute = 2030000 / (365 * 24 * 60);
+const todayBase = () => {
+  const now = new Date();
+  const secondsIntoDay = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+  return Math.floor((secondsIntoDay / 86400) * 2030000);
+};
+
+function updateTicker() {
+  const elapsed = (Date.now() - startTime) / 1000;
+  const count = Math.floor((elapsed / 60) * perMinute);
+  document.getElementById('liveCount').textContent = count.toLocaleString('en-IN');
+  document.getElementById('todayCount').textContent = todayBase().toLocaleString('en-IN');
+  const s = Math.floor(elapsed);
+  if (s < 60) document.getElementById('elapsed').textContent = s + 's';
+  else if (s < 3600) document.getElementById('elapsed').textContent = Math.floor(s/60) + 'm ' + (s%60) + 's';
+  else document.getElementById('elapsed').textContent = Math.floor(s/3600) + 'h ' + Math.floor((s%3600)/60) + 'm';
+}
+
+/* ── ANIMATE FILLS ── */
+function animateFills() {
+  document.querySelectorAll('[data-target]').forEach(el => {
+    const t = el.getAttribute('data-target');
+    setTimeout(() => { el.style.width = t + '%'; }, 200);
+  });
+}
+
+/* ── INIT ── */
+renderBars();
+renderProg('ageList', ageData);
+renderProg('sexList', sexData);
+renderProg('urbanList', urbanData);
+renderStates();
+renderDonut();
+renderInsights();
+renderECG();
+setTimeout(animateFills, 300);
+setInterval(updateTicker, 500);
+updateTicker();
+</script>
+</body>
+</html>
+
+
+
+
