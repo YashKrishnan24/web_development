@@ -26,6 +26,6 @@ The project consists of standalone HTML files, each tackling a specific design c
 
 To view any of these projects locally, you do not need any build tools or package managers. 
 
-1. Clone the repository to your local machine:
+1. Clone the repository:
    ```bash
    git clone [https://github.com/YashKrishnan24/web_development.git](https://github.com/YashKrishnan24/web_development.git)
