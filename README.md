@@ -1,6 +1,6 @@
 # Web Development Fundamentals & UI Showcase
 
-This repository is a practical collection of front-end web projects I have built to strengthen my foundational skills in web development. It showcases responsive user interfaces and interactive components created primarily with HTML, CSS, and vanilla JavaScript. 
+This repository is a practical collection of front-end web projects I have built to strengthen my foundational skills in web development. It showcases responsive user interfaces and interactive components created primarily with HTML, CSS, and vanilla Javascript.
 
 ## Project Overview:
 
