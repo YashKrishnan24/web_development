@@ -22,7 +22,7 @@ The project consists of standalone HTML files, each tackling a specific design c
 * **Logic & Games:** `game.html` and `quiz.html` showcase JavaScript-driven interactions in the browser.
 * **Concept Exercises:** `program1.html` through `program21.html` are bite-sized scripts focused on practicing specific front-end techniques.
 
-## Getting Started
+## Getting Started:
 
 To view any of these projects locally, you do not need any build tools or package managers. 
 
